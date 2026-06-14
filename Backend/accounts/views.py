@@ -1,3 +1,34 @@
-from django.shortcuts import render
+from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+from profiles.models import Profile
+from .serializers import SignUpSerializer, UserSerializer
 
-# Create your views here.
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def signup(request):
+    serializer = SignUpSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        Profile.objects.get_or_create(user=user, defaults={'nickname': user.username})
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'message': '회원가입이 완료되었습니다.',
+            'user': UserSerializer(user).data,
+            'access': str(refresh.access_token),
+            'refresh': str(refresh),
+        }, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def me(request):
+    if request.method == 'GET':
+        return Response(UserSerializer(request.user).data)
+    serializer = UserSerializer(request.user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

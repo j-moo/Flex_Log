@@ -1,0 +1,2 @@
+<template><section><h1>친구 피드</h1><div class="grid"><ExpenseCard v-for="log in logs" :key="log.id" :log="log" @like="like"/></div><p v-if="!logs.length" class="muted">표시할 친구 소비 로그가 없습니다.</p></section></template>
+<script setup>import { onMounted, ref } from 'vue'; import api from '@/api/axios'; import ExpenseCard from '@/components/ExpenseCard.vue'; const logs=ref([]); const load=async()=>{logs.value=(await api.get('/api/v1/expenses/feed/')).data}; const like=async(log)=>{await api.post(`/api/v1/expenses/logs/${log.id}/like/`); await load()}; onMounted(load)</script>
