@@ -1,11 +1,10 @@
 from django.urls import path
-from . import views
+
+from .views import CategoryListView, ExpenseLogDetailView, ExpenseLogListCreateView
+
+
 urlpatterns = [
-    path('categories/', views.categories),
-    path('categories/seed/', views.seed_categories),
-    path('logs/', views.logs),
-    path('logs/<int:log_id>/', views.log_detail),
-    path('feed/', views.friend_feed),
-    path('logs/<int:log_id>/like/', views.toggle_like),
-    path('logs/<int:log_id>/comments/', views.comments),
+    path('categories/', CategoryListView.as_view(), name='category-list'),
+    path('', ExpenseLogListCreateView.as_view(), name='expense-log-list-create'),
+    path('<int:pk>/', ExpenseLogDetailView.as_view(), name='expense-log-detail'),
 ]

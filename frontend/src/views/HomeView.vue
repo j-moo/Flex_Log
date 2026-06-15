@@ -1,2 +1,22 @@
-<template><section class="hero"><h1>소비를 기록하고, AI로 돌아보고, 금융상품까지 추천받기</h1><p>Flex-log는 SNS 방식의 소비 로그 기반 금융 웹 애플리케이션입니다.</p><div class="actions"><RouterLink v-if="!store.isLogin" :to="{name:'SignUpView'}"><button>시작하기</button></RouterLink><RouterLink v-else :to="{name:'ExpenseCreateView'}"><button>오늘 소비 기록하기</button></RouterLink></div></section><section class="grid"><div class="card"><h3>기록</h3><p>소비를 이미지와 함께 기록합니다.</p></div><div class="card"><h3>AI 분석</h3><p>소비 데이터를 바탕으로 피드백을 제공합니다.</p></div><div class="card"><h3>상품 추천</h3><p>분석 결과에 맞는 상품을 추천합니다.</p></div></section></template>
-<script setup>import { useAccountStore } from '@/stores/account'; const store=useAccountStore()</script>
+<script setup>
+import { useAccountStore } from '../stores/account'
+
+
+const account = useAccountStore()
+</script>
+
+<template>
+  <section class="hero">
+    <h1>Flex Log</h1>
+    <p>
+      사진과 함께 소비를 기록하고, 쌓인 기록을 바탕으로 소비 패턴을 확인하는 서비스입니다.
+    </p>
+    <div v-if="account.isAuthenticated" class="actions">
+      <strong>{{ account.user?.username }}님, 환영합니다.</strong>
+    </div>
+    <div v-else class="actions">
+      <RouterLink class="button" :to="{ name: 'signup' }">회원가입</RouterLink>
+      <RouterLink class="button secondary" :to="{ name: 'login' }">로그인</RouterLink>
+    </div>
+  </section>
+</template>

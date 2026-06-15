@@ -1,2 +1,15 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
-# Django 기본 User 모델 사용. 추가 사용자 정보는 profiles.Profile로 분리.
+
+
+class User(AbstractUser):
+    name = models.CharField(max_length=50, blank=True)
+    email = models.EmailField(unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+
+    def __str__(self):
+        return self.username

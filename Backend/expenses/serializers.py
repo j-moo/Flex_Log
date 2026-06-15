@@ -1,37 +1,54 @@
+from pathlib import Path
+
 from rest_framework import serializers
-from .models import Category, Comment, ExpenseLog
+
+from .models import Category, ExpenseLog
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id', 'name', 'created_at')
+        fields = ('id', 'name')
+        read_only_fields = fields
 
-class CommentSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-    class Meta:
-        model = Comment
-        fields = ('id', 'user', 'username', 'log', 'content', 'created_at', 'updated_at')
-        read_only_fields = ('id', 'user', 'username', 'log', 'created_at', 'updated_at')
 
 class ExpenseLogSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     category_name = serializers.CharField(source='category.name', read_only=True)
-    like_count = serializers.IntegerField(source='likes.count', read_only=True)
-    comment_count = serializers.IntegerField(source='comments.count', read_only=True)
-    is_liked = serializers.SerializerMethodField()
-    is_active_story = serializers.BooleanField(read_only=True)
-    class Meta:
-        model = ExpenseLog
-        fields = ('id','user','username','category','category_name','media','amount','content','created_at','updated_at','expires_at','is_visible','is_active_story','like_count','comment_count','is_liked')
-        read_only_fields = ('id','user','username','created_at','updated_at','expires_at')
-    def get_is_liked(self, obj):
-        request = self.context.get('request')
-        return bool(request and request.user.is_authenticated and obj.likes.filter(user=request.user).exists())
+    is_feed_visible = serializers.BooleanField(read_only=True)
 
-class ExpenseLogCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExpenseLog
-        fields = ('id','category','media','amount','content')
-    def validate_amount(self, value):
-        if value <= 0: raise serializers.ValidationError('소비 금액은 0보다 커야 합니다.')
+        fields = (
+            'id',
+            'username',
+            'category',
+            'category_name',
+            'media',
+            'amount',
+            'content',
+            'expires_at',
+            'is_visible',
+            'is_feed_visible',
+            'created_at',
+            'updated_at',
+        )
+        read_only_fields = (
+            'id',
+            'username',
+            'category_name',
+            'is_feed_visible',
+            'expires_at',
+            'created_at',
+            'updated_at',
+        )
+
+    def validate_media(self, value):
+        if not value:
+            return value
+        if value.size > 10 * 1024 * 1024:
+            raise serializers.ValidationError('미디어 파일은 10MB 이하만 업로드할 수 있습니다.')
+        allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.webm'}
+        if Path(value.name).suffix.lower() not in allowed_extensions:
+            raise serializers.ValidationError('지원하지 않는 미디어 형식입니다.')
         return value
