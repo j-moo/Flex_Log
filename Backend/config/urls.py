@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/v1/accounts/', include('accounts.urls')),
     path('api/v1/profiles/', include('profiles.urls')),
     path('api/v1/expenses/', include('expenses.urls')),
+    path('api/v1/friends/', include('friends.urls')),
 ]
 
 if settings.DEBUG:

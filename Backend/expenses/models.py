@@ -109,3 +109,43 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'{self.user} on expense #{self.log_id}'
+
+class Like(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='likes',
+    )
+    log = models.ForeignKey(
+        ExpenseLog,
+        on_delete=models.CASCADE,
+        related_name='likes',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'log'),
+                name='unique_user_log_like',
+            )
+        ]
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    log = models.ForeignKey(
+        ExpenseLog,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('created_at',)
