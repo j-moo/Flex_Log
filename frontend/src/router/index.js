@@ -1,9 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import HomeView from '../views/HomeView.vue'
+import AnalysisView from '../views/AnalysisView.vue'
+import ExpenseFeedView from '../views/ExpenseFeedView.vue'
 import ExpenseFormView from '../views/ExpenseFormView.vue'
 import ExpenseListView from '../views/ExpenseListView.vue'
-import LoginView from '../views/LoginView.vue'
+import FriendsView from '../views/FriendsView.vue'
+import HomeView from '../views/HomeView.vue'
+import LoginView from '../views/LogInView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import { useAccountStore } from '../stores/account'
@@ -19,6 +22,9 @@ const router = createRouter({
     { path: '/logs', name: 'logs', component: ExpenseListView, meta: { requiresAuth: true } },
     { path: '/logs/new', name: 'log-create', component: ExpenseFormView, meta: { requiresAuth: true } },
     { path: '/logs/:id/edit', name: 'log-edit', component: ExpenseFormView, meta: { requiresAuth: true } },
+    { path: '/feed', name: 'feed', component: ExpenseFeedView, meta: { requiresAuth: true } },
+    { path: '/friends', name: 'friends', component: FriendsView, meta: { requiresAuth: true } },
+    { path: '/analysis', name: 'analysis', component: AnalysisView, meta: { requiresAuth: true } },
   ],
 })
 

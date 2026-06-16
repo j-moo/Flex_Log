@@ -2,18 +2,12 @@
 import { onMounted, ref } from 'vue'
 
 import api from '../api/client'
+import { formatAmount, formatDate, isVideo } from '../utils/format'
 
 
 const logs = ref([])
 const isLoading = ref(true)
 const errorMessage = ref('')
-
-const formatAmount = (amount) => `${Number(amount).toLocaleString('ko-KR')}원`
-const formatDate = (value) => new Intl.DateTimeFormat('ko-KR', {
-  dateStyle: 'medium',
-  timeStyle: 'short',
-}).format(new Date(value))
-const isVideo = (url) => /\.(mp4|webm)(?:\?|$)/i.test(url || '')
 
 const loadLogs = async () => {
   isLoading.value = true
@@ -42,38 +36,42 @@ onMounted(loadLogs)
 </script>
 
 <template>
-  <section>
-    <div class="section-header">
+  <section class="d-grid gap-3">
+    <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
       <div>
-        <h1>내 소비 로그</h1>
-        <p class="help">내가 기록한 소비 내역을 확인하고 관리합니다.</p>
+        <h1 class="h3 mb-1">내 소비 로그</h1>
+        <p class="text-secondary mb-0">작성한 소비 로그 목록입니다.</p>
       </div>
-      <RouterLink class="button" :to="{ name: 'log-create' }">새 로그 작성</RouterLink>
+      <RouterLink class="btn btn-primary align-self-start" :to="{ name: 'log-create' }">로그 작성</RouterLink>
     </div>
 
-    <p v-if="isLoading" class="help">불러오는 중...</p>
-    <p v-else-if="errorMessage" class="error">{{ errorMessage }}</p>
-    <div v-else-if="logs.length" class="log-grid">
-      <article v-for="log in logs" :key="log.id" class="log-card">
-        <video v-if="log.media && isVideo(log.media)" class="log-media" :src="log.media" controls></video>
-        <img v-else-if="log.media" class="log-media" :src="log.media" alt="소비 로그 미디어">
-        <div class="log-body">
-          <div class="log-heading">
-            <span class="badge">{{ log.category_name }}</span>
-            <strong>{{ formatAmount(log.amount) }}</strong>
+    <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
+    <div v-else-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div v-else-if="logs.length" class="row g-3">
+      <div v-for="log in logs" :key="log.id" class="col-12 col-md-6 col-xl-4">
+        <article class="card h-100">
+          <video v-if="log.media && isVideo(log.media)" class="log-media card-img-top" :src="log.media" controls></video>
+          <img v-else-if="log.media" class="log-media card-img-top" :src="log.media" alt="소비 로그 미디어">
+          <div class="card-body d-grid gap-2">
+            <div class="d-flex justify-content-between gap-2">
+              <span class="badge text-bg-light border">{{ log.category_name }}</span>
+              <strong>{{ formatAmount(log.amount) }}</strong>
+            </div>
+            <p v-if="log.content" class="content-preline mb-0">{{ log.content }}</p>
+            <p class="small text-secondary mb-0">{{ formatDate(log.created_at) }}</p>
+            <div class="d-flex gap-2 flex-wrap">
+              <RouterLink class="btn btn-outline-secondary btn-sm" :to="{ name: 'log-edit', params: { id: log.id } }">수정</RouterLink>
+              <button class="btn btn-outline-danger btn-sm" type="button" @click="removeLog(log)">삭제</button>
+            </div>
           </div>
-          <p v-if="log.content" class="log-content">{{ log.content }}</p>
-          <p class="help">{{ formatDate(log.created_at) }}</p>
-          <div class="row-actions">
-            <RouterLink class="button secondary" :to="{ name: 'log-edit', params: { id: log.id } }">수정</RouterLink>
-            <button class="button danger" type="button" @click="removeLog(log)">삭제</button>
-          </div>
-        </div>
-      </article>
+        </article>
+      </div>
     </div>
-    <div v-else class="empty-state">
-      <p>아직 작성한 소비 로그가 없습니다.</p>
-      <RouterLink class="button" :to="{ name: 'log-create' }">첫 로그 작성</RouterLink>
+    <div v-else class="card">
+      <div class="card-body text-center py-5">
+        <p class="text-secondary">아직 작성한 소비 로그가 없습니다.</p>
+        <RouterLink class="btn btn-primary" :to="{ name: 'log-create' }">첫 로그 작성</RouterLink>
+      </div>
     </div>
   </section>
 </template>

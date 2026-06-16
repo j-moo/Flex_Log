@@ -37,36 +37,62 @@ class MonthlyAnalysis(models.Model):
         return f'{self.user} - {self.year}-{self.month:02d}'
 
 
-class AIAnalysis(models.Model):
-    class Status(models.TextChoices):
-        SUCCESS = 'success', '성공'
-        FAILED = 'failed', '실패'
-        FALLBACK = 'fallback', '대체 분석'
+class MonthlyAIAnalysis(models.Model):
+    class RiskLevel(models.TextChoices):
+        LOW = 'low', '낮음'
+        MEDIUM = 'medium', '보통'
+        HIGH = 'high', '높음'
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='ai_analyses',
+        related_name='monthly_ai_analyses',
     )
-    analysis = models.ForeignKey(
-        MonthlyAnalysis,
-        on_delete=models.CASCADE,
-        related_name='ai_analyses',
-    )
-    input_summary = models.TextField()
-    result = models.TextField(blank=True)
+    year = models.PositiveSmallIntegerField()
+    month = models.PositiveSmallIntegerField()
+    total_amount = models.PositiveBigIntegerField(default=0)
+    log_count = models.PositiveIntegerField(default=0)
+    average_amount = models.PositiveBigIntegerField(default=0)
+    category_summary = models.JSONField(default=dict, blank=True)
+    summary = models.TextField(blank=True)
+    problem = models.TextField(blank=True)
     feedback = models.TextField(blank=True)
-    status = models.CharField(max_length=10, choices=Status.choices)
+    saving_tip = models.TextField(blank=True)
+    risk_level = models.CharField(
+        max_length=10,
+        choices=RiskLevel.choices,
+        default=RiskLevel.LOW,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ('-created_at',)
+        indexes = [
+            models.Index(fields=('user', '-created_at')),
+            models.Index(fields=('user', 'year', 'month')),
+        ]
         constraints = [
             models.CheckConstraint(
-                condition=Q(status__in=['success', 'failed', 'fallback']),
-                name='ai_analysis_valid_status',
+                condition=Q(month__gte=1, month__lte=12),
+                name='monthly_ai_analysis_valid_month',
+            ),
+            models.CheckConstraint(
+                condition=Q(total_amount__gte=0),
+                name='monthly_ai_analysis_total_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(log_count__gte=0),
+                name='monthly_ai_analysis_log_count_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(average_amount__gte=0),
+                name='monthly_ai_analysis_average_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(risk_level__in=['low', 'medium', 'high']),
+                name='monthly_ai_analysis_valid_risk_level',
             ),
         ]
 
     def __str__(self):
-        return f'{self.analysis} - {self.status}'
+        return f'{self.user} - {self.year}-{self.month:02d} ({self.risk_level})'

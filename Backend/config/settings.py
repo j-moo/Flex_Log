@@ -122,3 +122,10 @@ CORS_ALLOWED_ORIGINS = [
     ).split(',')
     if origin.strip()
 ]
+
+GMS_KEY = os.getenv('GMS_KEY')
+GMS_API_URL = os.getenv(
+    'GMS_API_URL',
+    'https://gms.ssafy.io/gmsapi/api.openai.com/v1/chat/completions',
+)
+GMS_MODEL = os.getenv('GMS_MODEL', 'gpt-5.4-nano')

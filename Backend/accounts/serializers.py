@@ -14,14 +14,18 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'password_confirm')
+        fields = ('id', 'username', 'email', 'name', 'password', 'password_confirm')
         read_only_fields = ('id',)
-        extra_kwargs = {'username': {'validators': []}}
+        extra_kwargs = {
+            'username': {'validators': []},
+            'name': {'required': False, 'allow_blank': True},
+        }
 
     def validate_username(self, value):
-        if User.objects.filter(username=value).exists():
+        username = value.strip()
+        if User.objects.filter(username__iexact=username).exists():
             raise serializers.ValidationError('이미 사용 중인 아이디입니다.')
-        return value
+        return username
 
     def validate_email(self, value):
         email = value.strip().lower()
@@ -35,7 +39,11 @@ class SignUpSerializer(serializers.ModelSerializer):
                 {'password_confirm': '비밀번호가 일치하지 않습니다.'}
             )
 
-        user = User(username=attrs['username'], email=attrs['email'])
+        user = User(
+            username=attrs['username'],
+            email=attrs['email'],
+            name=attrs.get('name', ''),
+        )
         try:
             validate_password(attrs['password'], user=user)
         except DjangoValidationError as exc:
@@ -50,5 +58,5 @@ class SignUpSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'username', 'email', 'name')
         read_only_fields = fields
