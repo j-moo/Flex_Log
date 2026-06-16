@@ -1,7 +1,16 @@
 from django.db import migrations
 
 
-DEFAULT_CATEGORIES = ('식비', '교통비', '문화생활', '쇼핑', '공과금', '카페', '구독', '기타')
+DEFAULT_CATEGORIES = (
+    '식비',
+    '교통비',
+    '문화생활',
+    '의류',
+    '공과금',
+    '카페',
+    '구독',
+    '기타',
+)
 
 
 def seed_categories(apps, schema_editor):

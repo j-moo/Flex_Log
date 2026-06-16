@@ -2,8 +2,10 @@
 import { onMounted, reactive, ref } from 'vue'
 
 import api from '../api/client'
+import { useAccountStore } from '../stores/account'
 
 
+const account = useAccountStore()
 const profile = ref(null)
 const form = reactive({ name: '', nickname: '', bio: '' })
 const imageFile = ref(null)
@@ -19,6 +21,12 @@ const applyProfile = (data) => {
   form.nickname = data.nickname || ''
   form.bio = data.bio || ''
   imagePreview.value = data.image || ''
+  account.user = {
+    ...account.user,
+    name: data.name || '',
+    username: data.username,
+    email: data.email,
+  }
 }
 
 const loadProfile = async () => {
@@ -70,50 +78,54 @@ onMounted(loadProfile)
 </script>
 
 <template>
-  <section class="card">
-    <h1>프로필</h1>
-    <p v-if="isLoading" class="help">불러오는 중...</p>
-    <form v-else class="form" @submit.prevent="submit">
-      <div class="profile-image-wrap">
-        <img v-if="imagePreview" class="profile-image" :src="imagePreview" alt="프로필 이미지">
-        <div v-else class="profile-placeholder">{{ profile?.username?.slice(0, 1).toUpperCase() }}</div>
-      </div>
+  <section class="card auth-card">
+    <div class="card-body p-4">
+      <h1 class="h4 mb-4">프로필</h1>
+      <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
+      <form v-else class="d-grid gap-3" @submit.prevent="submit">
+        <div class="d-flex justify-content-center">
+          <img v-if="imagePreview" class="profile-image rounded-circle border" :src="imagePreview" alt="프로필 이미지">
+          <div v-else class="profile-placeholder rounded-circle">
+            {{ profile?.username?.slice(0, 1).toUpperCase() }}
+          </div>
+        </div>
 
-      <div class="field">
-        <label>아이디</label>
-        <input :value="profile?.username" disabled>
-      </div>
+        <div>
+          <label class="form-label">아이디</label>
+          <input class="form-control" :value="profile?.username" disabled>
+        </div>
 
-      <div class="field">
-        <label>이메일</label>
-        <input :value="profile?.email" disabled>
-      </div>
+        <div>
+          <label class="form-label">이메일</label>
+          <input class="form-control" :value="profile?.email" disabled>
+        </div>
 
-      <div class="field">
-        <label for="profile-name">이름</label>
-        <input id="profile-name" v-model.trim="form.name" maxlength="50">
-      </div>
+        <div>
+          <label for="profile-name" class="form-label">이름</label>
+          <input id="profile-name" v-model.trim="form.name" class="form-control" maxlength="50">
+        </div>
 
-      <div class="field">
-        <label for="profile-nickname">닉네임</label>
-        <input id="profile-nickname" v-model.trim="form.nickname" maxlength="30" required>
-      </div>
+        <div>
+          <label for="profile-nickname" class="form-label">닉네임</label>
+          <input id="profile-nickname" v-model.trim="form.nickname" class="form-control" maxlength="30" required>
+        </div>
 
-      <div class="field">
-        <label for="profile-bio">소개</label>
-        <textarea id="profile-bio" v-model="form.bio" rows="4"></textarea>
-      </div>
+        <div>
+          <label for="profile-bio" class="form-label">소개</label>
+          <textarea id="profile-bio" v-model="form.bio" class="form-control" rows="4"></textarea>
+        </div>
 
-      <div class="field">
-        <label for="profile-image">프로필 이미지</label>
-        <input id="profile-image" type="file" accept="image/*" @change="selectImage">
-      </div>
+        <div>
+          <label for="profile-image" class="form-label">프로필 이미지</label>
+          <input id="profile-image" class="form-control" type="file" accept="image/*" @change="selectImage">
+        </div>
 
-      <button class="button" :disabled="isSubmitting">
-        {{ isSubmitting ? '저장 중...' : '프로필 저장' }}
-      </button>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-      <p v-if="successMessage" class="success">{{ successMessage }}</p>
-    </form>
+        <button class="btn btn-primary" :disabled="isSubmitting">
+          {{ isSubmitting ? '저장 중...' : '저장' }}
+        </button>
+        <div v-if="errorMessage" class="alert alert-danger mb-0">{{ errorMessage }}</div>
+        <div v-if="successMessage" class="alert alert-success mb-0">{{ successMessage }}</div>
+      </form>
+    </div>
   </section>
 </template>

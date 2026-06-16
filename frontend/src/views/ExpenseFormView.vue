@@ -40,7 +40,7 @@ const loadData = async () => {
       form.category = String(categories.value[0].id)
     }
   } catch {
-    errorMessage.value = '로그 작성 정보를 불러오지 못했습니다.'
+    errorMessage.value = '로그 정보를 불러오지 못했습니다.'
   } finally {
     isLoading.value = false
   }
@@ -82,48 +82,50 @@ onMounted(loadData)
 </script>
 
 <template>
-  <section class="card">
-    <h1>{{ isEdit ? '소비 로그 수정' : '소비 로그 작성' }}</h1>
-    <p v-if="isLoading" class="help">불러오는 중...</p>
-    <form v-else class="form" @submit.prevent="submit">
-      <div class="field">
-        <label for="log-category">카테고리</label>
-        <select id="log-category" v-model="form.category" required>
-          <option v-for="category in categories" :key="category.id" :value="String(category.id)">
-            {{ category.name }}
-          </option>
-        </select>
-      </div>
+  <section class="card auth-card">
+    <div class="card-body p-4">
+      <h1 class="h4 mb-4">{{ isEdit ? '소비 로그 수정' : '소비 로그 작성' }}</h1>
+      <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
+      <form v-else class="d-grid gap-3" @submit.prevent="submit">
+        <div>
+          <label for="log-category" class="form-label">카테고리</label>
+          <select id="log-category" v-model="form.category" class="form-select" required>
+            <option v-for="category in categories" :key="category.id" :value="String(category.id)">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
 
-      <div class="field">
-        <label for="log-amount">금액</label>
-        <input id="log-amount" v-model="form.amount" type="number" min="1" step="1" required>
-      </div>
+        <div>
+          <label for="log-amount" class="form-label">금액</label>
+          <input id="log-amount" v-model="form.amount" class="form-control" type="number" min="1" step="1" required>
+        </div>
 
-      <div class="field">
-        <label for="log-content">내용</label>
-        <textarea id="log-content" v-model="form.content" rows="5" placeholder="어디에, 왜 소비했는지 기록해보세요."></textarea>
-      </div>
+        <div>
+          <label for="log-content" class="form-label">내용</label>
+          <textarea id="log-content" v-model="form.content" class="form-control" rows="5"></textarea>
+        </div>
 
-      <div class="field">
-        <label for="log-media">사진 또는 영상</label>
-        <input id="log-media" type="file" accept="image/*,video/mp4,video/webm" @change="selectMedia">
-        <a v-if="currentMedia" class="media-link" :href="currentMedia" target="_blank" rel="noreferrer">현재 미디어 보기</a>
-        <p class="help">JPG, PNG, GIF, WEBP, MP4, WEBM 형식, 최대 10MB</p>
-      </div>
+        <div>
+          <label for="log-media" class="form-label">사진 또는 영상</label>
+          <input id="log-media" class="form-control" type="file" accept="image/*,video/mp4,video/webm" @change="selectMedia">
+          <a v-if="currentMedia" class="d-inline-block small mt-2" :href="currentMedia" target="_blank" rel="noreferrer">현재 미디어 보기</a>
+          <div class="form-text">JPG, PNG, GIF, WEBP, MP4, WEBM, 최대 10MB</div>
+        </div>
 
-      <label class="checkbox-field">
-        <input v-model="form.is_visible" type="checkbox">
-        친구 피드에 공개
-      </label>
+        <div class="form-check">
+          <input id="log-visible" v-model="form.is_visible" class="form-check-input" type="checkbox">
+          <label class="form-check-label" for="log-visible">친구 피드에 공개</label>
+        </div>
 
-      <div class="row-actions">
-        <button class="button" :disabled="isSubmitting">
-          {{ isSubmitting ? '저장 중...' : '저장' }}
-        </button>
-        <RouterLink class="button secondary" :to="{ name: 'logs' }">취소</RouterLink>
-      </div>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-    </form>
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" :disabled="isSubmitting">
+            {{ isSubmitting ? '저장 중...' : '저장' }}
+          </button>
+          <RouterLink class="btn btn-outline-secondary" :to="{ name: 'logs' }">취소</RouterLink>
+        </div>
+        <div v-if="errorMessage" class="alert alert-danger mb-0">{{ errorMessage }}</div>
+      </form>
+    </div>
   </section>
 </template>
