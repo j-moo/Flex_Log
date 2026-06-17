@@ -46,6 +46,12 @@ const logout = async () => {
                 <RouterLink class="nav-link" :to="{ name: 'analysis' }">월별 분석</RouterLink>
               </li>
               <li class="nav-item">
+                <RouterLink class="nav-link" :to="{ name: 'finance-products' }">금융상품</RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link" :to="{ name: 'finance-recommend' }">AI 추천</RouterLink>
+              </li>
+              <li class="nav-item">
                 <RouterLink class="nav-link" :to="{ name: 'friends' }">친구</RouterLink>
               </li>
               <li class="nav-item">

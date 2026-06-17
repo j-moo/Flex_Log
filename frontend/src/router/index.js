@@ -4,6 +4,8 @@ import AnalysisView from '../views/AnalysisView.vue'
 import ExpenseFeedView from '../views/ExpenseFeedView.vue'
 import ExpenseFormView from '../views/ExpenseFormView.vue'
 import ExpenseListView from '../views/ExpenseListView.vue'
+import FinancialRecommendationView from '../views/FinancialRecommendationView.vue'
+import FinanceProductsView from '../views/FinanceProductsView.vue'
 import FriendsView from '../views/FriendsView.vue'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LogInView.vue'
@@ -25,6 +27,8 @@ const router = createRouter({
     { path: '/feed', name: 'feed', component: ExpenseFeedView, meta: { requiresAuth: true } },
     { path: '/friends', name: 'friends', component: FriendsView, meta: { requiresAuth: true } },
     { path: '/analysis', name: 'analysis', component: AnalysisView, meta: { requiresAuth: true } },
+    { path: '/finance/products', name: 'finance-products', component: FinanceProductsView, meta: { requiresAuth: true } },
+    { path: '/finance/recommend', name: 'finance-recommend', component: FinancialRecommendationView, meta: { requiresAuth: true } },
   ],
 })
 

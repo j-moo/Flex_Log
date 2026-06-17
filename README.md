@@ -397,3 +397,67 @@ AI에게 소비 로그 전체를 그대로 전달하지 않고, 월별 총액, �
 Flex-log는 단순한 가계부가 아니라, 소비를 스토리처럼 기록하고 분석하는 서비스입니다.  
 이 프로젝트를 통해 초기 아이디어 도출, 요구사항 정의, 데이터 설계, API 설계, 구현, 테스트, 트러블슈팅까지 하나의 흐름으로 기록하여 포트폴리오로 활용하는 것을 목표로 합니다.
 
+<br>
+
+## FinLife 금융상품 데이터와 추천 기능
+
+### 환경변수
+
+`backend/.env`에 금융감독원 금융상품 한눈에 API 키를 설정합니다. `.env`는 Git에 올리지 않습니다.
+
+```env
+api_key=발급받은_금융상품한눈에_API_KEY
+```
+
+호환을 위해 `FINLIFE_API_KEY`도 사용할 수 있지만, 프로젝트 기본 키 이름은 `api_key`입니다.
+
+### fixture 생성과 로드
+
+API 키가 있는 개발자는 아래 순서로 최신 금융상품 fixture를 생성하고 DB에 로드합니다.
+
+```bash
+cd backend
+python manage.py makemigrations
+python manage.py migrate
+python manage.py make_finlife_fixture
+python manage.py loaddata financial_products.json
+python manage.py runserver
+```
+
+생성되는 fixture 경로는 `backend/finance/fixtures/financial_products.json`입니다.
+
+다른 개발 환경에서는 API 키 없이도 Git에 포함된 fixture를 DB에 로드할 수 있습니다.
+
+```bash
+cd backend
+python manage.py migrate
+python manage.py loaddata financial_products.json
+python manage.py runserver
+```
+
+DB에 바로 저장하려면 아래 command를 사용할 수 있습니다.
+
+```bash
+python manage.py fetch_finlife_products
+```
+
+### 금융상품 API
+
+```text
+GET  /api/v1/finance/products/
+GET  /api/v1/finance/products/deposits/
+GET  /api/v1/finance/products/savings/
+GET  /api/v1/finance/products/<product_id>/
+```
+
+목록 API는 `type`, `bank`, `term`, `min_rate` query parameter를 지원합니다.
+
+### AI 금융상품 추천 API
+
+```text
+POST /api/v1/finance/recommend/
+GET  /api/v1/finance/recommend/latest/
+GET  /api/v1/finance/recommend/history/
+```
+
+추천은 외부 FinLife API를 매번 호출하지 않고, DB에 로드된 `FinancialProduct`와 `FinancialProductOption` 후보만 사용합니다. GMS AI 호출이 실패하거나 JSON 파싱에 실패하면 최신 월별 소비 분석의 `risk_level`과 금리 조건을 기준으로 fallback 추천을 생성합니다.
