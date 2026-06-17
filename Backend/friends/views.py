@@ -3,69 +3,85 @@ from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Friend
 from .serializers import (
+    FriendCreateSerializer,
     FriendSerializer,
-    FriendStatusUpdateSerializer,
-    UserSearchSerializer,
+    FriendStatusSerializer,
+    FriendUserSerializer,
 )
+
 
 User = get_user_model()
 
 
 class UserSearchView(generics.ListAPIView):
-    serializer_class = UserSearchSerializer
+    serializer_class = FriendUserSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        query = self.request.query_params.get('q', '')
-
-        queryset = User.objects.exclude(id=self.request.user.id)
-
-        if query:
+        queryset = User.objects.exclude(pk=self.request.user.pk).order_by('username')
+        search = self.request.query_params.get('search', '').strip()
+        if search:
             queryset = queryset.filter(
-                Q(username__icontains=query) |
-                Q(email__icontains=query)
+                Q(username__icontains=search)
+                | Q(name__icontains=search)
+                | Q(email__icontains=search)
             )
-
         return queryset[:20]
 
 
 class FriendListCreateView(generics.ListCreateAPIView):
-    serializer_class = FriendSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Friend.objects.filter(
-            Q(user=self.request.user) |
-            Q(friend=self.request.user)
-        ).select_related('user', 'friend')
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-
-class FriendUpdateView(generics.UpdateAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = FriendStatusUpdateSerializer
-    queryset = Friend.objects.all()
-
-    def get_queryset(self):
-        return Friend.objects.filter(friend=self.request.user)
-
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        serializer = self.get_serializer(
-            instance,
-            data=request.data,
-            partial=True,
+        return (
+            Friend.objects.filter(Q(user=self.request.user) | Q(friend=self.request.user))
+            .select_related('user', 'friend')
+            .order_by('-updated_at')
         )
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return FriendCreateSerializer
+        return FriendSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        friend = serializer.save()
+        output = FriendSerializer(friend, context={'request': request})
+        return Response(output.data, status=status.HTTP_201_CREATED)
 
-        return Response(
-            FriendSerializer(instance).data,
-            status=status.HTTP_200_OK,
+
+class FriendDetailView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self, request, pk):
+        return generics.get_object_or_404(
+            Friend.objects.select_related('user', 'friend').filter(
+                Q(user=request.user) | Q(friend=request.user)
+            ),
+            pk=pk,
         )
+
+    def patch(self, request, pk):
+        friend = self.get_object(request, pk)
+        if friend.friend_id != request.user.id:
+            return Response(
+                {'detail': '친구 요청을 받은 사용자만 상태를 변경할 수 있습니다.'},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        serializer = FriendStatusSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        friend.status = serializer.validated_data['status']
+        friend.save(update_fields=('status', 'updated_at'))
+        return Response(FriendSerializer(friend, context={'request': request}).data)
+
+    def delete(self, request, pk):
+        friend = self.get_object(request, pk)
+        friend.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

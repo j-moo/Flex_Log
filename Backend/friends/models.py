@@ -48,6 +48,7 @@ class Friend(models.Model):
     def clean(self):
         if self.user_id == self.friend_id:
             raise ValidationError('자기 자신에게 친구 요청을 보낼 수 없습니다.')
+
         reverse_exists = Friend.objects.filter(
             user_id=self.friend_id,
             friend_id=self.user_id,

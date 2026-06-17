@@ -1,21 +1,39 @@
 from django.contrib import admin
 
-from .models import FinancialProduct, ProductRecommendation, StockHolding
+from .models import (
+    FinancialProduct,
+    FinancialProductOption,
+    FinancialProductRecommendation,
+)
+
+
+class FinancialProductOptionInline(admin.TabularInline):
+    model = FinancialProductOption
+    extra = 0
 
 
 @admin.register(FinancialProduct)
 class FinancialProductAdmin(admin.ModelAdmin):
-    list_display = ('bank_name', 'product_name', 'product_type', 'base_rate', 'max_rate')
-    list_filter = ('product_type', 'bank_name')
-    search_fields = ('product_code', 'product_name', 'bank_name')
+    list_display = (
+        'kor_co_nm',
+        'fin_prdt_nm',
+        'product_type',
+        'fin_prdt_cd',
+        'is_active',
+    )
+    list_filter = ('product_type', 'is_active', 'kor_co_nm')
+    search_fields = ('kor_co_nm', 'fin_prdt_nm', 'fin_prdt_cd')
+    inlines = (FinancialProductOptionInline,)
 
 
-@admin.register(ProductRecommendation)
-class ProductRecommendationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'product', 'priority', 'created_at')
-
-
-@admin.register(StockHolding)
-class StockHoldingAdmin(admin.ModelAdmin):
-    list_display = ('user', 'stock_symbol', 'stock_name', 'quantity', 'average_price')
-    search_fields = ('user__username', 'stock_symbol', 'stock_name')
+@admin.register(FinancialProductRecommendation)
+class FinancialProductRecommendationAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'bank_name',
+        'product_name',
+        'priority',
+        'created_at',
+    )
+    list_filter = ('product_type', 'created_at')
+    search_fields = ('user__username', 'bank_name', 'product_name', 'title')

@@ -122,3 +122,17 @@ CORS_ALLOWED_ORIGINS = [
     ).split(',')
     if origin.strip()
 ]
+
+GMS_KEY = os.getenv('GMS_KEY')
+GMS_API_URL = os.getenv(
+    'GMS_API_URL',
+    'https://gms.ssafy.io/gmsapi/api.openai.com/v1/chat/completions',
+)
+GMS_MODEL = os.getenv('GMS_MODEL', 'gpt-5.4-nano')
+
+FINLIFE_API_KEY = os.getenv('api_key') or os.getenv('FINLIFE_API_KEY')
+FINLIFE_API_BASE_URL = os.getenv(
+    'FINLIFE_API_BASE_URL',
+    'https://finlife.fss.or.kr/finlifeapi',
+)
+FINLIFE_TOP_FIN_GRP_NO = os.getenv('FINLIFE_TOP_FIN_GRP_NO', '020000')

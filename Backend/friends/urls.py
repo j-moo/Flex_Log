@@ -1,13 +1,10 @@
 from django.urls import path
 
-from .views import (
-    FriendListCreateView,
-    FriendUpdateView,
-    UserSearchView,
-)
+from .views import FriendDetailView, FriendListCreateView, UserSearchView
+
 
 urlpatterns = [
-    path('search/', UserSearchView.as_view(), name='user-search'),
+    path('users/', UserSearchView.as_view(), name='friend-user-search'),
     path('', FriendListCreateView.as_view(), name='friend-list-create'),
-    path('<int:pk>/', FriendUpdateView.as_view(), name='friend-update'),
+    path('<int:pk>/', FriendDetailView.as_view(), name='friend-detail'),
 ]

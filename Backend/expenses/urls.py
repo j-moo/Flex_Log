@@ -2,22 +2,25 @@ from django.urls import path
 
 from .views import (
     CategoryListView,
-    CommentDeleteView,
+    CommentDetailView,
     CommentListCreateView,
-    ExpenseLikeToggleView,
     ExpenseLogDetailView,
     ExpenseLogListCreateView,
-    FriendExpenseFeedView,
+    FriendFeedListView,
+    LikeToggleView,
 )
+
 
 urlpatterns = [
     path('categories/', CategoryListView.as_view(), name='category-list'),
-    path('feed/', FriendExpenseFeedView.as_view(), name='friend-expense-feed'),
-
+    path('feed/', FriendFeedListView.as_view(), name='friend-feed'),
     path('', ExpenseLogListCreateView.as_view(), name='expense-log-list-create'),
     path('<int:pk>/', ExpenseLogDetailView.as_view(), name='expense-log-detail'),
-
-    path('<int:pk>/like/', ExpenseLikeToggleView.as_view(), name='expense-like-toggle'),
-    path('<int:pk>/comments/', CommentListCreateView.as_view(), name='comment-list-create'),
-    path('comments/<int:pk>/', CommentDeleteView.as_view(), name='comment-delete'),
+    path('<int:pk>/like/', LikeToggleView.as_view(), name='expense-log-like'),
+    path('<int:pk>/comments/', CommentListCreateView.as_view(), name='expense-log-comments'),
+    path(
+        '<int:pk>/comments/<int:comment_pk>/',
+        CommentDetailView.as_view(),
+        name='expense-log-comment-detail',
+    ),
 ]
