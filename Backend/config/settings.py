@@ -118,9 +118,13 @@ CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         'CORS_ALLOWED_ORIGINS',
-        'http://localhost:5173,http://127.0.0.1:5173',
+        'http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174',
     ).split(',')
     if origin.strip()
+]
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r'^http://localhost:517\d$',
+    r'^http://127\.0\.0\.1:517\d$',
 ]
 
 GMS_KEY = os.getenv('GMS_KEY')

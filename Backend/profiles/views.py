@@ -17,3 +17,13 @@ class MyProfileView(generics.RetrieveUpdateAPIView):
             defaults={'nickname': self.request.user.username},
         )
         return profile
+
+
+class PublicProfileView(generics.RetrieveAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = (IsAuthenticated,)
+    lookup_field = 'user_id'
+    lookup_url_kwarg = 'user_id'
+
+    def get_queryset(self):
+        return Profile.objects.select_related('user')

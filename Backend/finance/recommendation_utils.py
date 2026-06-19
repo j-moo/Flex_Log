@@ -10,7 +10,7 @@ from .finlife import to_int
 from .models import FinancialProduct, FinancialProductRecommendation
 
 
-DEFAULT_CAUTION = '본 추천은 참고용이며 실제 가입 전 금융회사 공식 정보와 약관을 확인해야 합니다.'
+DEFAULT_CAUTION = '본 추천은 참고용이며 실제 가입 전 금융회사 공식 정보와 약관을 반드시 확인해야 합니다.'
 
 
 def option_rate(option):
@@ -148,8 +148,8 @@ def build_recommendation_prompt(user, analysis, candidates):
 
     return (
         '사용자의 소비 분석, 프로필, 금융상품 후보를 바탕으로 참고용 금융상품 추천을 작성하세요.\n'
-        '외부 상품 검색이나 주식 매수/매도 추천은 절대 하지 마세요.\n'
-        '상품 가입을 강하게 권유하지 말고, 우대 조건과 중도해지 조건 확인을 안내하세요.\n'
+        '예금/적금 상품만 추천하고 주식 매수/매도 권유는 하지 마세요.\n'
+        '상품 가입을 강하게 권유하지 말고, 금리 조건과 중도해지 조건 확인을 안내하세요.\n'
         '반드시 JSON 배열만 응답하세요. 마크다운 코드블록과 설명 문장은 포함하지 마세요.\n\n'
         '응답 형식:\n'
         '[{"product_id":1,"title":"추천 제목","description":"설명","reason":"추천 이유",'
@@ -215,7 +215,7 @@ def fallback_recommendations(analysis, candidates, limit=3):
                 'product_id': None,
                 'title': '추천 가능한 금융상품 데이터가 없습니다',
                 'description': '먼저 금융상품 fixture를 DB에 로드한 뒤 추천을 다시 요청해 주세요.',
-                'reason': 'DB에 정기예금/정기적금 상품 후보가 없어 상품 기반 추천을 만들 수 없습니다.',
+                'reason': 'DB에 정기예금/정기적금 상품 정보가 없어 상품 기반 추천을 만들 수 없습니다.',
                 'action_text': '상품 데이터 로드하기',
                 'ai_comment': '',
                 'caution': DEFAULT_CAUTION,
@@ -224,17 +224,17 @@ def fallback_recommendations(analysis, candidates, limit=3):
         ]
 
     if risk_level == 'high':
-        base_title = '소비 개선을 우선하면서 짧게 시작할 수 있는 상품입니다'
+        base_title = '소비 개선을 우선하면서 작게 시작할 수 있는 상품입니다'
         base_reason = (
-            '최근 소비 위험도가 high이므로 큰 금액을 장기간 묶기보다, '
-            '6개월 이하 단기 적금이나 부담이 낮은 저축부터 검토하는 편이 좋습니다.'
+            '최근 소비 위험도가 높으므로 큰 금액을 장기간 묶기보다 '
+            '6개월 이하 단기 적금이나 부담이 낮은 저축 습관을 먼저 검토하는 편이 좋습니다.'
         )
     elif risk_level == 'low':
         base_title = '안정적으로 목돈을 묶어둘 수 있는 상품입니다'
         base_reason = '최근 소비 위험도가 낮아 12개월 이상 예금/적금 후보를 우선 검토할 수 있습니다.'
     else:
         base_title = '6~12개월 동안 무리 없이 검토할 수 있는 상품입니다'
-        base_reason = '최근 소비 위험도가 medium이므로 중기 예금/적금 후보를 우선 추천합니다.'
+        base_reason = '최근 소비 위험도가 보통이므로 중기 예금/적금 후보를 우선 추천합니다.'
 
     results = []
     for index, candidate in enumerate(candidates[:limit], start=1):
@@ -248,7 +248,7 @@ def fallback_recommendations(analysis, candidates, limit=3):
                 ),
                 'reason': base_reason,
                 'action_text': '상품 조건 확인하기',
-                'ai_comment': '가입 전 우대 조건, 가입 대상, 중도해지 이율을 확인하세요.',
+                'ai_comment': '가입 조건, 우대 조건, 중도해지 이율을 확인하세요.',
                 'caution': DEFAULT_CAUTION,
                 'priority': index,
             }

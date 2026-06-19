@@ -1,5 +1,21 @@
-export const formatAmount = (amount) =>
-  `${Number(amount || 0).toLocaleString('ko-KR')}원`
+export const formatAmount = (amount) => {
+  if (amount === null || amount === undefined || amount === '') return '금액 비공개'
+  return `${Number(amount || 0).toLocaleString('ko-KR')}원`
+}
+
+
+export const formatNumber = (value, digits = 0) => {
+  return Number(value || 0).toLocaleString('ko-KR', {
+    maximumFractionDigits: digits,
+  })
+}
+
+
+export const formatRate = (value) => {
+  if (value === null || value === undefined || value === '') return '-'
+  return `${Number(value).toFixed(2)}%`
+}
+
 
 export const formatDate = (value) => {
   if (!value) return ''
@@ -8,5 +24,6 @@ export const formatDate = (value) => {
     timeStyle: 'short',
   }).format(new Date(value))
 }
+
 
 export const isVideo = (url) => /\.(mp4|webm)(?:\?|$)/i.test(url || '')

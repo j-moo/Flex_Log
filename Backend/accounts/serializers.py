@@ -35,9 +35,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError(
-                {'password_confirm': '비밀번호가 일치하지 않습니다.'}
-            )
+            raise serializers.ValidationError({'password_confirm': '비밀번호가 일치하지 않습니다.'})
 
         user = User(
             username=attrs['username'],

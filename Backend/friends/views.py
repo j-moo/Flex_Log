@@ -22,13 +22,18 @@ class UserSearchView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        queryset = User.objects.exclude(pk=self.request.user.pk).order_by('username')
+        queryset = (
+            User.objects.exclude(pk=self.request.user.pk)
+            .select_related('profile')
+            .order_by('username')
+        )
         search = self.request.query_params.get('search', '').strip()
         if search:
             queryset = queryset.filter(
                 Q(username__icontains=search)
                 | Q(name__icontains=search)
                 | Q(email__icontains=search)
+                | Q(profile__nickname__icontains=search)
             )
         return queryset[:20]
 
@@ -39,7 +44,7 @@ class FriendListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return (
             Friend.objects.filter(Q(user=self.request.user) | Q(friend=self.request.user))
-            .select_related('user', 'friend')
+            .select_related('user', 'user__profile', 'friend', 'friend__profile')
             .order_by('-updated_at')
         )
 
@@ -61,7 +66,7 @@ class FriendDetailView(APIView):
 
     def get_object(self, request, pk):
         return generics.get_object_or_404(
-            Friend.objects.select_related('user', 'friend').filter(
+            Friend.objects.select_related('user', 'user__profile', 'friend', 'friend__profile').filter(
                 Q(user=request.user) | Q(friend=request.user)
             ),
             pk=pk,

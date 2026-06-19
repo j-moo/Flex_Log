@@ -4,6 +4,7 @@ from .models import (
     FinancialProduct,
     FinancialProductOption,
     FinancialProductRecommendation,
+    StockHolding,
 )
 
 
@@ -112,3 +113,65 @@ class FinancialProductRecommendationSerializer(serializers.ModelSerializer):
 
     def get_analysis_id(self, obj):
         return obj.analysis_id
+
+
+class StockHoldingSerializer(serializers.ModelSerializer):
+    invested_amount = serializers.SerializerMethodField()
+    valuation_amount = serializers.SerializerMethodField()
+    profit_loss = serializers.SerializerMethodField()
+    profit_rate = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StockHolding
+        fields = (
+            'id',
+            'symbol',
+            'name',
+            'quantity',
+            'average_price',
+            'current_price',
+            'invested_amount',
+            'valuation_amount',
+            'profit_loss',
+            'profit_rate',
+            'memo',
+            'created_at',
+            'updated_at',
+        )
+        read_only_fields = (
+            'id',
+            'invested_amount',
+            'valuation_amount',
+            'profit_loss',
+            'profit_rate',
+            'created_at',
+            'updated_at',
+        )
+
+    def get_invested_amount(self, obj):
+        return float(round(obj.invested_amount, 2))
+
+    def get_valuation_amount(self, obj):
+        return float(round(obj.valuation_amount, 2))
+
+    def get_profit_loss(self, obj):
+        return float(round(obj.profit_loss, 2))
+
+    def get_profit_rate(self, obj):
+        return float(round(obj.profit_rate, 2))
+
+    def validate_symbol(self, value):
+        return value.strip().upper()
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        symbol = attrs.get('symbol', getattr(self.instance, 'symbol', '')).strip().upper()
+        if user and user.is_authenticated:
+            queryset = StockHolding.objects.filter(user=user, symbol=symbol)
+            if self.instance:
+                queryset = queryset.exclude(pk=self.instance.pk)
+            if queryset.exists():
+                raise serializers.ValidationError({'symbol': '이미 등록된 종목 코드입니다.'})
+        attrs['symbol'] = symbol
+        return attrs

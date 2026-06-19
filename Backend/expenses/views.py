@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -24,16 +23,25 @@ def accepted_friend_ids(user):
     return set(sent_ids).union(received_ids)
 
 
+def base_log_queryset():
+    return (
+        ExpenseLog.objects.select_related('user', 'user__profile', 'category')
+        .prefetch_related('likes', 'comments')
+        .order_by('-created_at')
+    )
+
+
 def accessible_log_queryset(user):
     friend_ids = accepted_friend_ids(user)
-    return ExpenseLog.objects.filter(
+    return base_log_queryset().filter(
         Q(user=user)
+        | Q(is_visible=True, visibility=ExpenseLog.Visibility.PUBLIC)
         | Q(
             user_id__in=friend_ids,
             is_visible=True,
-            expires_at__gt=timezone.now(),
+            visibility__in=[ExpenseLog.Visibility.PUBLIC, ExpenseLog.Visibility.FRIENDS],
         )
-    ).select_related('user', 'category')
+    )
 
 
 class CategoryListView(generics.ListAPIView):
@@ -48,10 +56,7 @@ class ExpenseLogListCreateView(generics.ListCreateAPIView):
     parser_classes = (JSONParser, FormParser, MultiPartParser)
 
     def get_queryset(self):
-        return ExpenseLog.objects.filter(user=self.request.user).select_related(
-            'user',
-            'category',
-        )
+        return base_log_queryset().filter(user=self.request.user)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -63,10 +68,9 @@ class ExpenseLogDetailView(generics.RetrieveUpdateDestroyAPIView):
     parser_classes = (JSONParser, FormParser, MultiPartParser)
 
     def get_queryset(self):
-        return ExpenseLog.objects.filter(user=self.request.user).select_related(
-            'user',
-            'category',
-        )
+        if self.request.method in {'PATCH', 'PUT', 'DELETE'}:
+            return base_log_queryset().filter(user=self.request.user)
+        return accessible_log_queryset(self.request.user)
 
 
 class FriendFeedListView(generics.ListAPIView):
@@ -74,15 +78,23 @@ class FriendFeedListView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return (
-            ExpenseLog.objects.filter(
-                user_id__in=accepted_friend_ids(self.request.user),
-                is_visible=True,
-                expires_at__gt=timezone.now(),
-            )
-            .select_related('user', 'category')
-            .order_by('-created_at')
+        friend_ids = accepted_friend_ids(self.request.user)
+        return base_log_queryset().filter(
+            user_id__in=friend_ids,
+            is_visible=True,
+            visibility__in=[ExpenseLog.Visibility.PUBLIC, ExpenseLog.Visibility.FRIENDS],
         )
+
+
+class UserExpenseLogListView(generics.ListAPIView):
+    serializer_class = ExpenseLogSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        user_id = self.kwargs['user_id']
+        if user_id == self.request.user.id:
+            return base_log_queryset().filter(user_id=user_id)
+        return accessible_log_queryset(self.request.user).filter(user_id=user_id)
 
 
 class LikeToggleView(APIView):
@@ -115,7 +127,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
         )
 
     def get_queryset(self):
-        return Comment.objects.filter(log=self.get_log()).select_related('user', 'log')
+        return Comment.objects.filter(log=self.get_log()).select_related('user', 'user__profile', 'log')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, log=self.get_log())
@@ -126,7 +138,7 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        return Comment.objects.filter(user=self.request.user).select_related('user', 'log')
+        return Comment.objects.filter(user=self.request.user).select_related('user', 'user__profile', 'log')
 
     def get_object(self):
         log = generics.get_object_or_404(

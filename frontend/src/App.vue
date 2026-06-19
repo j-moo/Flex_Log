@@ -1,14 +1,24 @@
 <script setup>
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { useAccountStore } from './stores/account'
 
 
 const router = useRouter()
+const route = useRoute()
 const account = useAccountStore()
 
 const displayName = computed(() => account.user?.name || account.user?.username || '')
+const showChrome = computed(() => account.isAuthenticated)
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back()
+  } else {
+    router.push({ name: 'feed' })
+  }
+}
 
 const logout = async () => {
   account.logout()
@@ -18,63 +28,27 @@ const logout = async () => {
 
 <template>
   <div class="app-shell">
-    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top">
-      <div class="container-fluid px-3 px-lg-4">
-        <RouterLink class="navbar-brand" :to="{ name: 'home' }">Flex Log</RouterLink>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNav"
-          aria-controls="mainNav"
-          aria-expanded="false"
-          aria-label="메뉴 열기"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div id="mainNav" class="collapse navbar-collapse">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <template v-if="account.isAuthenticated">
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'logs' }">내 로그</RouterLink>
-              </li>
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'feed' }">친구 피드</RouterLink>
-              </li>
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'analysis' }">월별 분석</RouterLink>
-              </li>
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'finance-products' }">금융상품</RouterLink>
-              </li>
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'finance-recommend' }">AI 추천</RouterLink>
-              </li>
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'friends' }">친구</RouterLink>
-              </li>
-              <li class="nav-item">
-                <RouterLink class="nav-link" :to="{ name: 'profile' }">프로필</RouterLink>
-              </li>
-            </template>
-          </ul>
-
-          <div v-if="account.isAuthenticated" class="d-flex align-items-center gap-2">
-            <span class="text-secondary small">{{ displayName }}</span>
-            <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'log-create' }">로그 작성</RouterLink>
-            <button class="btn btn-outline-secondary btn-sm" type="button" @click="logout">로그아웃</button>
-          </div>
-          <div v-else class="d-flex gap-2">
-            <RouterLink class="btn btn-outline-secondary btn-sm" :to="{ name: 'login' }">로그인</RouterLink>
-            <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'signup' }">회원가입</RouterLink>
-          </div>
-        </div>
+    <header v-if="showChrome" class="top-bar">
+      <button class="icon-button" type="button" aria-label="뒤로가기" @click="goBack">
+        ‹
+      </button>
+      <RouterLink class="brand" :to="{ name: 'feed' }">Flex Log</RouterLink>
+      <div class="top-actions">
+        <span class="user-name">{{ displayName }}</span>
+        <RouterLink class="primary-link" :to="{ name: 'log-create' }">기록</RouterLink>
+        <button class="text-button" type="button" @click="logout">로그아웃</button>
       </div>
-    </nav>
+    </header>
 
-    <main class="page-wrap">
+    <main class="page-wrap" :class="{ 'with-bottom-nav': showChrome }">
       <RouterView />
     </main>
+
+    <nav v-if="showChrome" class="bottom-nav" aria-label="주요 메뉴">
+      <RouterLink :class="{ active: route.name === 'feed' }" :to="{ name: 'feed' }">메인</RouterLink>
+      <RouterLink :class="{ active: route.name === 'profile' || route.name === 'user-profile' }" :to="{ name: 'profile' }">프로필</RouterLink>
+      <RouterLink :class="{ active: route.name === 'friends' }" :to="{ name: 'friends' }">친구</RouterLink>
+      <RouterLink :class="{ active: route.name === 'mypage' }" :to="{ name: 'mypage' }">마이페이지</RouterLink>
+    </nav>
   </div>
 </template>

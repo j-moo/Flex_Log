@@ -35,7 +35,7 @@ const submit = async () => {
   isSubmitting.value = true
   try {
     await account.signup({ ...form })
-    await router.push({ name: 'home' })
+    await router.push({ name: 'feed' })
   } catch (error) {
     const data = error.response?.data
     if (data && typeof data === 'object') {
@@ -60,8 +60,8 @@ const submit = async () => {
 </script>
 
 <template>
-  <section class="auth-card card">
-    <div class="card-body p-4">
+  <section class="auth-card surface">
+    <div class="p-4">
       <h1 class="h4 mb-4">회원가입</h1>
       <form class="d-grid gap-3" @submit.prevent="submit">
         <div>
@@ -85,7 +85,7 @@ const submit = async () => {
         <div>
           <label for="password" class="form-label">비밀번호</label>
           <input id="password" v-model="form.password" class="form-control" type="password" autocomplete="new-password" required>
-          <div class="form-text">8자 이상, 너무 흔하거나 숫자로만 된 비밀번호는 사용할 수 없습니다.</div>
+          <div class="form-text">8자 이상, 너무 흔하거나 숫자만으로 된 비밀번호는 사용할 수 없습니다.</div>
           <div v-if="errors.password" class="invalid-feedback d-block">{{ errors.password }}</div>
         </div>
 
@@ -100,6 +100,10 @@ const submit = async () => {
         </button>
         <div v-if="generalError" class="alert alert-danger mb-0">{{ generalError }}</div>
       </form>
+      <p class="mt-3 mb-0 text-secondary">
+        이미 계정이 있다면
+        <RouterLink class="fw-bold" :to="{ name: 'login' }">로그인</RouterLink>
+      </p>
     </div>
   </section>
 </template>

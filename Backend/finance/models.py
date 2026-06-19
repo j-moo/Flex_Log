@@ -1,5 +1,8 @@
+from decimal import Decimal
+
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 
 
 class FinancialProduct(models.Model):
@@ -134,3 +137,64 @@ class FinancialProductRecommendation(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.title}'
+
+
+class StockHolding(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='stock_holdings',
+    )
+    symbol = models.CharField(max_length=20)
+    name = models.CharField(max_length=100)
+    quantity = models.DecimalField(max_digits=18, decimal_places=4)
+    average_price = models.DecimalField(max_digits=18, decimal_places=2)
+    current_price = models.DecimalField(max_digits=18, decimal_places=2, default=Decimal('0'))
+    memo = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('symbol',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'symbol'),
+                name='stock_holding_unique_user_symbol',
+            ),
+            models.CheckConstraint(
+                condition=Q(quantity__gt=0),
+                name='stock_holding_quantity_positive',
+            ),
+            models.CheckConstraint(
+                condition=Q(average_price__gte=0),
+                name='stock_holding_average_price_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(current_price__gte=0),
+                name='stock_holding_current_price_nonnegative',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=('user', 'symbol'), name='stock_holding_user_symbol_idx'),
+        ]
+
+    @property
+    def invested_amount(self):
+        return self.quantity * self.average_price
+
+    @property
+    def valuation_amount(self):
+        return self.quantity * self.current_price
+
+    @property
+    def profit_loss(self):
+        return self.valuation_amount - self.invested_amount
+
+    @property
+    def profit_rate(self):
+        if not self.invested_amount:
+            return Decimal('0')
+        return (self.profit_loss / self.invested_amount) * Decimal('100')
+
+    def __str__(self):
+        return f'{self.user} - {self.symbol}'
