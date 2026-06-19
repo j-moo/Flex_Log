@@ -16,7 +16,7 @@ const submit = async () => {
   isSubmitting.value = true
   try {
     await account.login({ ...form })
-    await router.push({ name: 'home' })
+    await router.push({ name: 'feed' })
   } catch {
     errorMessage.value = '아이디 또는 비밀번호를 확인해 주세요.'
   } finally {
@@ -26,8 +26,8 @@ const submit = async () => {
 </script>
 
 <template>
-  <section class="auth-card card">
-    <div class="card-body p-4">
+  <section class="auth-card surface">
+    <div class="p-4">
       <h1 class="h4 mb-4">로그인</h1>
       <form class="d-grid gap-3" @submit.prevent="submit">
         <div>
@@ -45,6 +45,10 @@ const submit = async () => {
         </button>
         <div v-if="errorMessage" class="alert alert-danger mb-0">{{ errorMessage }}</div>
       </form>
+      <p class="mt-3 mb-0 text-secondary">
+        계정이 없다면
+        <RouterLink class="fw-bold" :to="{ name: 'signup' }">회원가입</RouterLink>
+      </p>
     </div>
   </section>
 </template>

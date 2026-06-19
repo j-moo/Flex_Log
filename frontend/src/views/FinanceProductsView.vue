@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import api from '../api/client'
+import { formatRate } from '../utils/format'
 
 
 const products = ref([])
@@ -17,9 +18,8 @@ const filters = reactive({
 })
 
 const productTypeLabel = (type) => (type === 'deposit' ? '정기예금' : '정기적금')
-const formatRate = (rate) => (rate === null || rate === undefined ? '-' : `${Number(rate).toFixed(2)}%`)
 const formatLimit = (value) => {
-  if (!value) return '제한 없음'
+  if (!value) return '한도 없음'
   return `${Number(value).toLocaleString('ko-KR')}원`
 }
 
@@ -45,9 +45,7 @@ const fetchProducts = async () => {
       params: requestParams.value,
     })
     products.value = response.data
-    if (selectedProduct.value) {
-      selectedProduct.value = products.value.find((item) => item.id === selectedProduct.value.id) || null
-    }
+    selectedProduct.value = products.value[0] || null
   } catch {
     errorMessage.value = '금융상품 목록을 불러오지 못했습니다.'
   } finally {
@@ -67,104 +65,124 @@ onMounted(fetchProducts)
 </script>
 
 <template>
-  <section class="finance-page">
-    <div class="finance-header">
+  <section>
+    <div class="section-head">
       <div>
         <h1>금융상품</h1>
-        <p>DB에 로드된 정기예금과 정기적금 상품을 조회합니다.</p>
+        <p>DB에 저장된 정기예금과 정기적금 상품을 조회합니다.</p>
       </div>
-      <RouterLink class="finance-action" :to="{ name: 'finance-recommend' }">AI 추천</RouterLink>
+      <RouterLink class="btn btn-primary" :to="{ name: 'finance-recommend' }">AI 추천</RouterLink>
     </div>
 
-    <form class="filter-bar" @submit.prevent="fetchProducts">
-      <select v-model="filters.type" aria-label="상품 유형">
-        <option value="">전체</option>
-        <option value="deposit">정기예금</option>
-        <option value="saving">정기적금</option>
-      </select>
-      <input v-model.trim="filters.bank" type="search" placeholder="은행명" aria-label="은행명 검색">
-      <input v-model.trim="filters.term" type="number" min="1" placeholder="기간(개월)" aria-label="저축 기간">
-      <input v-model.trim="filters.min_rate" type="number" min="0" step="0.1" placeholder="최소 금리" aria-label="최소 금리">
-      <button type="submit" :disabled="isLoading">조회</button>
-      <button v-if="hasFilters" class="secondary" type="button" @click="clearFilters">초기화</button>
+    <form class="surface p-3 mb-4" @submit.prevent="fetchProducts">
+      <div class="row g-2">
+        <div class="col-12 col-md-2">
+          <select v-model="filters.type" class="form-select" aria-label="상품 유형">
+            <option value="">전체</option>
+            <option value="deposit">정기예금</option>
+            <option value="saving">정기적금</option>
+          </select>
+        </div>
+        <div class="col-12 col-md">
+          <input v-model.trim="filters.bank" class="form-control" type="search" placeholder="은행명">
+        </div>
+        <div class="col-6 col-md-2">
+          <input v-model.trim="filters.term" class="form-control" type="number" min="1" placeholder="기간(개월)">
+        </div>
+        <div class="col-6 col-md-2">
+          <input v-model.trim="filters.min_rate" class="form-control" type="number" min="0" step="0.1" placeholder="최소 금리">
+        </div>
+        <div class="col-6 col-md-auto">
+          <button class="btn btn-primary w-100" type="submit" :disabled="isLoading">조회</button>
+        </div>
+        <div v-if="hasFilters" class="col-6 col-md-auto">
+          <button class="btn btn-outline-secondary w-100" type="button" @click="clearFilters">초기화</button>
+        </div>
+      </div>
     </form>
 
-    <div v-if="errorMessage" class="finance-alert">{{ errorMessage }}</div>
-    <div v-if="isLoading" class="finance-empty">불러오는 중입니다.</div>
-    <div v-else-if="!products.length" class="finance-empty">조회된 금융상품이 없습니다.</div>
+    <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
+    <div v-else-if="!products.length" class="surface grid-empty">조회된 금융상품이 없습니다.</div>
 
-    <div v-else class="product-layout">
-      <div class="product-list">
-        <article
-          v-for="product in products"
-          :key="product.id"
-          class="product-card"
-          :class="{ active: selectedProduct?.id === product.id }"
-          @click="selectedProduct = product"
-        >
-          <div class="product-card-top">
-            <span>{{ productTypeLabel(product.product_type) }}</span>
-            <strong>{{ formatRate(product.best_rate) }}</strong>
-          </div>
-          <h2>{{ product.fin_prdt_nm }}</h2>
-          <p>{{ product.kor_co_nm }}</p>
-          <div class="product-meta">
-            <span>{{ bestOption(product)?.save_trm || '-' }}개월</span>
-            <span>기본 {{ formatRate(bestOption(product)?.intr_rate) }}</span>
-            <span>최고 {{ formatRate(bestOption(product)?.intr_rate2) }}</span>
-          </div>
-        </article>
+    <div v-else class="row g-4">
+      <div class="col-12 col-lg-7">
+        <div class="d-grid gap-3">
+          <article
+            v-for="product in products"
+            :key="product.id"
+            class="surface p-3 product-row"
+            :class="{ active: selectedProduct?.id === product.id }"
+            @click="selectedProduct = product"
+          >
+            <div class="d-flex justify-content-between gap-3">
+              <div>
+                <span class="badge text-bg-success mb-2">{{ productTypeLabel(product.product_type) }}</span>
+                <h2 class="h5 mb-1">{{ product.fin_prdt_nm }}</h2>
+                <p class="text-secondary mb-0">{{ product.kor_co_nm }}</p>
+              </div>
+              <strong class="rate-text">{{ formatRate(product.best_rate) }}</strong>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-3 small">
+              <span class="badge text-bg-light border">{{ bestOption(product)?.save_trm || '-' }}개월</span>
+              <span class="badge text-bg-light border">기본 {{ formatRate(bestOption(product)?.intr_rate) }}</span>
+              <span class="badge text-bg-light border">최고 {{ formatRate(bestOption(product)?.intr_rate2) }}</span>
+            </div>
+          </article>
+        </div>
       </div>
 
-      <aside class="detail-panel">
-        <template v-if="selectedProduct">
-          <div class="detail-heading">
-            <span>{{ productTypeLabel(selectedProduct.product_type) }}</span>
-            <h2>{{ selectedProduct.fin_prdt_nm }}</h2>
-            <p>{{ selectedProduct.kor_co_nm }}</p>
-          </div>
+      <aside class="col-12 col-lg-5">
+        <div class="surface p-3 sticky-detail">
+          <template v-if="selectedProduct">
+            <span class="badge text-bg-success mb-2">{{ productTypeLabel(selectedProduct.product_type) }}</span>
+            <h2 class="h4">{{ selectedProduct.fin_prdt_nm }}</h2>
+            <p class="text-secondary">{{ selectedProduct.kor_co_nm }}</p>
 
-          <div class="rate-grid">
-            <div>
-              <span>최고 금리</span>
-              <strong>{{ formatRate(selectedProduct.best_rate) }}</strong>
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <div class="border rounded-2 p-3">
+                  <span class="text-secondary small">최고 금리</span>
+                  <strong class="d-block fs-4">{{ formatRate(selectedProduct.best_rate) }}</strong>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="border rounded-2 p-3">
+                  <span class="text-secondary small">최대 한도</span>
+                  <strong class="d-block fs-6">{{ formatLimit(selectedProduct.max_limit) }}</strong>
+                </div>
+              </div>
             </div>
-            <div>
-              <span>최대 한도</span>
-              <strong>{{ formatLimit(selectedProduct.max_limit) }}</strong>
-            </div>
-          </div>
 
-          <div class="detail-section">
-            <h3>가입 방법</h3>
+            <h3 class="h6">가입 방법</h3>
             <p>{{ selectedProduct.join_way || '-' }}</p>
-          </div>
-          <div class="detail-section">
-            <h3>우대 조건</h3>
+            <h3 class="h6">우대 조건</h3>
             <p>{{ selectedProduct.spcl_cnd || '-' }}</p>
-          </div>
-          <div class="detail-section">
-            <h3>만기 후 이자율</h3>
+            <h3 class="h6">만기 후 이자율</h3>
             <p>{{ selectedProduct.mtrt_int || '-' }}</p>
-          </div>
 
-          <div class="option-table">
-            <div class="option-row head">
-              <span>기간</span>
-              <span>기본</span>
-              <span>최고</span>
-              <span>방식</span>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>기간</th>
+                    <th>기본</th>
+                    <th>최고</th>
+                    <th>방식</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="option in selectedProduct.options" :key="option.id">
+                    <td>{{ option.save_trm || '-' }}개월</td>
+                    <td>{{ formatRate(option.intr_rate) }}</td>
+                    <td>{{ formatRate(option.intr_rate2) }}</td>
+                    <td>{{ option.intr_rate_type_nm || option.rsrv_type_nm || '-' }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div v-for="option in selectedProduct.options" :key="option.id" class="option-row">
-              <span>{{ option.save_trm || '-' }}개월</span>
-              <span>{{ formatRate(option.intr_rate) }}</span>
-              <span>{{ formatRate(option.intr_rate2) }}</span>
-              <span>{{ option.intr_rate_type_nm || option.rsrv_type_nm || '-' }}</span>
-            </div>
-          </div>
-        </template>
-        <div v-else class="detail-placeholder">
-          상품을 선택하면 상세 조건을 확인할 수 있습니다.
+          </template>
+          <div v-else class="grid-empty">상품을 선택하면 상세 조건을 확인할 수 있습니다.</div>
         </div>
       </aside>
     </div>
@@ -172,238 +190,30 @@ onMounted(fetchProducts)
 </template>
 
 <style scoped>
-.finance-page {
-  min-height: calc(100vh - 120px);
-  margin: -28px calc(50% - 50vw) -48px;
-  padding: 32px max(20px, calc(50vw - 560px)) 56px;
-  background: #0b0e11;
-  color: #eaecef;
-}
-
-.finance-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.finance-header h1 {
-  margin: 0 0 8px;
-  font-size: 28px;
-  font-weight: 800;
-}
-
-.finance-header p,
-.product-card p,
-.detail-heading p,
-.detail-section p,
-.detail-placeholder {
-  color: #707a8a;
-}
-
-.finance-action,
-.filter-bar button {
-  min-height: 42px;
-  padding: 0 16px;
-  border: 0;
-  border-radius: 8px;
-  background: #fcd535;
-  color: #0b0e11;
-  font-weight: 800;
-}
-
-.filter-bar {
-  display: grid;
-  grid-template-columns: 140px 1fr 140px 140px auto auto;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.filter-bar input,
-.filter-bar select {
-  min-height: 42px;
-  width: 100%;
-  border: 1px solid #2b3139;
-  border-radius: 8px;
-  background: #1e2329;
-  color: #eaecef;
-  padding: 0 12px;
-}
-
-.filter-bar .secondary {
-  background: #2b3139;
-  color: #eaecef;
-}
-
-.finance-alert,
-.finance-empty {
-  padding: 16px;
-  border: 1px solid #2b3139;
-  border-radius: 8px;
-  background: #1e2329;
-}
-
-.finance-alert {
-  border-color: #f6465d;
-  color: #f6465d;
-}
-
-.product-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-  gap: 16px;
-}
-
-.product-list {
-  display: grid;
-  gap: 12px;
-}
-
-.product-card,
-.detail-panel {
-  border: 1px solid #2b3139;
-  border-radius: 8px;
-  background: #1e2329;
-}
-
-.product-card {
-  display: grid;
-  gap: 8px;
-  padding: 16px;
+.product-row {
   cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
-.product-card.active,
-.product-card:hover {
-  border-color: #fcd535;
+.product-row.active,
+.product-row:hover {
+  border-color: #2f6b5e;
+  transform: translateY(-1px);
 }
 
-.product-card-top,
-.product-meta,
-.rate-grid,
-.option-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+.rate-text {
+  color: #2f6b5e;
+  font-size: 24px;
 }
 
-.product-card-top span,
-.detail-heading span {
-  color: #fcd535;
-  font-weight: 800;
-}
-
-.product-card-top strong,
-.rate-grid strong {
-  color: #fcd535;
-  font-size: 22px;
-}
-
-.product-card h2,
-.detail-heading h2 {
-  margin: 0;
-  font-size: 18px;
-}
-
-.product-card p,
-.detail-heading p,
-.detail-section p {
-  margin: 0;
-  line-height: 1.6;
-}
-
-.product-meta {
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-
-.product-meta span {
-  padding: 5px 8px;
-  border-radius: 6px;
-  background: #2b3139;
-  color: #eaecef;
-  font-size: 13px;
-}
-
-.detail-panel {
-  align-self: start;
-  display: grid;
-  gap: 16px;
-  padding: 18px;
+.sticky-detail {
   position: sticky;
-  top: 86px;
+  top: 84px;
 }
 
-.rate-grid {
-  align-items: stretch;
-}
-
-.rate-grid > div {
-  display: grid;
-  gap: 6px;
-  width: 100%;
-  padding: 14px;
-  border-radius: 8px;
-  background: #2b3139;
-}
-
-.rate-grid span,
-.detail-section h3,
-.option-row.head {
-  color: #707a8a;
-}
-
-.detail-section {
-  display: grid;
-  gap: 8px;
-}
-
-.detail-section h3 {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 800;
-}
-
-.option-table {
-  display: grid;
-  border-top: 1px solid #2b3139;
-}
-
-.option-row {
-  display: grid;
-  grid-template-columns: 64px 64px 64px 1fr;
-  padding: 10px 0;
-  border-bottom: 1px solid #2b3139;
-  font-size: 14px;
-}
-
-@media (max-width: 980px) {
-  .filter-bar,
-  .product-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .detail-panel {
+@media (max-width: 991px) {
+  .sticky-detail {
     position: static;
-  }
-}
-
-@media (max-width: 600px) {
-  .finance-page {
-    margin-top: -18px;
-    padding: 24px 14px 40px;
-  }
-
-  .finance-header {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .finance-action {
-    display: grid;
-    place-items: center;
   }
 }
 </style>

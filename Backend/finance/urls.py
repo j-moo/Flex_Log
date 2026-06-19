@@ -11,4 +11,6 @@ urlpatterns = [
     path('recommend/', views.recommend_products, name='finance-recommend'),
     path('recommend/latest/', views.latest_recommendations, name='finance-recommend-latest'),
     path('recommend/history/', views.recommendation_history, name='finance-recommend-history'),
+    path('stocks/', views.StockHoldingListCreateView.as_view(), name='stock-holding-list-create'),
+    path('stocks/<int:pk>/', views.StockHoldingDetailView.as_view(), name='stock-holding-detail'),
 ]

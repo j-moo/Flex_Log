@@ -109,13 +109,13 @@ def normalize_ai_result(data):
 
 def build_ai_prompt(data):
     return (
-        '다음 월별 소비 집계 데이터를 바탕으로 소비 패턴을 분석해줘.\n'
-        '반드시 아래 키만 가진 한국어 JSON 객체로만 답변해.\n'
-        '마크다운 코드블록, 설명 문장, 추가 텍스트는 포함하지 마.\n\n'
+        '다음 월별 소비 집계 데이터를 바탕으로 소비 패턴을 분석해 주세요.\n'
+        '반드시 아래 키만 가진 한국어 JSON 객체로만 답하세요.\n'
+        '마크다운 코드블록, 설명 문장, 추가 텍스트는 포함하지 마세요.\n\n'
         '필수 형식:\n'
         '{'
         '"summary":"이번 달 소비 패턴 요약",'
-        '"problem":"가장 큰 소비 문제점",'
+        '"problem":"가장 중요한 소비 문제점",'
         '"feedback":"소비 습관 개선 피드백",'
         '"saving_tip":"실천 가능한 절약 팁",'
         '"risk_level":"low 또는 medium 또는 high"'
@@ -138,9 +138,9 @@ def request_gms_analysis(data):
             {
                 'role': 'developer',
                 'content': (
-                    '너는 사용자의 월별 소비 기록을 분석하는 금융 소비 습관 코치다. '
-                    '투자 권유가 아니라 소비 습관 개선 조언만 제공한다. '
-                    '반드시 한국어 JSON으로만 답변한다.'
+                    '당신은 사용자의 월별 소비 기록을 분석하는 금융 소비 습관 코치입니다. '
+                    '투자 권유가 아니라 소비 습관 개선 조언만 제공합니다. '
+                    '반드시 유효한 한국어 JSON으로만 답합니다.'
                 ),
             },
             {
@@ -161,17 +161,24 @@ def request_gms_analysis(data):
         response.raise_for_status()
         content = response.json()['choices'][0]['message']['content']
         return parse_ai_json(content)
-    except (requests.RequestException, KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError):
+    except (
+        requests.RequestException,
+        KeyError,
+        IndexError,
+        TypeError,
+        ValueError,
+        json.JSONDecodeError,
+    ):
         return None
 
 
 def fallback_analysis(data):
     if data['log_count'] == 0:
         return {
-            'summary': '소비 기록이 부족합니다.',
-            'problem': '분석할 수 있는 소비 로그가 없습니다.',
-            'feedback': '이번 달 소비 로그를 먼저 꾸준히 남겨보세요.',
-            'saving_tip': '소비 직후 금액과 카테고리를 바로 기록하는 습관부터 시작해보세요.',
+            'summary': '아직 분석할 소비 기록이 부족합니다.',
+            'problem': '이번 달에 저장된 소비 로그가 없습니다.',
+            'feedback': '소비 직후 금액, 카테고리, 장소를 간단히 기록하는 습관부터 만들어보세요.',
+            'saving_tip': '오늘 소비 1건만 먼저 기록하고 월말에 패턴을 확인해 보세요.',
             'risk_level': 'low',
         }
 
@@ -195,9 +202,9 @@ def fallback_analysis(data):
             f"{data['year']}년 {data['month']}월에는 총 {total_amount:,}원을 "
             f"{data['log_count']}건에 사용했고, 평균 소비 금액은 {data['average_amount']:,}원입니다."
         ),
-        'problem': f'{top_name} 지출이 {top_total:,}원({top_count}건)으로 가장 큽니다.',
+        'problem': f'{top_name} 지출이 {top_total:,}원, {top_count}건으로 가장 큽니다.',
         'feedback': f'{top_name} 소비를 먼저 점검하면 전체 지출을 줄이는 효과가 큽니다.',
-        'saving_tip': f'다음 달에는 {top_name} 카테고리에 주간 한도를 정해두고 기록해보세요.',
+        'saving_tip': f'다음 주에는 {top_name} 카테고리에 주간 한도를 정하고 기록해 보세요.',
         'risk_level': risk_level,
     }
 

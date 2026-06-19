@@ -1,14 +1,15 @@
 from django.db.models import Q
-from rest_framework import status
+from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import FinancialProduct, FinancialProductRecommendation
+from .models import FinancialProduct, FinancialProductRecommendation, StockHolding
 from .recommendation_utils import create_financial_product_recommendations
 from .serializers import (
     FinancialProductRecommendationSerializer,
     FinancialProductSerializer,
+    StockHoldingSerializer,
 )
 
 
@@ -122,3 +123,22 @@ def recommendation_history(request):
     return Response(
         FinancialProductRecommendationSerializer(recommendations, many=True).data
     )
+
+
+class StockHoldingListCreateView(generics.ListCreateAPIView):
+    serializer_class = StockHoldingSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return StockHolding.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class StockHoldingDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = StockHoldingSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return StockHolding.objects.filter(user=self.request.user)

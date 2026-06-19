@@ -16,6 +16,9 @@ class FriendUserSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
     def get_display_name(self, obj):
+        profile = getattr(obj, 'profile', None)
+        if profile and profile.nickname:
+            return profile.nickname
         return obj.name or obj.username
 
 
