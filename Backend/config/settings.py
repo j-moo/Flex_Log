@@ -140,3 +140,9 @@ FINLIFE_API_BASE_URL = os.getenv(
     'https://finlife.fss.or.kr/finlifeapi',
 )
 FINLIFE_TOP_FIN_GRP_NO = os.getenv('FINLIFE_TOP_FIN_GRP_NO', '020000')
+
+KIWOOM_APP_KEY = os.getenv('KIWOOM_APP_KEY') or os.getenv('KIWOOM_API_KEY')
+KIWOOM_SECRET_KEY = os.getenv('KIWOOM_SECRET_KEY') or os.getenv('KIWOOM_API_SECRET')
+KIWOOM_BASE_URL = os.getenv('KIWOOM_BASE_URL', 'https://api.kiwoom.com')
+KIWOOM_TOKEN_PATH = os.getenv('KIWOOM_TOKEN_PATH', '/oauth2/token')
+KIWOOM_REQUEST_TIMEOUT = int(os.getenv('KIWOOM_REQUEST_TIMEOUT', '10'))
