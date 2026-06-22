@@ -11,6 +11,8 @@ from .serializers import (
     FinancialProductSerializer,
     StockHoldingSerializer,
 )
+from .services.kiwoom_api import get_chart, get_quote
+from .services.kiwoom_auth import KiwoomAPIError
 
 
 def apply_product_filters(request, product_type=None):
@@ -123,6 +125,39 @@ def recommendation_history(request):
     return Response(
         FinancialProductRecommendationSerializer(recommendations, many=True).data
     )
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def stock_quote(request):
+    symbol = request.query_params.get('symbol')
+    if not symbol:
+        return Response(
+            {'detail': 'symbol query parameter is required.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        return Response(get_quote(symbol))
+    except KiwoomAPIError as exc:
+        return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def stock_chart(request):
+    symbol = request.query_params.get('symbol')
+    period = request.query_params.get('period', '1m')
+    if not symbol:
+        return Response(
+            {'detail': 'symbol query parameter is required.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        return Response(get_chart(symbol, period))
+    except KiwoomAPIError as exc:
+        return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class StockHoldingListCreateView(generics.ListCreateAPIView):

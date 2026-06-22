@@ -45,10 +45,11 @@ const logout = async () => {
     </main>
 
     <nav v-if="showChrome" class="bottom-nav" aria-label="주요 메뉴">
-      <RouterLink :class="{ active: route.name === 'feed' }" :to="{ name: 'feed' }">메인</RouterLink>
-      <RouterLink :class="{ active: route.name === 'profile' || route.name === 'user-profile' }" :to="{ name: 'profile' }">프로필</RouterLink>
+      <RouterLink :class="{ active: route.name === 'feed' }" :to="{ name: 'feed' }">피드</RouterLink>
+      <RouterLink :class="{ active: route.name === 'logs' }" :to="{ name: 'logs' }">소비</RouterLink>
+      <RouterLink :class="{ active: route.name === 'stocks' }" :to="{ name: 'stocks' }">주식</RouterLink>
       <RouterLink :class="{ active: route.name === 'friends' }" :to="{ name: 'friends' }">친구</RouterLink>
-      <RouterLink :class="{ active: route.name === 'mypage' }" :to="{ name: 'mypage' }">마이페이지</RouterLink>
+      <RouterLink :class="{ active: route.name === 'mypage' }" :to="{ name: 'mypage' }">마이</RouterLink>
     </nav>
   </div>
 </template>

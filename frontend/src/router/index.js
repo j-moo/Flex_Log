@@ -12,7 +12,7 @@ import LoginView from '../views/LogInView.vue'
 import MyPageView from '../views/MyPageView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import SignUpView from '../views/SignUpView.vue'
-import StockHoldingsView from '../views/StockHoldingsView.vue'
+import StockHoldingView from '../views/StockHoldingView.vue'
 import { useAccountStore } from '../stores/account'
 
 
@@ -33,7 +33,7 @@ const router = createRouter({
     { path: '/analysis', name: 'analysis', component: AnalysisView, meta: { requiresAuth: true } },
     { path: '/finance/products', name: 'finance-products', component: FinanceProductsView, meta: { requiresAuth: true } },
     { path: '/finance/recommend', name: 'finance-recommend', component: FinancialRecommendationView, meta: { requiresAuth: true } },
-    { path: '/stocks', name: 'stocks', component: StockHoldingsView, meta: { requiresAuth: true } },
+    { path: '/stocks', name: 'stocks', component: StockHoldingView, meta: { requiresAuth: true } },
     { path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
   ],
 })
