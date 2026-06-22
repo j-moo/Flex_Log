@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from finance.models import FinancialProduct, FinancialProductOption, UserFinancialProduct
+
 from .models import Profile
 
 
@@ -46,3 +48,39 @@ class ProfileAPITests(APITestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_profile_contains_only_active_joined_products(self):
+        product = FinancialProduct.objects.create(
+            product_type='saving',
+            fin_prdt_cd='PROFILE001',
+            kor_co_nm='프로필은행',
+            fin_prdt_nm='프로필적금',
+        )
+        active_option = FinancialProductOption.objects.create(
+            product=product,
+            save_trm=12,
+            intr_rate='3.0000',
+            intr_rate2='3.5000',
+        )
+        cancelled_option = FinancialProductOption.objects.create(
+            product=product,
+            save_trm=24,
+            intr_rate='3.2000',
+            intr_rate2='3.7000',
+        )
+        UserFinancialProduct.objects.create(user=self.user, option=active_option)
+        UserFinancialProduct.objects.create(
+            user=self.user,
+            option=cancelled_option,
+            status=UserFinancialProduct.Status.CANCELLED,
+            cancelled_at='2026-06-22T00:00:00Z',
+        )
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['joined_products']), 1)
+        self.assertEqual(
+            response.data['joined_products'][0]['option']['id'],
+            active_option.id,
+        )

@@ -12,10 +12,13 @@ const categories = ref([])
 const mediaFile = ref(null)
 const currentMedia = ref('')
 const previewUrl = ref('')
+const mediaEditor = ref(null)
+const isDraggingOverlay = ref(false)
 const isLoading = ref(true)
 const isSubmitting = ref(false)
 const errorMessage = ref('')
 const form = reactive({
+  title: '',
   category: '',
   amount: '',
   product_name: '',
@@ -29,21 +32,36 @@ const form = reactive({
 const overlayStyle = reactive({
   fontSize: 28,
   color: '#ffffff',
-  position: 'center',
+  x: 50,
+  y: 50,
 })
 
 const overlayPreviewStyle = computed(() => {
-  const positions = {
-    top: { top: '18%', left: '50%', transform: 'translate(-50%, -50%)' },
-    center: { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' },
-    bottom: { top: '82%', left: '50%', transform: 'translate(-50%, -50%)' },
-  }
   return {
-    ...positions[overlayStyle.position],
+    top: `${overlayStyle.y}%`,
+    left: `${overlayStyle.x}%`,
+    transform: 'translate(-50%, -50%)',
     fontSize: `${overlayStyle.fontSize}px`,
     color: overlayStyle.color,
   }
 })
+const previewOverlayText = computed(() => [
+  form.overlay_text.trim(),
+  form.amount ? `${Number(form.amount).toLocaleString('ko-KR')}원` : '',
+].filter(Boolean))
+
+const updateOverlayPosition = (event) => {
+  if (!isDraggingOverlay.value || !mediaEditor.value) return
+  const rect = mediaEditor.value.getBoundingClientRect()
+  overlayStyle.x = Math.round(Math.min(96, Math.max(4, ((event.clientX - rect.left) / rect.width) * 100)))
+  overlayStyle.y = Math.round(Math.min(94, Math.max(6, ((event.clientY - rect.top) / rect.height) * 100)))
+}
+const startOverlayDrag = (event) => {
+  isDraggingOverlay.value = true
+  event.currentTarget.setPointerCapture?.(event.pointerId)
+  updateOverlayPosition(event)
+}
+const stopOverlayDrag = () => { isDraggingOverlay.value = false }
 
 const loadData = async () => {
   isLoading.value = true
@@ -56,6 +74,7 @@ const loadData = async () => {
 
     if (logResponse) {
       const data = logResponse.data
+      form.title = data.title || ''
       form.category = String(data.category)
       form.amount = String(data.amount || '')
       form.product_name = data.product_name || ''
@@ -67,6 +86,8 @@ const loadData = async () => {
       form.is_visible = Boolean(data.is_visible)
       currentMedia.value = data.media || ''
       Object.assign(overlayStyle, data.overlay_style || {})
+      if (!Number.isFinite(Number(overlayStyle.x))) overlayStyle.x = 50
+      if (!Number.isFinite(Number(overlayStyle.y))) overlayStyle.y = 50
     } else if (categories.value.length) {
       form.category = String(categories.value[0].id)
     }
@@ -88,6 +109,7 @@ const submit = async () => {
   errorMessage.value = ''
 
   const payload = new FormData()
+  payload.append('title', form.overlay_text.trim() || `${categories.value.find(item => String(item.id) === String(form.category))?.name || '소비'} 기록`)
   payload.append('category', form.category)
   payload.append('amount', form.amount)
   payload.append('product_name', form.product_name)
@@ -121,19 +143,29 @@ onMounted(loadData)
 </script>
 
 <template>
-  <section class="surface">
-    <div class="p-4">
-      <h1 class="h4 mb-4">{{ isEdit ? '소비 로그 수정' : '소비 로그 작성' }}</h1>
+  <section class="surface create-card">
+    <div class="create-inner">
+      <div class="create-title"><span>NEW POST</span><h1>{{ isEdit ? '소비기록 수정' : '새 소비기록' }}</h1><p>오늘의 소비 순간을 친구들과 공유해보세요.</p></div>
       <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
       <form v-else class="row g-4" @submit.prevent="submit">
         <div class="col-12 col-lg-5">
-          <div class="media-editor">
+          <div ref="mediaEditor" class="media-editor">
             <img v-if="previewUrl || currentMedia" :src="previewUrl || currentMedia" alt="소비 이미지 미리보기">
             <div v-else class="media-placeholder">이미지 미리보기</div>
-            <div v-if="form.overlay_text" class="overlay-text" :style="overlayPreviewStyle">
-              {{ form.overlay_text }}
+            <div
+              v-if="previewOverlayText.length"
+              class="overlay-text draggable-overlay"
+              :class="{ dragging: isDraggingOverlay }"
+              :style="overlayPreviewStyle"
+              @pointerdown.stop.prevent="startOverlayDrag"
+              @pointermove.stop.prevent="updateOverlayPosition"
+              @pointerup="stopOverlayDrag"
+              @pointercancel="stopOverlayDrag"
+            >
+              <span v-for="line in previewOverlayText" :key="line">{{ line }}</span>
             </div>
           </div>
+          <p class="drag-guide">텍스트를 드래그해 위치를 조절하세요. 좌표 {{ overlayStyle.x }}, {{ overlayStyle.y }}</p>
 
           <label for="log-media" class="form-label mt-3">사진 또는 영상</label>
           <input id="log-media" class="form-control" type="file" accept="image/*,video/mp4,video/webm" @change="selectMedia">
@@ -156,24 +188,9 @@ onMounted(loadData)
               <input id="log-amount" v-model="form.amount" class="form-control" type="number" min="1" step="1" required>
             </div>
 
-            <div class="col-12 col-sm-6">
-              <label for="product-name" class="form-label">상품명</label>
-              <input id="product-name" v-model.trim="form.product_name" class="form-control" maxlength="100">
-            </div>
-
-            <div class="col-12 col-sm-6">
-              <label for="merchant" class="form-label">소비처</label>
-              <input id="merchant" v-model.trim="form.merchant" class="form-control" maxlength="100">
-            </div>
-
             <div class="col-12">
-              <label for="log-content" class="form-label">메모</label>
-              <textarea id="log-content" v-model="form.content" class="form-control" rows="4"></textarea>
-            </div>
-
-            <div class="col-12">
-              <label for="overlay-text" class="form-label">사진 안 텍스트</label>
-              <input id="overlay-text" v-model.trim="form.overlay_text" class="form-control" maxlength="120">
+              <label for="overlay-text" class="form-label">이미지 안에 넣을 텍스트</label>
+              <input id="overlay-text" v-model.trim="form.overlay_text" class="form-control" maxlength="120" placeholder="예: 오늘의 행복한 소비">
             </div>
 
             <div class="col-12 col-sm-4">
@@ -184,15 +201,6 @@ onMounted(loadData)
             <div class="col-6 col-sm-4">
               <label for="overlay-color" class="form-label">텍스트 색상</label>
               <input id="overlay-color" v-model="overlayStyle.color" class="form-control form-control-color" type="color">
-            </div>
-
-            <div class="col-6 col-sm-4">
-              <label for="overlay-position" class="form-label">텍스트 위치</label>
-              <select id="overlay-position" v-model="overlayStyle.position" class="form-select">
-                <option value="top">상단</option>
-                <option value="center">중앙</option>
-                <option value="bottom">하단</option>
-              </select>
             </div>
 
             <div class="col-12 col-sm-6">
@@ -219,8 +227,8 @@ onMounted(loadData)
             </div>
           </div>
 
-          <div class="d-flex gap-2 mt-4">
-            <button class="btn btn-primary" :disabled="isSubmitting">
+          <div class="submit-actions">
+            <button class="submit-button" :disabled="isSubmitting">
               {{ isSubmitting ? '저장 중...' : '저장' }}
             </button>
             <RouterLink class="btn btn-outline-secondary" :to="{ name: 'logs' }">취소</RouterLink>
@@ -233,14 +241,15 @@ onMounted(loadData)
 </template>
 
 <style scoped>
+.create-card{width:min(100%,900px);margin:auto;overflow:hidden}.create-inner{padding:20px}.create-title{margin-bottom:22px}.create-title>span{color:var(--accent);font-size:10px;font-weight:850;letter-spacing:.14em}.create-title h1{margin:4px 0;font-size:23px}.create-title p{margin:0;color:var(--muted);font-size:12px}.submit-actions{display:flex;gap:8px;margin-top:24px}.submit-button{border:0;border-radius:9px;background:var(--accent);color:white;padding:10px 20px;font-weight:800}
 .media-editor {
   position: relative;
   display: grid;
   min-height: 360px;
   place-items: center;
   overflow: hidden;
-  border-radius: 8px;
-  background: #202833;
+  border-radius: 12px;
+  background: #eef1f5;
 }
 
 .media-editor img {
@@ -251,7 +260,9 @@ onMounted(loadData)
 }
 
 .media-placeholder {
-  color: #aab4c0;
+  color: var(--muted);
   font-weight: 800;
 }
+.draggable-overlay{display:grid;gap:3px;cursor:grab;touch-action:none;user-select:none}.draggable-overlay.dragging{cursor:grabbing}.draggable-overlay span:last-child{font-size:.7em}.drag-guide{margin:8px 0 0;color:var(--muted);font-size:10px;text-align:center}
+@media(max-width:600px){.create-inner{padding:14px}.media-editor,.media-editor img{min-height:280px}.submit-actions{display:grid}.submit-button{width:100%}}
 </style>

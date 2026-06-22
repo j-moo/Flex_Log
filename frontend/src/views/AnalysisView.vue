@@ -44,7 +44,7 @@ onMounted(async () => {
         <button class="btn btn-primary" type="button" :disabled="analysisStore.isLoading" @click="analyze">
           {{ analysisStore.isLoading ? '분석 중...' : 'AI 분석하기' }}
         </button>
-        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'finance-recommend' }">금융상품 추천</RouterLink>
+        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'finance-hub', query: { tab: 'recommend' } }">금융상품 추천</RouterLink>
       </div>
     </div>
 

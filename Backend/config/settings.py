@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'accounts',
     'profiles',
     'friends',
@@ -146,3 +147,15 @@ KIWOOM_SECRET_KEY = os.getenv('KIWOOM_SECRET_KEY') or os.getenv('KIWOOM_API_SECR
 KIWOOM_BASE_URL = os.getenv('KIWOOM_BASE_URL', 'https://api.kiwoom.com')
 KIWOOM_TOKEN_PATH = os.getenv('KIWOOM_TOKEN_PATH', '/oauth2/token')
 KIWOOM_REQUEST_TIMEOUT = int(os.getenv('KIWOOM_REQUEST_TIMEOUT', '10'))
+
+EXTERNAL_API_TIMEOUT = int(os.getenv('EXTERNAL_API_TIMEOUT', '10'))
+YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY')
+YOUTUBE_API_BASE_URL = os.getenv(
+    'YOUTUBE_API_BASE_URL',
+    'https://www.googleapis.com/youtube/v3',
+)
+KAKAO_REST_API_KEY = os.getenv('KAKAO_REST_API_KEY') or os.getenv('KAKAO_MAP_API')
+KAKAO_LOCAL_API_BASE_URL = os.getenv(
+    'KAKAO_LOCAL_API_BASE_URL',
+    'https://dapi.kakao.com/v2/local',
+)

@@ -59,7 +59,7 @@ onMounted(async () => {
         <p>소비 분석 결과와 저장된 금융상품 후보를 바탕으로 참고용 추천을 생성합니다.</p>
       </div>
       <div class="d-flex flex-wrap gap-2">
-        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'finance-products' }">상품 목록</RouterLink>
+        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'finance-hub', query: { tab: 'products' } }">상품 목록</RouterLink>
         <button class="btn btn-primary" type="button" :disabled="isLoading" @click="requestRecommendation">
           {{ isLoading ? '추천 생성 중...' : 'AI 추천 받기' }}
         </button>

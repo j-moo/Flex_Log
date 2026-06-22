@@ -3,6 +3,8 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from friends.models import Friend
+from finance.models import UserFinancialProduct
+from finance.serializers import UserFinancialProductSerializer
 
 from .models import Profile
 
@@ -18,6 +20,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         max_length=50,
     )
     friend_count = serializers.SerializerMethodField()
+    joined_products = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -31,6 +34,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'image',
             'bio',
             'friend_count',
+            'joined_products',
             'created_at',
             'updated_at',
         )
@@ -40,6 +44,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'friend_count',
+            'joined_products',
             'created_at',
             'updated_at',
         )
@@ -49,6 +54,17 @@ class ProfileSerializer(serializers.ModelSerializer):
             Q(user=obj.user) | Q(friend=obj.user),
             status=Friend.Status.ACCEPTED,
         ).count()
+
+    def get_joined_products(self, obj):
+        subscriptions = getattr(obj.user, 'active_joined_products', None)
+        if subscriptions is None:
+            subscriptions = UserFinancialProduct.objects.filter(
+                user=obj.user,
+                status=UserFinancialProduct.Status.ACTIVE,
+            ).select_related('option', 'option__product').prefetch_related(
+                'option__product__options',
+            )
+        return UserFinancialProductSerializer(subscriptions, many=True).data
 
     @transaction.atomic
     def update(self, instance, validated_data):

@@ -19,3 +19,8 @@ export const getMe = () => {
 export const refreshAccessToken = (refresh) => {
   return api.post('/api/v1/accounts/token/refresh/', { refresh })
 }
+
+
+export const logout = (refresh) => {
+  return api.post('/api/v1/accounts/logout/', { refresh })
+}

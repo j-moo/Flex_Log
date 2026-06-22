@@ -1,8 +1,10 @@
 from decimal import Decimal
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 
 
 class FinancialProduct(models.Model):
@@ -61,10 +63,10 @@ class FinancialProductOption(models.Model):
     intr_rate_type = models.CharField(max_length=20, blank=True)
     intr_rate_type_nm = models.CharField(max_length=50, blank=True)
 
-    save_trm = models.CharField(max_length=20, blank=True)
+    save_trm = models.PositiveSmallIntegerField()
 
-    intr_rate = models.FloatField(null=True, blank=True)
-    intr_rate2 = models.FloatField(null=True, blank=True)
+    intr_rate = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
+    intr_rate2 = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
 
     rsrv_type = models.CharField(max_length=20, blank=True)
     rsrv_type_nm = models.CharField(max_length=50, blank=True)
@@ -78,6 +80,18 @@ class FinancialProductOption(models.Model):
             models.UniqueConstraint(
                 fields=('product', 'save_trm', 'intr_rate_type', 'rsrv_type'),
                 name='financial_option_unique_product_terms',
+            ),
+            models.CheckConstraint(
+                condition=Q(save_trm__gt=0),
+                name='financial_option_term_positive',
+            ),
+            models.CheckConstraint(
+                condition=Q(intr_rate__isnull=True) | Q(intr_rate__gte=0),
+                name='financial_option_rate_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(intr_rate2__isnull=True) | Q(intr_rate2__gte=0),
+                name='financial_option_max_rate_nonnegative',
             ),
         ]
         indexes = [
@@ -109,6 +123,13 @@ class FinancialProductRecommendation(models.Model):
         blank=True,
         related_name='financial_product_recommendations',
     )
+    option = models.ForeignKey(
+        FinancialProductOption,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='financial_product_recommendations',
+    )
 
     title = models.CharField(max_length=100)
     description = models.TextField()
@@ -118,9 +139,9 @@ class FinancialProductRecommendation(models.Model):
     bank_name = models.CharField(max_length=100, blank=True)
     product_name = models.CharField(max_length=200, blank=True)
     product_type = models.CharField(max_length=20, blank=True)
-    save_trm = models.CharField(max_length=20, blank=True)
-    interest_rate = models.FloatField(null=True, blank=True)
-    max_interest_rate = models.FloatField(null=True, blank=True)
+    save_trm = models.PositiveSmallIntegerField(null=True, blank=True)
+    interest_rate = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
+    max_interest_rate = models.DecimalField(max_digits=7, decimal_places=4, null=True, blank=True)
 
     ai_comment = models.TextField(blank=True)
     caution = models.TextField(blank=True)
@@ -137,6 +158,126 @@ class FinancialProductRecommendation(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.title}'
+
+
+class UserFinancialProduct(models.Model):
+    class Status(models.TextChoices):
+        ACTIVE = 'active', '가입 중'
+        CANCELLED = 'cancelled', '해지'
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='joined_financial_products',
+    )
+    option = models.ForeignKey(
+        FinancialProductOption,
+        on_delete=models.PROTECT,
+        related_name='user_subscriptions',
+    )
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
+    joined_at = models.DateTimeField(default=timezone.now)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-joined_at',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'option'),
+                name='user_financial_product_unique_user_option',
+            ),
+            models.CheckConstraint(
+                condition=Q(status__in=['active', 'cancelled']),
+                name='user_financial_product_valid_status',
+            ),
+            models.CheckConstraint(
+                condition=(
+                    Q(status='active', cancelled_at__isnull=True)
+                    | Q(status='cancelled', cancelled_at__isnull=False)
+                ),
+                name='user_financial_product_status_date_consistent',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=('user', 'status'), name='user_fin_product_status_idx'),
+        ]
+
+    def clean(self):
+        if self.status == self.Status.ACTIVE and self.cancelled_at is not None:
+            raise ValidationError({'cancelled_at': '가입 중인 상품에는 해지 시각을 지정할 수 없습니다.'})
+        if self.status == self.Status.CANCELLED and self.cancelled_at is None:
+            raise ValidationError({'cancelled_at': '해지된 상품에는 해지 시각이 필요합니다.'})
+
+    def __str__(self):
+        return f'{self.user} - {self.option}'
+
+
+class Commodity(models.Model):
+    code = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=50)
+    unit = models.CharField(max_length=30)
+    currency = models.CharField(max_length=3, default='USD')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('code',)
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(code__in=['GOLD', 'SILVER']),
+                name='commodity_valid_code',
+            ),
+        ]
+
+    def __str__(self):
+        return self.name
+
+
+class CommodityPrice(models.Model):
+    commodity = models.ForeignKey(
+        Commodity,
+        on_delete=models.CASCADE,
+        related_name='prices',
+    )
+    price_date = models.DateField()
+    close_price = models.DecimalField(max_digits=18, decimal_places=6)
+    open_price = models.DecimalField(max_digits=18, decimal_places=6, null=True, blank=True)
+    high_price = models.DecimalField(max_digits=18, decimal_places=6, null=True, blank=True)
+    low_price = models.DecimalField(max_digits=18, decimal_places=6, null=True, blank=True)
+    source = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('price_date',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=('commodity', 'price_date'),
+                name='commodity_price_unique_asset_date',
+            ),
+            models.CheckConstraint(
+                condition=Q(close_price__gte=0),
+                name='commodity_price_close_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(open_price__isnull=True) | Q(open_price__gte=0),
+                name='commodity_price_open_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(high_price__isnull=True) | Q(high_price__gte=0),
+                name='commodity_price_high_nonnegative',
+            ),
+            models.CheckConstraint(
+                condition=Q(low_price__isnull=True) | Q(low_price__gte=0),
+                name='commodity_price_low_nonnegative',
+            ),
+        ]
+        indexes = [
+            models.Index(fields=('commodity', 'price_date'), name='commodity_asset_date_idx'),
+        ]
+
+    def __str__(self):
+        return f'{self.commodity.code} - {self.price_date}'
 
 
 class StockHolding(models.Model):

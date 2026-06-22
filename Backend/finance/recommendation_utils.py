@@ -17,6 +17,10 @@ def option_rate(option):
     return option.intr_rate2 if option.intr_rate2 is not None else option.intr_rate or 0
 
 
+def decimal_as_float(value):
+    return float(value) if value is not None else None
+
+
 def get_user_profile_data(user):
     try:
         profile = user.profile
@@ -55,9 +59,9 @@ def get_financial_product_candidates(user, analysis, limit=10):
                 'product_name': product.fin_prdt_nm,
                 'product_type': product.product_type,
                 'save_trm': option.save_trm,
-                'interest_rate': option.intr_rate,
-                'max_interest_rate': option.intr_rate2,
-                'rate_for_sort': option_rate(option),
+                'interest_rate': decimal_as_float(option.intr_rate),
+                'max_interest_rate': decimal_as_float(option.intr_rate2),
+                'rate_for_sort': float(option_rate(option)),
                 'join_way': product.join_way,
                 'special_condition': product.spcl_cnd,
                 'maturity_interest': product.mtrt_int,
@@ -287,6 +291,7 @@ def save_recommendations(user, analysis, payloads, candidates):
         if product and not candidate:
             option = get_best_option(product)
         if product and candidate:
+            option = product.options.filter(id=candidate['option_id']).first()
             bank_name = candidate['bank_name']
             product_name = candidate['product_name']
             product_type = candidate['product_type']
@@ -312,6 +317,7 @@ def save_recommendations(user, analysis, payloads, candidates):
             user=user,
             analysis=analysis,
             product=product,
+            option=option,
             title=payload.get('title') or '금융상품 추천',
             description=payload.get('description') or '',
             reason=payload.get('reason') or '',

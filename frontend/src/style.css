@@ -1,6 +1,12 @@
 :root {
-  color: #172033;
-  background: #f5f7fa;
+  --ink: #171717;
+  --muted: #737373;
+  --border: rgba(190, 220, 241, .72);
+  --soft: #eef8ff;
+  --accent: #4f8cff;
+  --accent-soft: #edf4ff;
+  color: #262626;
+  background: #edf8ff;
   font-family: Inter, Pretendard, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,8 +21,11 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    linear-gradient(180deg, rgba(47, 107, 94, 0.08), transparent 280px),
-    #f5f7fa;
+    radial-gradient(circle at 12% 8%, rgba(189, 231, 255, .9), transparent 32%),
+    radial-gradient(circle at 88% 18%, rgba(216, 239, 255, .85), transparent 34%),
+    linear-gradient(180deg, #f5fbff 0%, #eaf6ff 48%, #f7fbff 100%);
+  background-attachment: fixed;
+  color: var(--ink);
 }
 
 a {
@@ -34,6 +43,8 @@ select,
 textarea {
   font: inherit;
 }
+
+button{cursor:pointer}button:disabled{cursor:not-allowed}.guest-layout{width:min(100% - 24px,1040px);margin:auto}.btn-primary{--bs-btn-bg:var(--accent);--bs-btn-border-color:var(--accent);--bs-btn-hover-bg:#3c78e6;--bs-btn-hover-border-color:#3c78e6}.form-control,.form-select{border-color:var(--border);border-radius:9px;background-color:#fafafa}.form-control:focus,.form-select:focus{border-color:#9ec0ff;box-shadow:0 0 0 3px rgba(79,140,255,.12)}
 
 .app-shell {
   min-height: 100vh;
@@ -55,9 +66,13 @@ textarea {
 }
 
 .brand {
-  font-size: 19px;
+  background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045);
+  background-clip: text;
+  color: transparent;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-style: italic;
   font-weight: 800;
-  letter-spacing: 0;
 }
 
 .top-actions {
@@ -99,8 +114,8 @@ textarea {
 }
 
 .primary-link {
-  border-color: #2f6b5e;
-  background: #2f6b5e;
+  border-color: var(--accent);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -129,7 +144,7 @@ textarea {
   transform: translateX(-50%);
   overflow: hidden;
   border: 1px solid #d7e0e8;
-  border-radius: 8px;
+  border-radius: 16px;
   background: #ffffff;
   box-shadow: 0 12px 40px rgba(23, 32, 51, 0.12);
 }
@@ -145,15 +160,16 @@ textarea {
 
 .bottom-nav a.active,
 .bottom-nav a.router-link-active {
-  background: #eef6f2;
-  color: #2f6b5e;
+  background: #f5f5f5;
+  color: #000;
 }
 
 .surface {
-  border: 1px solid #dde4ea;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 8px 28px rgba(23, 32, 51, 0.06);
+  border: 1px solid rgba(255,255,255,.86);
+  border-radius: 18px;
+  background: rgba(255,255,255,.68);
+  box-shadow: 0 16px 45px rgba(76,145,201,.1);
+  backdrop-filter: blur(18px);
 }
 
 .section-head {
@@ -223,7 +239,7 @@ textarea {
   height: 112px;
   display: grid;
   place-items: center;
-  background: #2f6b5e;
+  background: var(--accent);
   color: #fff;
   font-size: 2.4rem;
   font-weight: 850;

@@ -78,7 +78,7 @@ def normalize_option(product_type, item):
         'fin_prdt_cd': clean_text(item.get('fin_prdt_cd')),
         'intr_rate_type': clean_text(item.get('intr_rate_type')),
         'intr_rate_type_nm': clean_text(item.get('intr_rate_type_nm')),
-        'save_trm': clean_text(item.get('save_trm')),
+        'save_trm': to_int(item.get('save_trm')),
         'intr_rate': to_float(item.get('intr_rate')),
         'intr_rate2': to_float(item.get('intr_rate2')),
         'rsrv_type': clean_text(item.get('rsrv_type')),
@@ -180,7 +180,7 @@ def build_fixture_objects(datasets):
 
         for item in dataset.get('option_list', []):
             option = normalize_option(product_type, item)
-            if not option['fin_prdt_cd']:
+            if not option['fin_prdt_cd'] or option['save_trm'] is None:
                 continue
             product_key = (product_type, option['fin_prdt_cd'])
             key = (
@@ -309,6 +309,8 @@ def save_products_to_db(datasets):
             fields = normalize_option(product_type, item)
             fin_prdt_cd = fields.pop('fin_prdt_cd')
             fields.pop('product_type', None)
+            if fields['save_trm'] is None:
+                continue
             product = product_by_key.get((product_type, fin_prdt_cd))
             if not product:
                 continue

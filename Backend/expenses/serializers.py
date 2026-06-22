@@ -32,6 +32,7 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
             'display_name',
             'category',
             'category_name',
+            'title',
             'media',
             'amount',
             'product_name',
