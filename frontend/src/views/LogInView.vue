@@ -2,8 +2,8 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import BrandLogo from '../components/common/BrandLogo.vue'
 import { useAccountStore } from '../stores/account'
-
 
 const router = useRouter()
 const account = useAccountStore()
@@ -26,29 +26,95 @@ const submit = async () => {
 </script>
 
 <template>
-  <section class="auth-card surface">
-    <div class="p-4">
-      <h1 class="h4 mb-4">로그인</h1>
-      <form class="d-grid gap-3" @submit.prevent="submit">
-        <div>
-          <label for="login-username" class="form-label">아이디</label>
-          <input id="login-username" v-model.trim="form.username" class="form-control" autocomplete="username" required>
-        </div>
+  <section class="auth-page">
+    <form class="auth-card vintage-card" @submit.prevent="submit">
+      <BrandLogo :variant="6" size="medium" />
+      <div>
+        <p class="auth-kicker">Welcome Back</p>
+        <h1 class="display-title">로그인</h1>
+        <p>내 소비 피드와 금융 대시보드로 돌아가세요.</p>
+      </div>
 
-        <div>
-          <label for="login-password" class="form-label">비밀번호</label>
-          <input id="login-password" v-model="form.password" class="form-control" type="password" autocomplete="current-password" required>
-        </div>
+      <label>
+        아이디
+        <input v-model.trim="form.username" class="form-control" autocomplete="username" required>
+      </label>
 
-        <button class="btn btn-primary" :disabled="isSubmitting">
-          {{ isSubmitting ? '로그인 중...' : '로그인' }}
-        </button>
-        <div v-if="errorMessage" class="alert alert-danger mb-0">{{ errorMessage }}</div>
-      </form>
-      <p class="mt-3 mb-0 text-secondary">
-        계정이 없다면
-        <RouterLink class="fw-bold" :to="{ name: 'signup' }">회원가입</RouterLink>
-      </p>
-    </div>
+      <label>
+        비밀번호
+        <input
+          v-model="form.password"
+          class="form-control"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+      </label>
+
+      <button class="vintage-button auth-submit" :disabled="isSubmitting">
+        {{ isSubmitting ? '로그인 중...' : '로그인' }}
+      </button>
+
+      <p v-if="errorMessage" class="auth-error">{{ errorMessage }}</p>
+      <p class="auth-link">계정이 없다면 <RouterLink :to="{ name: 'signup' }">회원가입</RouterLink></p>
+    </form>
   </section>
 </template>
+
+<style scoped>
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 32px 18px;
+}
+
+.auth-card {
+  display: grid;
+  gap: 16px;
+  width: min(100%, 430px);
+  padding: 28px;
+}
+
+.auth-kicker {
+  margin: 8px 0 0;
+  color: var(--color-dark-gold);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 2px 0;
+  font-size: 42px;
+}
+
+p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: var(--color-muted);
+  font-weight: 900;
+}
+
+.auth-submit {
+  min-height: 48px;
+}
+
+.auth-error {
+  border-radius: 14px;
+  background: rgba(182, 74, 53, 0.12);
+  color: var(--color-red);
+  padding: 10px 12px;
+}
+
+.auth-link a {
+  color: var(--color-ink);
+  font-weight: 900;
+  text-decoration: underline;
+}
+</style>

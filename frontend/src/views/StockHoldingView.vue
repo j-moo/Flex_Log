@@ -1,103 +1,114 @@
 <script setup>
 import { createChart, LineSeries } from 'lightweight-charts'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 
 import { createRealtimePrice, getChart, getStocks } from '../api/finance'
+import { createStockHolding, deleteStockHolding, getStockHoldings, getStockQuote } from '../api/financial'
+import { findStockCandidate, searchStockCandidates } from '../utils/stocks'
 
-
-const stocks = ref([])
+const holdings = ref([])
 const selectedSymbol = ref('')
 const chartContainer = ref(null)
 const isLoading = ref(false)
 const errorMessage = ref('')
+const actionMessage = ref('')
+const useMockData = ref(false)
+const deletingId = ref(null)
+const form = reactive({
+  keyword: '',
+  quantity: '',
+  average_price: '',
+  memo: '',
+})
 
 let chart = null
 let lineSeries = null
 let resizeObserver = null
 let pollingTimer = null
 
+const suggestions = computed(() => searchStockCandidates(form.keyword).slice(0, 6))
 const selectedStock = computed(() =>
-  stocks.value.find((stock) => stock.symbol === selectedSymbol.value) || stocks.value[0] || null,
+  holdings.value.find((stock) => stock.symbol === selectedSymbol.value) || holdings.value[0] || null,
 )
-
-const portfolioSummary = computed(() => {
-  return stocks.value.reduce(
+const portfolioSummary = computed(() =>
+  holdings.value.reduce(
     (summary, stock) => {
-      summary.invested += stock.invested_amount
-      summary.valuation += stock.valuation_amount
-      summary.profit += stock.profit_loss
+      summary.invested += Number(stock.invested_amount || stock.quantity * stock.average_price || 0)
+      summary.valuation += Number(stock.valuation_amount || stock.quantity * stock.current_price || 0)
+      summary.profit += Number(stock.profit_loss || 0)
       return summary
     },
     { invested: 0, valuation: 0, profit: 0 },
-  )
-})
-
+  ),
+)
 const portfolioProfitRate = computed(() => {
   if (!portfolioSummary.value.invested) return 0
   return (portfolioSummary.value.profit / portfolioSummary.value.invested) * 100
 })
 
-const formatCurrency = (value) =>
-  `${Math.round(Number(value || 0)).toLocaleString('ko-KR')}원`
-
-const formatQuantity = (value) =>
-  Number(value || 0).toLocaleString('ko-KR')
-
-const formatRate = (value) =>
-  `${Number(value || 0).toFixed(2)}%`
-
+const formatCurrency = (value) => `${Math.round(Number(value || 0)).toLocaleString('ko-KR')}원`
+const formatQuantity = (value) => Number(value || 0).toLocaleString('ko-KR')
+const formatRate = (value) => `${Number(value || 0).toFixed(2)}%`
 const toChartTime = (isoTime) => Math.floor(new Date(isoTime).getTime() / 1000)
 
-const recalculateStock = (stock, nextPrice) => {
-  const valuationAmount = stock.quantity * nextPrice
-  const investedAmount = stock.quantity * stock.average_price
-  const profitLoss = valuationAmount - investedAmount
-
+const normalizeHolding = (stock) => {
+  const quantity = Number(stock.quantity || 0)
+  const averagePrice = Number(stock.average_price || 0)
+  const currentPrice = Number(stock.current_price || 0)
+  const invested = Number(stock.invested_amount ?? quantity * averagePrice)
+  const valuation = Number(stock.valuation_amount ?? quantity * currentPrice)
+  const profit = Number(stock.profit_loss ?? valuation - invested)
   return {
+    ...stock,
+    quantity,
+    average_price: averagePrice,
+    current_price: currentPrice,
+    invested_amount: invested,
+    valuation_amount: valuation,
+    profit_loss: profit,
+    profit_rate: Number(stock.profit_rate ?? (invested ? (profit / invested) * 100 : 0)),
+  }
+}
+
+const recalculateStock = (stock, nextPrice) => {
+  const valuationAmount = Number(stock.quantity) * nextPrice
+  const investedAmount = Number(stock.quantity) * Number(stock.average_price)
+  const profitLoss = valuationAmount - investedAmount
+  return normalizeHolding({
     ...stock,
     current_price: nextPrice,
     valuation_amount: valuationAmount,
     profit_loss: profitLoss,
     profit_rate: investedAmount ? (profitLoss / investedAmount) * 100 : 0,
-  }
+  })
 }
 
 const setupChart = () => {
   if (!chartContainer.value || chart) return
-
   chart = createChart(chartContainer.value, {
-    height: 320,
+    height: 440,
     layout: {
-      background: { color: '#ffffff' },
-      textColor: '#657282',
-      fontFamily: 'Inter, Pretendard, system-ui, sans-serif',
+      background: { color: '#fff8e7' },
+      textColor: '#6f644f',
+      fontFamily: 'Noto Sans KR, system-ui, sans-serif',
       attributionLogo: false,
     },
     grid: {
-      vertLines: { color: '#eef2f5' },
-      horzLines: { color: '#eef2f5' },
+      vertLines: { color: 'rgba(23, 19, 13, 0.08)' },
+      horzLines: { color: 'rgba(23, 19, 13, 0.08)' },
     },
-    rightPriceScale: {
-      borderColor: '#dde4ea',
-    },
+    rightPriceScale: { borderColor: 'rgba(23, 19, 13, 0.25)' },
     timeScale: {
-      borderColor: '#dde4ea',
+      borderColor: 'rgba(23, 19, 13, 0.25)',
       timeVisible: true,
       secondsVisible: false,
-    },
-    crosshair: {
-      mode: 1,
     },
   })
 
   lineSeries = chart.addSeries(LineSeries, {
-    color: '#2f6b5e',
-    lineWidth: 2,
-    priceFormat: {
-      type: 'price',
-      precision: 0,
-      minMove: 1,
-    },
+    color: '#7f936b',
+    lineWidth: 3,
+    priceFormat: { type: 'price', precision: 0, minMove: 1 },
   })
 
   resizeObserver = new ResizeObserver((entries) => {
@@ -109,20 +120,22 @@ const setupChart = () => {
 
 const loadChart = async () => {
   if (!selectedStock.value || !lineSeries) return
-  const points = await getChart(selectedStock.value.symbol, '1m')
-  lineSeries.setData(points.map((point) => ({
-    time: toChartTime(point.time),
-    value: point.price,
-  })))
+  try {
+    const points = await getChart(selectedStock.value.symbol, '1m')
+    lineSeries.setData(points.map((point) => ({ time: toChartTime(point.time), value: point.price })))
+  } catch {
+    const base = Number(selectedStock.value.current_price || 1000)
+    lineSeries.setData(Array.from({ length: 30 }, (_, index) => ({
+      time: Math.floor((Date.now() - (29 - index) * 60000) / 1000),
+      value: Math.round(base * (0.97 + index * 0.002 + Math.sin(index / 3) * 0.01)),
+    })))
+  }
   chart.timeScale().fitContent()
 }
 
 const applyRealtimeTick = () => {
-  stocks.value = stocks.value.map((stock) => {
-    const nextPrice = createRealtimePrice(stock.current_price)
-    return recalculateStock(stock, nextPrice)
-  })
-
+  if (!holdings.value.length) return
+  holdings.value = holdings.value.map((stock) => recalculateStock(stock, createRealtimePrice(stock.current_price)))
   if (selectedStock.value && lineSeries) {
     const now = new Date()
     now.setSeconds(0, 0)
@@ -138,119 +151,168 @@ const startRealtimeMock = () => {
   pollingTimer = window.setInterval(applyRealtimeTick, 5000)
 }
 
-const selectStock = (symbol) => {
-  selectedSymbol.value = symbol
-}
-
-onMounted(async () => {
+const loadHoldings = async () => {
   isLoading.value = true
   errorMessage.value = ''
-
   try {
-    stocks.value = await getStocks()
-    selectedSymbol.value = stocks.value[0]?.symbol || ''
-
+    const response = await getStockHoldings()
+    holdings.value = response.data.map(normalizeHolding)
+    useMockData.value = false
+    if (!holdings.value.length) {
+      holdings.value = (await getStocks()).map(normalizeHolding)
+      useMockData.value = true
+    }
+    selectedSymbol.value = holdings.value[0]?.symbol || ''
+  } catch {
+    holdings.value = (await getStocks()).map(normalizeHolding)
+    selectedSymbol.value = holdings.value[0]?.symbol || ''
+    useMockData.value = true
+  } finally {
     isLoading.value = false
-
     await nextTick()
     setupChart()
     await loadChart()
     startRealtimeMock()
-  } catch (error) {
-    console.error(error)
-    errorMessage.value = '보유주식 Mock 데이터를 불러오지 못했습니다.'
-    isLoading.value = false
   }
-})
+}
+
+const selectStock = (symbol) => {
+  selectedSymbol.value = symbol
+}
+
+const chooseSuggestion = (item) => {
+  form.keyword = item.name
+  if (!form.average_price) form.average_price = String(item.price)
+}
+
+const submitHolding = async () => {
+  actionMessage.value = ''
+  errorMessage.value = ''
+  const candidate = findStockCandidate(form.keyword)
+  if (!candidate) {
+    errorMessage.value = '종목명 또는 종목코드를 후보 목록에서 선택해주세요.'
+    return
+  }
+
+  let currentPrice = Number(candidate.price || form.average_price || 0)
+  try {
+    const quote = (await getStockQuote(candidate.symbol)).data
+    currentPrice = Number(quote.current_price || quote.price || currentPrice)
+  } catch {
+    // External quote keys can be absent in local development. Candidate price keeps the flow usable.
+  }
+
+  try {
+    await createStockHolding({
+      symbol: candidate.symbol,
+      name: candidate.name,
+      quantity: form.quantity,
+      average_price: form.average_price || currentPrice,
+      current_price: currentPrice,
+      memo: form.memo,
+    })
+    actionMessage.value = `${candidate.name}을 보유 주식에 추가했습니다.`
+    Object.assign(form, { keyword: '', quantity: '', average_price: '', memo: '' })
+    await loadHoldings()
+  } catch (error) {
+    errorMessage.value = Object.values(error.response?.data || {}).flat().join(' ') || '보유 주식 추가에 실패했습니다.'
+  }
+}
+
+const removeHolding = async (stock) => {
+  if (!window.confirm(`${stock.name} 보유 정보를 삭제할까요?`)) return
+  deletingId.value = stock.id || stock.symbol
+  errorMessage.value = ''
+  actionMessage.value = ''
+  try {
+    if (useMockData.value) {
+      holdings.value = holdings.value.filter((item) => item.symbol !== stock.symbol)
+      selectedSymbol.value = holdings.value[0]?.symbol || ''
+    } else {
+      await deleteStockHolding(stock.id)
+      await loadHoldings()
+    }
+    actionMessage.value = `${stock.name}을 삭제했습니다.`
+  } catch (error) {
+    errorMessage.value = error.response?.data?.detail || '보유 주식 삭제에 실패했습니다.'
+  } finally {
+    deletingId.value = null
+  }
+}
 
 watch(selectedSymbol, loadChart)
 
+onMounted(loadHoldings)
+
 onBeforeUnmount(() => {
   window.clearInterval(pollingTimer)
-  if (resizeObserver) resizeObserver.disconnect()
-  if (chart) chart.remove()
+  resizeObserver?.disconnect()
+  chart?.remove()
 })
 </script>
 
 <template>
-  <section class="stock-page">
-    <div class="section-head stock-head">
+  <section class="stock-page page-shell">
+    <div class="section-head">
       <div>
-        <h1>보유주식</h1>
-        <p>Mock 시세로 현재가와 수익률을 확인하고, 5초마다 갱신되는 차트를 미리 검증합니다.</p>
+        <h1>주식 보유 현황</h1>
+        <p>보유 종목을 추가/삭제하고 수익률과 차트를 확인합니다.</p>
       </div>
-      <RouterLink class="btn btn-outline-secondary" :to="{ name: 'finance-products' }">
-        금융상품
-      </RouterLink>
     </div>
 
-    <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-    <div v-if="isLoading" class="surface grid-empty">보유주식 정보를 불러오는 중입니다.</div>
+    <p v-if="errorMessage" class="state-card error">{{ errorMessage }}</p>
+    <p v-if="actionMessage" class="notice-card">{{ actionMessage }}</p>
+    <p v-if="useMockData" class="notice-card">저장된 보유 주식이 없어 예시 데이터로 표시 중입니다.</p>
+
+    <form class="holding-form glass-panel" @submit.prevent="submitHolding">
+      <label>
+        종목명 또는 코드
+        <input v-model.trim="form.keyword" class="form-control" placeholder="예: 삼성전자">
+      </label>
+      <label>
+        수량
+        <input v-model="form.quantity" class="form-control" type="number" min="0.0001" step="0.0001" required>
+      </label>
+      <label>
+        평균 매수가
+        <input v-model="form.average_price" class="form-control" type="number" min="0" step="1" placeholder="자동 입력 가능">
+      </label>
+      <label>
+        메모
+        <input v-model.trim="form.memo" class="form-control" placeholder="선택 입력">
+      </label>
+      <button class="vintage-button" type="submit">추가</button>
+
+      <div class="suggestions">
+        <button v-for="item in suggestions" :key="item.symbol" type="button" @click="chooseSuggestion(item)">
+          <strong>{{ item.name }}</strong>
+          <span>{{ item.symbol }} · {{ item.market }}</span>
+        </button>
+      </div>
+    </form>
+
+    <div v-if="isLoading" class="state-card">보유 주식 정보를 불러오는 중입니다.</div>
 
     <template v-else>
       <div class="summary-grid">
-        <div class="surface summary-card">
+        <article class="vintage-card">
           <span>총 매수금액</span>
           <strong>{{ formatCurrency(portfolioSummary.invested) }}</strong>
-        </div>
-        <div class="surface summary-card">
+        </article>
+        <article class="vintage-card">
           <span>총 평가금액</span>
           <strong>{{ formatCurrency(portfolioSummary.valuation) }}</strong>
-        </div>
-        <div class="surface summary-card">
+        </article>
+        <article class="vintage-card">
           <span>총 수익률</span>
-          <strong :class="portfolioSummary.profit >= 0 ? 'text-success' : 'text-danger'">
+          <strong :class="portfolioSummary.profit >= 0 ? 'positive' : 'negative'">
             {{ formatRate(portfolioProfitRate) }}
           </strong>
-        </div>
+        </article>
       </div>
 
       <div class="stock-layout">
-        <div class="surface stock-table-wrap">
-          <div class="table-title">
-            <h2>보유 목록</h2>
-            <span>5초 Mock polling</span>
-          </div>
-
-          <div class="table-responsive">
-            <table class="table stock-table align-middle">
-              <thead>
-                <tr>
-                  <th>종목명</th>
-                  <th>종목코드</th>
-                  <th class="text-end">보유수량</th>
-                  <th class="text-end">평균매수단가</th>
-                  <th class="text-end">현재가</th>
-                  <th class="text-end">수익률</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="stock in stocks"
-                  :key="stock.symbol"
-                  :class="{ selected: stock.symbol === selectedStock?.symbol }"
-                  @click="selectStock(stock.symbol)"
-                >
-                  <td>
-                    <strong>{{ stock.name }}</strong>
-                  </td>
-                  <td>{{ stock.symbol }}</td>
-                  <td class="text-end">{{ formatQuantity(stock.quantity) }}</td>
-                  <td class="text-end">{{ formatCurrency(stock.average_price) }}</td>
-                  <td class="text-end">{{ formatCurrency(stock.current_price) }}</td>
-                  <td
-                    class="text-end fw-bold"
-                    :class="stock.profit_rate >= 0 ? 'text-success' : 'text-danger'"
-                  >
-                    {{ formatRate(stock.profit_rate) }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <aside class="surface chart-panel">
+        <aside class="chart-panel glass-panel">
           <div class="chart-header">
             <div>
               <h2>{{ selectedStock?.name || '종목 선택' }}</h2>
@@ -258,13 +320,49 @@ onBeforeUnmount(() => {
             </div>
             <div v-if="selectedStock" class="price-block">
               <strong>{{ formatCurrency(selectedStock.current_price) }}</strong>
-              <span :class="selectedStock.profit_rate >= 0 ? 'text-success' : 'text-danger'">
+              <span :class="selectedStock.profit_rate >= 0 ? 'positive' : 'negative'">
                 {{ formatRate(selectedStock.profit_rate) }}
               </span>
             </div>
           </div>
           <div ref="chartContainer" class="chart-container"></div>
         </aside>
+
+        <section class="stock-table-wrap vintage-card">
+          <div class="table-title">
+            <h2>보유 목록</h2>
+            <span>5초 mock polling</span>
+          </div>
+
+          <div class="stock-list">
+            <article
+              v-for="stock in holdings"
+              :key="stock.symbol"
+              class="stock-item"
+              :class="{ selected: stock.symbol === selectedStock?.symbol }"
+            >
+              <button class="stock-select" type="button" @click="selectStock(stock.symbol)">
+                <div class="stock-name">
+                  <strong>{{ stock.name }}</strong>
+                  <small>{{ stock.symbol }}</small>
+                </div>
+                <div class="stock-metrics">
+                  <span>수량 {{ formatQuantity(stock.quantity) }}주</span>
+                  <span>현재가 {{ formatCurrency(stock.current_price) }}</span>
+                  <b :class="stock.profit_rate >= 0 ? 'positive' : 'negative'">{{ formatRate(stock.profit_rate) }}</b>
+                </div>
+              </button>
+              <button
+                class="delete-button"
+                type="button"
+                :disabled="deletingId === (stock.id || stock.symbol)"
+                @click="removeHolding(stock)"
+              >
+                삭제
+              </button>
+            </article>
+          </div>
+        </section>
       </div>
     </template>
   </section>
@@ -276,8 +374,49 @@ onBeforeUnmount(() => {
   gap: 18px;
 }
 
-.stock-head {
-  margin-bottom: 0;
+.notice-card {
+  border: 2px solid var(--color-ink);
+  border-radius: 16px;
+  background: var(--color-money-light);
+  margin: 0;
+  padding: 12px;
+  font-weight: 900;
+}
+
+.holding-form {
+  display: grid;
+  grid-template-columns: 1.1fr 0.6fr 0.8fr 1fr auto;
+  gap: 12px;
+  padding: 16px;
+}
+
+.holding-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--color-muted);
+  font-weight: 900;
+}
+
+.suggestions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.suggestions button {
+  display: inline-grid;
+  border: 2px solid rgba(23, 19, 13, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 248, 231, 0.72);
+  color: var(--color-ink);
+  padding: 7px 12px;
+  text-align: left;
+}
+
+.suggestions span {
+  color: var(--color-muted);
+  font-size: 11px;
 }
 
 .summary-grid {
@@ -286,33 +425,31 @@ onBeforeUnmount(() => {
   gap: 12px;
 }
 
-.summary-card {
+.summary-grid article {
   display: grid;
-  gap: 6px;
+  gap: 7px;
   padding: 16px;
 }
 
-.summary-card span {
-  color: #657282;
-  font-size: 13px;
-  font-weight: 800;
+.summary-grid span {
+  color: var(--color-muted);
+  font-weight: 900;
 }
 
-.summary-card strong {
-  color: #172033;
-  font-size: 24px;
-  line-height: 1.2;
+.summary-grid strong {
+  font-size: 25px;
 }
 
 .stock-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.65fr);
+  gap: 18px;
   align-items: start;
 }
 
 .stock-table-wrap,
 .chart-panel {
+  min-width: 0;
   overflow: hidden;
 }
 
@@ -322,50 +459,102 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  border-bottom: 2px solid var(--color-ink);
   padding: 16px;
-  border-bottom: 1px solid #dde4ea;
 }
 
 .table-title h2,
 .chart-header h2 {
   margin: 0;
-  color: #172033;
-  font-size: 18px;
-  font-weight: 850;
+  font-size: 22px;
 }
 
 .table-title span,
 .chart-header p {
   margin: 0;
-  color: #657282;
-  font-size: 13px;
-  font-weight: 700;
+  color: var(--color-muted);
+  font-weight: 900;
 }
 
-.stock-table {
-  margin: 0;
-  min-width: 760px;
+.stock-list {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
 }
 
-.stock-table thead th {
-  border-bottom: 1px solid #dde4ea;
-  color: #657282;
-  font-size: 13px;
-  font-weight: 850;
+.stock-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: 8px;
+  border: 2px solid rgba(23, 19, 13, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 248, 231, 0.58);
+  padding: 8px;
+}
+
+.stock-item.selected {
+  background: rgba(200, 210, 170, 0.34);
+}
+
+.stock-select {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  padding: 4px;
+  text-align: left;
+}
+
+.stock-name {
+  display: grid;
+  min-width: 0;
+}
+
+.stock-name strong,
+.stock-name small {
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.stock-table tbody tr {
-  cursor: pointer;
+.stock-list small {
+  color: var(--color-muted);
 }
 
-.stock-table tbody tr.selected {
-  background: #eef6f2;
+.stock-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-.stock-table tbody td {
-  height: 58px;
+.stock-metrics span,
+.stock-metrics b {
+  border-radius: 999px;
+  background: rgba(23, 19, 13, 0.07);
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.delete-button {
+  align-self: center;
+  border: 2px solid var(--color-red);
+  border-radius: 999px;
+  background: rgba(182, 74, 53, 0.12);
+  color: var(--color-red);
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 900;
   white-space: nowrap;
+}
+
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: wait;
 }
 
 .price-block {
@@ -375,38 +564,37 @@ onBeforeUnmount(() => {
 }
 
 .price-block strong {
-  color: #172033;
-  font-size: 20px;
+  font-size: 21px;
 }
 
-.price-block span {
-  font-weight: 850;
+.positive {
+  color: var(--color-money);
+}
+
+.negative {
+  color: var(--color-red);
 }
 
 .chart-container {
   width: 100%;
-  height: 320px;
+  height: 440px;
 }
 
-@media (max-width: 980px) {
-  .stock-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 700px) {
+@media (max-width: 1080px) {
+  .holding-form,
+  .stock-layout,
   .summary-grid {
     grid-template-columns: 1fr;
   }
+}
 
-  .table-title,
-  .chart-header {
-    align-items: flex-start;
-    flex-direction: column;
+@media (max-width: 520px) {
+  .stock-item {
+    grid-template-columns: 1fr;
   }
 
-  .price-block {
-    text-align: left;
+  .delete-button {
+    justify-self: start;
   }
 }
 </style>

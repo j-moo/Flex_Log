@@ -2,8 +2,8 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import BrandLogo from '../components/common/BrandLogo.vue'
 import { useAccountStore } from '../stores/account'
-
 
 const router = useRouter()
 const account = useAccountStore()
@@ -60,50 +60,116 @@ const submit = async () => {
 </script>
 
 <template>
-  <section class="auth-card surface">
-    <div class="p-4">
-      <h1 class="h4 mb-4">회원가입</h1>
-      <form class="d-grid gap-3" @submit.prevent="submit">
-        <div>
-          <label for="username" class="form-label">아이디</label>
-          <input id="username" v-model.trim="form.username" class="form-control" autocomplete="username" required>
-          <div v-if="errors.username" class="invalid-feedback d-block">{{ errors.username }}</div>
-        </div>
+  <section class="auth-page">
+    <form class="auth-card vintage-card" @submit.prevent="submit">
+      <BrandLogo :variant="1" size="medium" />
+      <div>
+        <p class="auth-kicker">Join Flex-Log</p>
+        <h1 class="display-title">회원가입</h1>
+        <p>소비 기록을 피드로 남기고, 금융 인사이트까지 이어가세요.</p>
+      </div>
 
-        <div>
-          <label for="name" class="form-label">이름</label>
-          <input id="name" v-model.trim="form.name" class="form-control" maxlength="50">
-          <div v-if="errors.name" class="invalid-feedback d-block">{{ errors.name }}</div>
-        </div>
+      <label>
+        아이디
+        <input v-model.trim="form.username" class="form-control" autocomplete="username" required>
+        <span v-if="errors.username">{{ errors.username }}</span>
+      </label>
 
-        <div>
-          <label for="email" class="form-label">이메일</label>
-          <input id="email" v-model.trim="form.email" class="form-control" type="email" autocomplete="email" required>
-          <div v-if="errors.email" class="invalid-feedback d-block">{{ errors.email }}</div>
-        </div>
+      <label>
+        이름
+        <input v-model.trim="form.name" class="form-control" maxlength="50">
+        <span v-if="errors.name">{{ errors.name }}</span>
+      </label>
 
-        <div>
-          <label for="password" class="form-label">비밀번호</label>
-          <input id="password" v-model="form.password" class="form-control" type="password" autocomplete="new-password" required>
-          <div class="form-text">8자 이상, 너무 흔하거나 숫자만으로 된 비밀번호는 사용할 수 없습니다.</div>
-          <div v-if="errors.password" class="invalid-feedback d-block">{{ errors.password }}</div>
-        </div>
+      <label>
+        이메일
+        <input v-model.trim="form.email" class="form-control" type="email" autocomplete="email" required>
+        <span v-if="errors.email">{{ errors.email }}</span>
+      </label>
 
-        <div>
-          <label for="password-confirm" class="form-label">비밀번호 확인</label>
-          <input id="password-confirm" v-model="form.password_confirm" class="form-control" type="password" autocomplete="new-password" required>
-          <div v-if="errors.password_confirm" class="invalid-feedback d-block">{{ errors.password_confirm }}</div>
-        </div>
+      <label>
+        비밀번호
+        <input v-model="form.password" class="form-control" type="password" autocomplete="new-password" required>
+        <small>8자 이상, 너무 흔하거나 숫자만으로 된 비밀번호는 사용할 수 없습니다.</small>
+        <span v-if="errors.password">{{ errors.password }}</span>
+      </label>
 
-        <button class="btn btn-primary" :disabled="isSubmitting">
-          {{ isSubmitting ? '가입 중...' : '회원가입' }}
-        </button>
-        <div v-if="generalError" class="alert alert-danger mb-0">{{ generalError }}</div>
-      </form>
-      <p class="mt-3 mb-0 text-secondary">
-        이미 계정이 있다면
-        <RouterLink class="fw-bold" :to="{ name: 'login' }">로그인</RouterLink>
-      </p>
-    </div>
+      <label>
+        비밀번호 확인
+        <input
+          v-model="form.password_confirm"
+          class="form-control"
+          type="password"
+          autocomplete="new-password"
+          required
+        >
+        <span v-if="errors.password_confirm">{{ errors.password_confirm }}</span>
+      </label>
+
+      <button class="vintage-button auth-submit" :disabled="isSubmitting">
+        {{ isSubmitting ? '가입 중...' : '회원가입' }}
+      </button>
+
+      <p v-if="generalError" class="auth-error">{{ generalError }}</p>
+      <p class="auth-link">이미 계정이 있다면 <RouterLink :to="{ name: 'login' }">로그인</RouterLink></p>
+    </form>
   </section>
 </template>
+
+<style scoped>
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 32px 18px;
+}
+
+.auth-card {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 470px);
+  padding: 28px;
+}
+
+.auth-kicker {
+  margin: 8px 0 0;
+  color: var(--color-dark-gold);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 2px 0;
+  font-size: 42px;
+}
+
+p,
+small {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: var(--color-muted);
+  font-weight: 900;
+}
+
+label span,
+.auth-error {
+  color: var(--color-red);
+  font-size: 13px;
+}
+
+.auth-submit {
+  min-height: 48px;
+}
+
+.auth-link a {
+  color: var(--color-ink);
+  font-weight: 900;
+  text-decoration: underline;
+}
+</style>

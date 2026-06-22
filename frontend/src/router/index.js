@@ -6,12 +6,14 @@ import ExpenseDetailView from '../views/ExpenseDetailView.vue'
 import ExpenseFormView from '../views/ExpenseFormView.vue'
 import ExpenseListView from '../views/ExpenseListView.vue'
 import FinancialRecommendationView from '../views/FinancialRecommendationView.vue'
+import FinanceDayView from '../views/FinanceDayView.vue'
 import FinanceHubView from '../views/FinanceHubView.vue'
 import FinanceProductsView from '../views/FinanceProductsView.vue'
 import FriendsView from '../views/FriendsView.vue'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LogInView.vue'
 import MyPageView from '../views/MyPageView.vue'
+import NotificationView from '../views/NotificationView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import StockHoldingView from '../views/StockHoldingView.vue'
@@ -37,8 +39,10 @@ const router = createRouter({
     { path: '/logs/:id/edit', name: 'log-edit', component: ExpenseFormView, meta: { requiresAuth: true } },
     { path: '/logs/:id', name: 'log-detail', component: ExpenseDetailView, meta: { requiresAuth: true } },
     { path: '/friends', name: 'friends', component: FriendsView, meta: { requiresAuth: true } },
+    { path: '/notifications', name: 'notifications', component: NotificationView, meta: { requiresAuth: true } },
     { path: '/analysis', name: 'analysis', component: AnalysisView, meta: { requiresAuth: true } },
     { path: '/finance', name: 'finance-hub', component: FinanceHubView, meta: { requiresAuth: true } },
+    { path: '/finance/day/:date', name: 'finance-day', component: FinanceDayView, meta: { requiresAuth: true } },
     { path: '/finance/products', name: 'finance-products', component: FinanceProductsView, meta: { requiresAuth: true } },
     { path: '/finance/recommend', name: 'finance-recommend', component: FinancialRecommendationView, meta: { requiresAuth: true } },
     { path: '/finance/commodities', name: 'commodities', component: CommodityPricesView, meta: { requiresAuth: true } },
@@ -46,6 +50,7 @@ const router = createRouter({
     { path: '/finance/youtube/:videoId', name: 'youtube-detail', component: YoutubeDetailView, meta: { requiresAuth: true } },
     { path: '/finance/banks', name: 'nearby-banks', component: NearbyBanksView, meta: { requiresAuth: true } },
     { path: '/stocks', name: 'stocks', component: StockHoldingView, meta: { requiresAuth: true } },
+    { path: '/stocks/search', name: 'stock-search', component: YoutubeSearchView, meta: { requiresAuth: true } },
     { path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
   ],
 })
