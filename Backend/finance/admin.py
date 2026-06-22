@@ -1,9 +1,13 @@
 from django.contrib import admin
 
 from .models import (
+    Commodity,
+    CommodityPrice,
     FinancialProduct,
     FinancialProductOption,
     FinancialProductRecommendation,
+    StockHolding,
+    UserFinancialProduct,
 )
 
 
@@ -37,3 +41,9 @@ class FinancialProductRecommendationAdmin(admin.ModelAdmin):
     )
     list_filter = ('product_type', 'created_at')
     search_fields = ('user__username', 'bank_name', 'product_name', 'title')
+
+
+admin.site.register(UserFinancialProduct)
+admin.site.register(Commodity)
+admin.site.register(CommodityPrice)
+admin.site.register(StockHolding)

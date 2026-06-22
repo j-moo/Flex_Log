@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import api from '../api/client'
+import { getSubscriptions, joinProduct as requestJoinProduct } from '../api/financial'
 import { formatRate } from '../utils/format'
 
 
@@ -9,6 +10,9 @@ const products = ref([])
 const isLoading = ref(false)
 const errorMessage = ref('')
 const selectedProduct = ref(null)
+const subscriptions = ref([])
+const actionMessage = ref('')
+const joiningOptionId = ref(null)
 
 const filters = reactive({
   type: '',
@@ -28,6 +32,9 @@ const bestOption = (product) => product.best_option || product.options?.[0] || n
 const hasFilters = computed(() =>
   Object.values(filters).some((value) => String(value || '').trim() !== ''),
 )
+const activeOptionIds = computed(() => new Set(
+  subscriptions.value.filter((item) => item.status === 'active').map((item) => item.option.id),
+))
 
 const requestParams = computed(() => {
   const params = {}
@@ -61,7 +68,23 @@ const clearFilters = () => {
   fetchProducts()
 }
 
-onMounted(fetchProducts)
+const fetchSubscriptions = async () => {
+  subscriptions.value = (await getSubscriptions()).data
+}
+
+const subscribe = async (option) => {
+  joiningOptionId.value = option.id
+  actionMessage.value = ''
+  try {
+    await requestJoinProduct(option.id)
+    await fetchSubscriptions()
+    actionMessage.value = `${selectedProduct.value.fin_prdt_nm} ${option.save_trm}개월 상품에 가입했습니다.`
+  } catch (error) {
+    actionMessage.value = error.response?.data?.detail || '상품 가입에 실패했습니다.'
+  } finally { joiningOptionId.value = null }
+}
+
+onMounted(() => Promise.all([fetchProducts(), fetchSubscriptions()]))
 </script>
 
 <template>
@@ -71,7 +94,7 @@ onMounted(fetchProducts)
         <h1>금융상품</h1>
         <p>DB에 저장된 정기예금과 정기적금 상품을 조회합니다.</p>
       </div>
-      <RouterLink class="btn btn-primary" :to="{ name: 'finance-recommend' }">AI 추천</RouterLink>
+      <RouterLink class="btn btn-primary" :to="{ name: 'finance-hub', query: { tab: 'recommend' } }">AI 추천</RouterLink>
     </div>
 
     <form class="surface p-3 mb-4" @submit.prevent="fetchProducts">
@@ -102,6 +125,7 @@ onMounted(fetchProducts)
     </form>
 
     <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div v-if="actionMessage" class="alert alert-info">{{ actionMessage }}</div>
     <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
     <div v-else-if="!products.length" class="surface grid-empty">조회된 금융상품이 없습니다.</div>
 
@@ -169,6 +193,7 @@ onMounted(fetchProducts)
                     <th>기본</th>
                     <th>최고</th>
                     <th>방식</th>
+                    <th>가입</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -177,6 +202,17 @@ onMounted(fetchProducts)
                     <td>{{ formatRate(option.intr_rate) }}</td>
                     <td>{{ formatRate(option.intr_rate2) }}</td>
                     <td>{{ option.intr_rate_type_nm || option.rsrv_type_nm || '-' }}</td>
+                    <td>
+                      <button
+                        class="btn btn-sm"
+                        :class="activeOptionIds.has(option.id) ? 'btn-outline-secondary' : 'btn-primary'"
+                        type="button"
+                        :disabled="activeOptionIds.has(option.id) || joiningOptionId === option.id"
+                        @click="subscribe(option)"
+                      >
+                        {{ activeOptionIds.has(option.id) ? '가입 중' : '가입' }}
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>

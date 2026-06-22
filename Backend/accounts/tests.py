@@ -83,3 +83,31 @@ class SignUpAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('password', response.data)
+
+
+class LogoutAPITests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='logout-user',
+            email='logout@example.com',
+            password='StrongPass123!',
+        )
+
+    def test_logout_blacklists_refresh_token(self):
+        from rest_framework_simplejwt.tokens import RefreshToken
+
+        refresh = RefreshToken.for_user(self.user)
+        self.client.force_authenticate(self.user)
+        response = self.client.post(
+            '/api/v1/accounts/logout/',
+            {'refresh': str(refresh)},
+            format='json',
+        )
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        retry = self.client.post(
+            '/api/v1/accounts/logout/',
+            {'refresh': str(refresh)},
+            format='json',
+        )
+        self.assertEqual(retry.status_code, status.HTTP_400_BAD_REQUEST)

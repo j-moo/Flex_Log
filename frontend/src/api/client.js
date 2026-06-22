@@ -37,7 +37,7 @@ api.interceptors.response.use(
         request.headers.Authorization = `Bearer ${account.accessToken}`
         return api(request)
       } catch {
-        account.logout()
+        account.clearSession()
       }
     }
 

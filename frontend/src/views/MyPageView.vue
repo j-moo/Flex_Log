@@ -52,6 +52,7 @@ onMounted(loadDashboard)
         <p>내 소비 기록과 분석 흐름을 한곳에서 확인합니다.</p>
       </div>
       <div class="d-flex flex-wrap gap-2">
+        <RouterLink class="btn btn-outline-dark" :to="{ name: 'profile' }">프로필·가입상품</RouterLink>
         <RouterLink class="btn btn-outline-primary" :to="{ name: 'analysis' }">AI 분석</RouterLink>
         <RouterLink class="btn btn-outline-secondary" :to="{ name: 'stocks' }">보유 주식</RouterLink>
       </div>

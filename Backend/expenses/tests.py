@@ -71,6 +71,7 @@ class ExpenseAPITests(APITestCase):
             self.list_url,
             {
                 'category': self.category.id,
+                'title': '점심 식사',
                 'amount': 15000,
                 'content': '점심 식사',
                 'is_visible': True,

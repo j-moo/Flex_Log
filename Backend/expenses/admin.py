@@ -10,9 +10,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(ExpenseLog)
 class ExpenseLogAdmin(admin.ModelAdmin):
-    list_display = ('user', 'category', 'amount', 'is_visible', 'created_at')
+    list_display = ('title', 'user', 'category', 'amount', 'is_visible', 'created_at')
     list_filter = ('category', 'is_visible')
-    search_fields = ('user__username', 'content')
+    search_fields = ('title', 'user__username', 'content')
 
 
 admin.site.register(Like)

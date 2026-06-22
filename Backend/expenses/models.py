@@ -38,6 +38,7 @@ class ExpenseLog(models.Model):
         on_delete=models.PROTECT,
         related_name='expense_logs',
     )
+    title = models.CharField(max_length=150)
     media = models.FileField(upload_to='expenses/%Y/%m/', blank=True, null=True)
     amount = models.PositiveBigIntegerField()
     product_name = models.CharField(max_length=100, blank=True)

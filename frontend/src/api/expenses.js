@@ -56,6 +56,11 @@ export const createComment = (id, content) => {
 }
 
 
+export const updateComment = (logId, commentId, content) => {
+  return api.patch(`/api/v1/expenses/${logId}/comments/${commentId}/`, { content })
+}
+
+
 export const deleteComment = (logId, commentId) => {
   return api.delete(`/api/v1/expenses/${logId}/comments/${commentId}/`)
 }

@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from profiles.models import Profile
@@ -36,3 +37,22 @@ def signup(request):
 @permission_classes([IsAuthenticated])
 def me(request):
     return Response(UserSerializer(request.user).data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    refresh_value = request.data.get('refresh')
+    if not refresh_value:
+        return Response(
+            {'refresh': ['refresh 토큰이 필요합니다.']},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    try:
+        RefreshToken(refresh_value).blacklist()
+    except TokenError:
+        return Response(
+            {'refresh': ['유효하지 않거나 이미 폐기된 토큰입니다.']},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    return Response(status=status.HTTP_204_NO_CONTENT)

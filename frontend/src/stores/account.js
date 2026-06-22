@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import {
   getMe,
   login as loginRequest,
+  logout as logoutRequest,
   refreshAccessToken,
   signup as signupRequest,
 } from '@/api/accounts'
@@ -51,10 +52,19 @@ export const useAccountStore = defineStore(
       return response.data.access
     }
 
-    const logout = () => {
+    const clearSession = () => {
       accessToken.value = null
       refreshToken.value = null
       user.value = null
+    }
+
+    const logout = async () => {
+      const token = refreshToken.value
+      try {
+        if (token) await logoutRequest(token)
+      } finally {
+        clearSession()
+      }
     }
 
     return {
@@ -67,6 +77,7 @@ export const useAccountStore = defineStore(
       fetchMe,
       refreshAccessToken: refreshAccessTokenAction,
       logout,
+      clearSession,
     }
   },
   {
