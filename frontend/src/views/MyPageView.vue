@@ -5,7 +5,6 @@ import api from '../api/client'
 import { getExpenses } from '../api/expenses'
 import { formatAmount, formatDate } from '../utils/format'
 
-
 const analysis = ref(null)
 const aiLatest = ref(null)
 const logs = ref([])
@@ -45,86 +44,174 @@ onMounted(loadDashboard)
 </script>
 
 <template>
-  <section>
+  <section class="mypage page-shell">
     <div class="section-head">
       <div>
         <h1>마이페이지</h1>
-        <p>내 소비 기록과 분석 흐름을 한곳에서 확인합니다.</p>
+        <p>내 소비 기록과 분석 흐름을 한눈에 확인합니다.</p>
       </div>
-      <div class="d-flex flex-wrap gap-2">
-        <RouterLink class="btn btn-outline-dark" :to="{ name: 'profile' }">프로필·가입상품</RouterLink>
+      <div class="quick-links">
+        <RouterLink class="btn btn-outline-dark" :to="{ name: 'profile' }">프로필</RouterLink>
         <RouterLink class="btn btn-outline-primary" :to="{ name: 'analysis' }">AI 분석</RouterLink>
-        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'stocks' }">보유 주식</RouterLink>
+        <RouterLink class="btn btn-outline-secondary" :to="{ name: 'finance-hub' }">금융</RouterLink>
       </div>
     </div>
 
-    <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
-    <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <div v-if="isLoading" class="state-card">불러오는 중입니다.</div>
+    <p v-if="errorMessage" class="state-card error">{{ errorMessage }}</p>
 
-    <div class="row g-3 mb-4">
-      <div class="col-12 col-md-3">
-        <div class="surface p-3 h-100">
-          <p class="text-secondary mb-1">이번 달 소비</p>
-          <div class="summary-value">{{ formatAmount(analysis?.total_amount) }}</div>
-        </div>
-      </div>
-      <div class="col-12 col-md-3">
-        <div class="surface p-3 h-100">
-          <p class="text-secondary mb-1">소비 기록</p>
-          <div class="summary-value">{{ analysis?.log_count || 0 }}건</div>
-        </div>
-      </div>
-      <div class="col-12 col-md-3">
-        <div class="surface p-3 h-100">
-          <p class="text-secondary mb-1">최다 카테고리</p>
-          <div class="summary-value">{{ topCategory }}</div>
-        </div>
-      </div>
-      <div class="col-12 col-md-3">
-        <div class="surface p-3 h-100">
-          <p class="text-secondary mb-1">소비 위험도</p>
-          <div class="summary-value">{{ riskLabel }}</div>
-        </div>
-      </div>
+    <div class="summary-grid">
+      <article class="vintage-card">
+        <span>이번 달 소비</span>
+        <strong>{{ formatAmount(analysis?.total_amount) }}</strong>
+      </article>
+      <article class="vintage-card">
+        <span>소비 기록</span>
+        <strong>{{ analysis?.log_count || 0 }}건</strong>
+      </article>
+      <article class="vintage-card">
+        <span>최다 카테고리</span>
+        <strong>{{ topCategory }}</strong>
+      </article>
+      <article class="vintage-card">
+        <span>소비 위험도</span>
+        <strong>{{ riskLabel }}</strong>
+      </article>
     </div>
 
-    <div class="row g-4">
-      <div class="col-12 col-lg-7">
-        <div class="surface">
-          <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-            <h2 class="h5 mb-0">최근 소비 기록</h2>
-            <RouterLink class="btn btn-outline-secondary btn-sm" :to="{ name: 'logs' }">전체 보기</RouterLink>
-          </div>
-          <div class="list-group list-group-flush">
-            <div v-if="!recentLogs.length" class="list-group-item text-secondary">아직 기록이 없습니다.</div>
-            <div v-for="log in recentLogs" :key="log.id" class="list-group-item">
-              <div class="d-flex justify-content-between gap-3">
-                <div>
-                  <span class="badge text-bg-light border me-2">{{ log.category_name }}</span>
-                  <strong>{{ log.product_name || log.content || '소비 기록' }}</strong>
-                  <div class="small text-secondary">{{ formatDate(log.created_at) }}</div>
-                </div>
-                <strong class="text-nowrap">{{ formatAmount(log.amount) }}</strong>
-              </div>
+    <div class="dashboard-layout">
+      <section class="recent-panel vintage-card">
+        <div class="panel-head">
+          <h2>최근 소비 기록</h2>
+          <RouterLink :to="{ name: 'logs' }">전체 보기</RouterLink>
+        </div>
+        <div class="recent-list">
+          <div v-if="!recentLogs.length" class="mini-empty">아직 기록이 없습니다.</div>
+          <article v-for="log in recentLogs" :key="log.id">
+            <div>
+              <span class="vintage-badge">{{ log.category_name }}</span>
+              <strong>{{ log.product_name || log.content || '소비 기록' }}</strong>
+              <small>{{ formatDate(log.created_at) }}</small>
             </div>
-          </div>
+            <b>{{ formatAmount(log.amount) }}</b>
+          </article>
         </div>
-      </div>
+      </section>
 
-      <div class="col-12 col-lg-5">
-        <div class="surface p-3 h-100">
-          <h2 class="h5 mb-3">최근 AI 분석</h2>
-          <template v-if="aiLatest">
-            <p class="fw-bold">{{ aiLatest.summary }}</p>
-            <p class="text-secondary">{{ aiLatest.feedback }}</p>
-            <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'analysis' }">분석 자세히 보기</RouterLink>
-          </template>
-          <template v-else>
-            <p class="text-secondary">생성된 AI 분석이 없습니다.</p>
-            <RouterLink class="btn btn-primary btn-sm" :to="{ name: 'analysis' }">AI 분석 시작</RouterLink>
-          </template>
-        </div>
-      </div>
+      <aside class="ai-panel glass-panel">
+        <h2>최근 AI 분석</h2>
+        <template v-if="aiLatest">
+          <p class="highlight">{{ aiLatest.summary }}</p>
+          <p>{{ aiLatest.feedback }}</p>
+          <RouterLink class="vintage-button" :to="{ name: 'analysis' }">자세히 보기</RouterLink>
+        </template>
+        <template v-else>
+          <p>생성된 AI 분석이 없습니다.</p>
+          <RouterLink class="vintage-button" :to="{ name: 'analysis' }">AI 분석 시작</RouterLink>
+        </template>
+      </aside>
     </div>
   </section>
 </template>
+
+<style scoped>
+.mypage {
+  display: grid;
+  gap: 18px;
+}
+
+.quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.summary-grid article {
+  display: grid;
+  gap: 7px;
+  padding: 16px;
+}
+
+.summary-grid span {
+  color: var(--color-muted);
+  font-weight: 900;
+}
+
+.summary-grid strong {
+  font-size: 24px;
+}
+
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  gap: 18px;
+}
+
+.recent-panel,
+.ai-panel {
+  padding: 18px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-head h2,
+.ai-panel h2 {
+  margin: 0;
+  font-size: 23px;
+}
+
+.panel-head a {
+  color: var(--color-dark-gold);
+  font-weight: 900;
+}
+
+.recent-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.recent-list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 16px;
+  background: rgba(255, 248, 231, 0.72);
+  padding: 12px;
+}
+
+.recent-list article > div {
+  display: grid;
+  gap: 4px;
+}
+
+.recent-list small,
+.mini-empty,
+.ai-panel p {
+  color: var(--color-muted);
+}
+
+.highlight {
+  color: var(--color-ink) !important;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .summary-grid,
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

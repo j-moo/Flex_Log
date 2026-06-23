@@ -11,7 +11,6 @@ import {
 import { useAccountStore } from '../stores/account'
 import { formatDate } from '../utils/format'
 
-
 const account = useAccountStore()
 const friends = ref([])
 const users = ref([])
@@ -26,16 +25,13 @@ const receivedPending = computed(() =>
 const sentPending = computed(() =>
   friends.value.filter((item) => item.status === 'pending' && item.user.id === account.user?.id),
 )
-const acceptedFriends = computed(() =>
-  friends.value.filter((item) => item.status === 'accepted'),
-)
+const acceptedFriends = computed(() => friends.value.filter((item) => item.status === 'accepted'))
 
 const loadFriends = async () => {
   isLoading.value = true
   errorMessage.value = ''
   try {
-    const response = await getFriends()
-    friends.value = response.data
+    friends.value = (await getFriends()).data
   } catch {
     errorMessage.value = '친구 목록을 불러오지 못했습니다.'
   } finally {
@@ -46,8 +42,11 @@ const loadFriends = async () => {
 const searchUsers = async () => {
   message.value = ''
   errorMessage.value = ''
-  const response = await searchUsersApi(search.value)
-  users.value = response.data
+  try {
+    users.value = (await searchUsersApi(search.value)).data
+  } catch {
+    errorMessage.value = '사용자 검색에 실패했습니다.'
+  }
 }
 
 const requestFriend = async (user) => {
@@ -75,7 +74,7 @@ onMounted(loadFriends)
 </script>
 
 <template>
-  <section>
+  <section class="friends-page page-shell">
     <div class="section-head">
       <div>
         <h1>친구</h1>
@@ -83,81 +82,156 @@ onMounted(loadFriends)
       </div>
     </div>
 
-    <div v-if="message" class="alert alert-success">{{ message }}</div>
-    <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <p v-if="message" class="notice-card">{{ message }}</p>
+    <p v-if="errorMessage" class="state-card error">{{ errorMessage }}</p>
 
-    <div class="surface p-4 mb-4">
-      <h2 class="h5 mb-3">사용자 찾기</h2>
-      <form class="row g-2" @submit.prevent="searchUsers">
-        <div class="col-12 col-sm">
-          <input v-model.trim="search" class="form-control" placeholder="아이디, 이름, 이메일, 닉네임">
-        </div>
-        <div class="col-12 col-sm-auto">
-          <button class="btn btn-primary w-100">검색</button>
-        </div>
+    <section class="search-card glass-panel">
+      <h2>사용자 찾기</h2>
+      <form @submit.prevent="searchUsers">
+        <input v-model.trim="search" class="form-control" placeholder="아이디, 이름, 이메일, 닉네임">
+        <button class="vintage-button">검색</button>
       </form>
-      <div v-if="users.length" class="list-group mt-3">
-        <div v-for="user in users" :key="user.id" class="list-group-item d-flex justify-content-between align-items-center gap-2">
+      <div v-if="users.length" class="user-results">
+        <article v-for="user in users" :key="user.id">
           <RouterLink :to="{ name: 'user-profile', params: { userId: user.id } }">
             <strong>{{ user.display_name }}</strong>
-            <div class="small text-secondary">@{{ user.username }}</div>
+            <small>@{{ user.username }}</small>
           </RouterLink>
-          <button class="btn btn-outline-primary btn-sm" type="button" @click="requestFriend(user)">요청</button>
-        </div>
+          <button type="button" @click="requestFriend(user)">요청</button>
+        </article>
       </div>
-    </div>
+    </section>
 
-    <div v-if="isLoading" class="alert alert-secondary">불러오는 중입니다.</div>
+    <div v-if="isLoading" class="state-card">불러오는 중입니다.</div>
 
-    <div class="row g-3">
-      <div class="col-12 col-lg-4">
-        <div class="surface h-100">
-          <div class="p-3 border-bottom"><h2 class="h5 mb-0">받은 요청</h2></div>
-          <div class="list-group list-group-flush">
-            <div v-if="!receivedPending.length" class="list-group-item text-secondary">받은 요청이 없습니다.</div>
-            <div v-for="friend in receivedPending" :key="friend.id" class="list-group-item">
-              <strong>{{ friend.user.display_name }}</strong>
-              <div class="small text-secondary mb-2">{{ formatDate(friend.created_at) }}</div>
-              <div class="d-flex gap-2">
-                <button class="btn btn-primary btn-sm" type="button" @click="updateStatus(friend, 'accepted')">수락</button>
-                <button class="btn btn-outline-secondary btn-sm" type="button" @click="updateStatus(friend, 'rejected')">거절</button>
-              </div>
-            </div>
+    <div class="friend-columns">
+      <section class="friend-panel vintage-card">
+        <h2>받은 요청</h2>
+        <div v-if="!receivedPending.length" class="mini-empty">받은 요청이 없습니다.</div>
+        <article v-for="friend in receivedPending" :key="friend.id">
+          <strong>{{ friend.user.display_name }}</strong>
+          <small>{{ formatDate(friend.created_at) }}</small>
+          <div>
+            <button type="button" @click="updateStatus(friend, 'accepted')">수락</button>
+            <button type="button" @click="updateStatus(friend, 'rejected')">거절</button>
           </div>
-        </div>
-      </div>
+        </article>
+      </section>
 
-      <div class="col-12 col-lg-4">
-        <div class="surface h-100">
-          <div class="p-3 border-bottom"><h2 class="h5 mb-0">보낸 요청</h2></div>
-          <div class="list-group list-group-flush">
-            <div v-if="!sentPending.length" class="list-group-item text-secondary">보낸 요청이 없습니다.</div>
-            <div v-for="friend in sentPending" :key="friend.id" class="list-group-item d-flex justify-content-between align-items-center gap-2">
-              <RouterLink :to="{ name: 'user-profile', params: { userId: friend.friend.id } }">
-                <strong>{{ friend.friend.display_name }}</strong>
-                <div class="small text-secondary">{{ formatDate(friend.created_at) }}</div>
-              </RouterLink>
-              <button class="btn btn-outline-danger btn-sm" type="button" @click="removeFriend(friend)">취소</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section class="friend-panel vintage-card">
+        <h2>보낸 요청</h2>
+        <div v-if="!sentPending.length" class="mini-empty">보낸 요청이 없습니다.</div>
+        <article v-for="friend in sentPending" :key="friend.id">
+          <RouterLink :to="{ name: 'user-profile', params: { userId: friend.friend.id } }">
+            <strong>{{ friend.friend.display_name }}</strong>
+            <small>{{ formatDate(friend.created_at) }}</small>
+          </RouterLink>
+          <button type="button" @click="removeFriend(friend)">취소</button>
+        </article>
+      </section>
 
-      <div class="col-12 col-lg-4">
-        <div class="surface h-100">
-          <div class="p-3 border-bottom"><h2 class="h5 mb-0">친구 목록</h2></div>
-          <div class="list-group list-group-flush">
-            <div v-if="!acceptedFriends.length" class="list-group-item text-secondary">친구가 없습니다.</div>
-            <div v-for="friend in acceptedFriends" :key="friend.id" class="list-group-item d-flex justify-content-between align-items-center gap-2">
-              <RouterLink :to="{ name: 'user-profile', params: { userId: friend.counterpart.id } }">
-                <strong>{{ friend.counterpart.display_name }}</strong>
-                <div class="small text-secondary">@{{ friend.counterpart.username }}</div>
-              </RouterLink>
-              <button class="btn btn-outline-danger btn-sm" type="button" @click="removeFriend(friend)">삭제</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section class="friend-panel vintage-card">
+        <h2>친구 목록</h2>
+        <div v-if="!acceptedFriends.length" class="mini-empty">친구가 없습니다.</div>
+        <article v-for="friend in acceptedFriends" :key="friend.id">
+          <RouterLink :to="{ name: 'user-profile', params: { userId: friend.counterpart.id } }">
+            <strong>{{ friend.counterpart.display_name }}</strong>
+            <small>@{{ friend.counterpart.username }}</small>
+          </RouterLink>
+          <button type="button" @click="removeFriend(friend)">삭제</button>
+        </article>
+      </section>
     </div>
   </section>
 </template>
+
+<style scoped>
+.friends-page {
+  display: grid;
+  gap: 18px;
+}
+
+.notice-card {
+  border: 2px solid var(--color-ink);
+  border-radius: 16px;
+  background: var(--color-money-light);
+  margin: 0;
+  padding: 12px;
+  font-weight: 900;
+}
+
+.search-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.search-card h2,
+.friend-panel h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.search-card form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.user-results,
+.friend-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.user-results article,
+.friend-panel article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 16px;
+  background: rgba(255, 248, 231, 0.7);
+  padding: 11px;
+}
+
+.user-results a,
+.friend-panel a,
+.friend-panel article > strong {
+  display: grid;
+}
+
+small,
+.mini-empty {
+  color: var(--color-muted);
+}
+
+.user-results button,
+.friend-panel button {
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-gold);
+  color: var(--color-ink);
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.friend-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.friend-panel {
+  align-content: start;
+  padding: 16px;
+}
+
+@media (max-width: 900px) {
+  .friend-columns,
+  .search-card form {
+    grid-template-columns: 1fr;
+  }
+}
+</style>

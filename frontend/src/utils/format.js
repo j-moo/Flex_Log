@@ -3,19 +3,15 @@ export const formatAmount = (amount) => {
   return `${Number(amount || 0).toLocaleString('ko-KR')}원`
 }
 
-
-export const formatNumber = (value, digits = 0) => {
-  return Number(value || 0).toLocaleString('ko-KR', {
+export const formatNumber = (value, digits = 0) =>
+  Number(value || 0).toLocaleString('ko-KR', {
     maximumFractionDigits: digits,
   })
-}
-
 
 export const formatRate = (value) => {
   if (value === null || value === undefined || value === '') return '-'
   return `${Number(value).toFixed(2)}%`
 }
-
 
 export const formatDate = (value) => {
   if (!value) return ''
@@ -25,5 +21,12 @@ export const formatDate = (value) => {
   }).format(new Date(value))
 }
 
+export const formatShortDate = (value) => {
+  if (!value) return ''
+  return new Intl.DateTimeFormat('ko-KR', {
+    month: 'short',
+    day: 'numeric',
+  }).format(new Date(value))
+}
 
-export const isVideo = (url) => /\.(mp4|webm)(?:\?|$)/i.test(url || '')
+export const isVideo = (url) => /\.(mp4|webm|ogg)(?:\?|$)/i.test(url || '')

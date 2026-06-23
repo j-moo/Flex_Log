@@ -1,3 +1,5 @@
+import base64
+import mimetypes
 from pathlib import Path
 
 from rest_framework import serializers
@@ -88,9 +90,55 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         request = self.context.get('request')
         is_owner = bool(request and request.user.is_authenticated and instance.user_id == request.user.id)
+        data['media'] = self.get_media_source(instance)
         if instance.hide_amount and not is_owner:
             data['amount'] = None
         return data
+
+    def get_media_source(self, instance):
+        if instance.media_data:
+            content_type = (
+                instance.media_content_type
+                or mimetypes.guess_type(instance.media_name or '')[0]
+                or 'application/octet-stream'
+            )
+            encoded = base64.b64encode(bytes(instance.media_data)).decode('ascii')
+            return f'data:{content_type};base64,{encoded}'
+
+        if not instance.media:
+            return None
+
+        request = self.context.get('request')
+        try:
+            url = instance.media.url
+        except ValueError:
+            return None
+        return request.build_absolute_uri(url) if request else url
+
+    def create(self, validated_data):
+        media_attrs = self.extract_media_attrs(validated_data)
+        return ExpenseLog.objects.create(**validated_data, **media_attrs)
+
+    def update(self, instance, validated_data):
+        media_attrs = self.extract_media_attrs(validated_data)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        for attr, value in media_attrs.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+    def extract_media_attrs(self, validated_data):
+        media_file = validated_data.pop('media', None)
+        if not media_file:
+            return {}
+
+        return {
+            'media': None,
+            'media_data': media_file.read(),
+            'media_content_type': (getattr(media_file, 'content_type', '') or '')[:120],
+            'media_name': Path(media_file.name).name[:255],
+        }
 
     def validate_media(self, value):
         if not value:

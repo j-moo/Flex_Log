@@ -1,35 +1,24 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 
+import BrandLogo from '../components/common/BrandLogo.vue'
 
 const phrases = [
   '소비를 기록하세요.',
-  '소비 습관을 돌아보세요.',
-  'AI가 소비 패턴을 분석합니다.',
-  '나에게 맞는 금융 습관을 만들어보세요.',
-]
-const features = [
-  ['예·적금 비교', '은행별 금리와 기간을 비교하고 원하는 상품에 가입하세요.'],
-  ['금·은 시세', '기간을 선택해 금과 은의 가격 변화를 한눈에 확인하세요.'],
-  ['관심 영상', 'YouTube 금융 콘텐츠를 검색하고 바로 재생하세요.'],
-  ['주변 은행', '주소를 기준으로 가까운 은행 지점을 지도에서 찾으세요.'],
-  ['AI 추천', '소비 분석을 기반으로 나에게 맞는 금융상품을 추천받으세요.'],
-  ['금융 커뮤니티', '친구의 소비 피드에 좋아요와 댓글로 소통하세요.'],
+  '소비를 관리하세요.',
+  '함께 성장하세요.',
+  '기록이 자산이 됩니다.',
 ]
 
 const index = ref(0)
+const showActions = computed(() => index.value >= phrases.length - 1)
 let timer = null
-
-const isLast = computed(() => index.value === phrases.length - 1)
 
 onMounted(() => {
   timer = window.setInterval(() => {
-    if (index.value < phrases.length - 1) {
-      index.value += 1
-    } else {
-      window.clearInterval(timer)
-    }
-  }, 1500)
+    if (index.value < phrases.length - 1) index.value += 1
+    else window.clearInterval(timer)
+  }, 1450)
 })
 
 onBeforeUnmount(() => {
@@ -38,97 +27,160 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="home-hero">
-    <div class="hero-content">
-      <p class="eyebrow">Flex Log</p>
+  <section class="intro-page">
+    <div class="intro-stage">
+      <div class="coin-halo" aria-hidden="true"></div>
+      <BrandLogo class="hero-logo" :variant="2" size="large" alt="Flex-Log 대표 로고" />
+
+      <p class="intro-kicker">Finance SNS</p>
+      <h1 class="display-title">Flex-Log</h1>
+
       <Transition name="phrase" mode="out-in">
-        <h1 :key="phrases[index]">{{ phrases[index] }}</h1>
+        <p :key="phrases[index]" class="intro-phrase">{{ phrases[index] }}</p>
       </Transition>
-      <p class="hero-copy">
-        소비 기록을 피드로 남기고, 친구와 공유하고, AI 분석과 금융상품 추천까지 연결합니다.
-      </p>
-      <div v-if="isLast" class="hero-actions">
-        <RouterLink class="btn btn-primary btn-lg" :to="{ name: 'signup' }">회원가입</RouterLink>
-        <RouterLink class="btn btn-outline-dark btn-lg" :to="{ name: 'login' }">로그인</RouterLink>
-      </div>
-      <div class="guest-feature-grid">
-        <article v-for="(feature, featureIndex) in features" :key="feature[0]">
-          <span>{{ String(featureIndex + 1).padStart(2, '0') }}</span>
-          <h2>{{ feature[0] }}</h2>
-          <p>{{ feature[1] }}</p>
-        </article>
-      </div>
+
+      <Transition name="fade-slide">
+        <div v-if="showActions" class="intro-actions">
+          <RouterLink class="vintage-button intro-primary" :to="{ name: 'signup' }">
+            Flex-Log 시작하기
+          </RouterLink>
+          <RouterLink class="intro-login" :to="{ name: 'login' }">이미 계정이 있어요</RouterLink>
+        </div>
+      </Transition>
     </div>
   </section>
 </template>
 
 <style scoped>
-.home-hero {
+.intro-page {
+  position: relative;
   display: grid;
-  min-height: calc(100vh - 56px);
+  min-height: 100vh;
   place-items: center;
+  overflow: hidden;
+  padding: 44px 18px 34px;
 }
 
-.hero-content {
-  width: min(100%, 900px);
+.intro-page::before,
+.intro-page::after {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border: 2px solid rgba(23, 19, 13, 0.12);
+  border-radius: 50%;
+  content: '';
+  filter: blur(1px);
 }
 
-.guest-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:40px}.guest-feature-grid article{border:1px solid #dbdbdb;border-radius:14px;background:white;padding:18px}.guest-feature-grid span{color:#ed4956;font-size:12px;font-weight:900}.guest-feature-grid h2{margin:9px 0 6px;font-size:17px}.guest-feature-grid p{margin:0;color:#737373;font-size:13px;line-height:1.55}
+.intro-page::before {
+  top: -90px;
+  left: -110px;
+  background: rgba(200, 210, 170, 0.36);
+}
 
-.eyebrow {
-  margin-bottom: 18px;
-  color: #2f6b5e;
-  font-weight: 850;
+.intro-page::after {
+  right: -110px;
+  bottom: -90px;
+  background: rgba(216, 165, 38, 0.24);
+}
+
+.intro-stage {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  width: min(100%, 720px);
+  text-align: center;
+}
+
+.coin-halo {
+  position: absolute;
+  top: 24px;
+  width: min(72vw, 430px);
+  height: min(72vw, 430px);
+  border: 2px dashed rgba(140, 100, 20, 0.35);
+  border-radius: 50%;
+  animation: spin-slow 24s linear infinite;
+}
+
+.hero-logo {
+  animation: logo-pop 0.72s cubic-bezier(.2, 1.2, .28, 1) both;
+}
+
+.intro-kicker {
+  margin: 26px 0 4px;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-money-light);
+  padding: 6px 14px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 h1 {
-  min-height: 140px;
-  margin: 0;
-  color: #172033;
-  font-size: clamp(42px, 9vw, 76px);
+  margin: 8px 0 0;
+  font-size: clamp(52px, 10vw, 96px);
+  line-height: 0.95;
+  text-shadow: 4px 4px 0 rgba(216, 165, 38, 0.72);
+}
+
+.intro-phrase {
+  min-height: 42px;
+  margin: 22px 0 0;
+  color: var(--color-muted);
+  font-size: clamp(20px, 4vw, 30px);
   font-weight: 900;
-  letter-spacing: 0;
-  line-height: 1.05;
 }
 
-.hero-copy {
-  max-width: 560px;
-  margin: 18px 0 0;
-  color: #566273;
-  font-size: 18px;
-  line-height: 1.7;
-}
-
-.hero-actions {
+.intro-actions {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 28px;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.intro-primary {
+  min-height: 54px;
+  padding: 0 28px;
+  font-size: 17px;
+}
+
+.intro-login {
+  border-bottom: 2px solid var(--color-ink);
+  color: var(--color-ink);
+  font-weight: 900;
 }
 
 .phrase-enter-active,
 .phrase-leave-active {
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.34s ease, transform 0.34s ease;
 }
 
 .phrase-enter-from,
 .phrase-leave-to {
   opacity: 0;
-  transform: translateY(12px);
+  transform: translateY(14px) scale(0.98);
 }
 
-@media (max-width: 640px) {
-  h1 {
-    min-height: 116px;
+@keyframes logo-pop {
+  from {
+    opacity: 0;
+    transform: translateY(20px) rotate(-3deg) scale(0.88);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0) scale(1);
+  }
+}
 
-  .hero-copy {
-    font-size: 16px;
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
   }
-
-  .hero-actions .btn {
-    width: 100%;
-  }
-  .guest-feature-grid{grid-template-columns:1fr}
 }
 </style>

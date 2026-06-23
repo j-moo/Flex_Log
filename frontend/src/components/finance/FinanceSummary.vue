@@ -1,18 +1,37 @@
 <script setup>
 import { formatAmount } from '../../utils/format'
-defineProps({ assetValue: { type: Number, default: 0 }, monthlySpend: { type: Number, default: 0 }, productCount: { type: Number, default: 0 }, stockCount: { type: Number, default: 0 } })
+
+defineProps({
+  assetValue: {
+    type: Number,
+    default: 0,
+  },
+  monthlySpend: {
+    type: Number,
+    default: 0,
+  },
+  productCount: {
+    type: Number,
+    default: 0,
+  },
+  stockCount: {
+    type: Number,
+    default: 0,
+  },
+})
+
 const items = [
-  { key: 'asset', label: '총 자산', icon: '₩' },
-  { key: 'spend', label: '이번 달 소비', icon: '↘' },
-  { key: 'products', label: '가입 상품', icon: '✓' },
-  { key: 'stocks', label: '보유 주식', icon: '↗' },
+  { key: 'asset', label: '총 자산', tone: 'gold' },
+  { key: 'spend', label: '이번 달 소비', tone: 'red' },
+  { key: 'products', label: '가입상품', tone: 'green' },
+  { key: 'stocks', label: '보유 주식', tone: 'blue' },
 ]
 </script>
 
 <template>
-  <div class="summary-grid">
-    <article v-for="item in items" :key="item.key">
-      <span class="summary-icon">{{ item.icon }}</span><small>{{ item.label }}</small>
+  <div class="finance-summary">
+    <article v-for="item in items" :key="item.key" :class="`tone-${item.tone}`">
+      <small>{{ item.label }}</small>
       <strong v-if="item.key === 'asset'">{{ formatAmount(assetValue) }}</strong>
       <strong v-else-if="item.key === 'spend'">{{ formatAmount(monthlySpend) }}</strong>
       <strong v-else-if="item.key === 'products'">{{ productCount }}개</strong>
@@ -22,5 +41,62 @@ const items = [
 </template>
 
 <style scoped>
-.summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.summary-grid article{display:grid;grid-template-columns:32px 1fr;align-items:center;gap:2px 9px;border:1px solid rgba(255,255,255,.86);border-radius:17px;background:rgba(255,255,255,.64);box-shadow:0 12px 32px rgba(76,145,201,.08);padding:14px;backdrop-filter:blur(16px)}.summary-icon{display:grid;grid-row:1/3;width:32px;height:32px;place-items:center;border-radius:10px;background:#e6f4ff;color:#438bd5;font-weight:900}.summary-grid small{color:var(--muted);font-size:11px}.summary-grid strong{overflow:hidden;font-size:15px;text-overflow:ellipsis;white-space:nowrap}@media(max-width:700px){.summary-grid{grid-template-columns:repeat(2,1fr)}}
+.finance-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.finance-summary article {
+  display: grid;
+  gap: 7px;
+  border: 2px solid var(--color-ink);
+  border-radius: 20px;
+  background: var(--color-paper);
+  box-shadow: 4px 4px 0 var(--color-ink);
+  padding: 16px;
+}
+
+small {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+strong {
+  overflow: hidden;
+  font-family: 'Fredoka', 'Gowun Dodum', sans-serif;
+  font-size: clamp(20px, 2.4vw, 27px);
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tone-gold {
+  background: linear-gradient(140deg, #fff8e7, rgba(216, 165, 38, 0.22));
+}
+
+.tone-red {
+  background: linear-gradient(140deg, #fff8e7, rgba(182, 74, 53, 0.14));
+}
+
+.tone-green {
+  background: linear-gradient(140deg, #fff8e7, rgba(127, 147, 107, 0.22));
+}
+
+.tone-blue {
+  background: linear-gradient(140deg, #fff8e7, rgba(64, 111, 159, 0.16));
+}
+
+@media (max-width: 840px) {
+  .finance-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .finance-summary {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
