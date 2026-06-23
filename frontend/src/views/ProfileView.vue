@@ -6,9 +6,11 @@ import { getUserExpenses } from '../api/expenses'
 import { cancelProduct } from '../api/financial'
 import { deleteFriend, getFriends, sendFriendRequest } from '../api/friends'
 import { getMyProfile, getProfile, updateMyProfile } from '../api/profile'
+import WalletAlertBanner from '../components/common/WalletAlertBanner.vue'
 import FriendModal from '../components/profile/FriendModal.vue'
 import ProfileGrid from '../components/profile/ProfileGrid.vue'
 import ProfileHeader from '../components/profile/ProfileHeader.vue'
+import { WALLET_ALERT_LIMIT, WALLET_ALERT_MESSAGES, pickRandomMessage } from '../constants/expense'
 import { useAccountStore } from '../stores/account'
 
 const route = useRoute()
@@ -28,37 +30,14 @@ const showFriends = ref(false)
 const activeTab = ref('posts')
 const cancellingId = ref(null)
 const friendActionPending = ref(false)
+const walletAlertDismissed = ref(false)
+const walletAlertMessage = ref(pickRandomMessage(WALLET_ALERT_MESSAGES))
 const form = reactive({ name: '', nickname: '', bio: '' })
-
-const MOCK_PRODUCTS = [
-  {
-    id: 'mock-1',
-    isMock: true,
-    joined_at: '2026-03-12',
-    product: { product_type: 'deposit', kor_co_nm: '카카오뱅크', fin_prdt_nm: '카카오뱅크 정기예금' },
-    option: { save_trm: 12, intr_rate2: 3.4 },
-  },
-  {
-    id: 'mock-2',
-    isMock: true,
-    joined_at: '2026-04-03',
-    product: { product_type: 'saving', kor_co_nm: '신한은행', fin_prdt_nm: '신한 청년적금' },
-    option: { save_trm: 24, intr_rate2: 4.2 },
-  },
-  {
-    id: 'mock-3',
-    isMock: true,
-    joined_at: '2026-05-21',
-    product: { product_type: 'saving', kor_co_nm: 'KB국민은행', fin_prdt_nm: '국민 자유적금' },
-    option: { save_trm: 12, intr_rate2: 3.8 },
-  },
-]
 
 const requestedUserId = computed(() => (route.params.userId ? Number(route.params.userId) : account.user?.id))
 const isOwnProfile = computed(() => requestedUserId.value === account.user?.id)
-const displayedProducts = computed(() =>
-  profile.value?.joined_products?.length ? profile.value.joined_products : MOCK_PRODUCTS,
-)
+const canViewProducts = computed(() => Boolean(profile.value?.can_view_joined_products))
+const displayedProducts = computed(() => (canViewProducts.value ? profile.value?.joined_products || [] : []))
 const productCount = computed(() => displayedProducts.value.length)
 const maxRate = computed(() =>
   Math.max(1, ...displayedProducts.value.map((item) => Number(item.option.intr_rate2 || item.option.intr_rate || 0))),
@@ -77,6 +56,15 @@ const friendActionLabel = computed(() => {
   return '요청 삭제'
 })
 const friendActionTone = computed(() => (targetRelation.value ? 'danger' : 'primary'))
+const todaySpend = computed(() => {
+  const today = new Date().toDateString()
+  return logs.value
+    .filter((log) => new Date(log.created_at).toDateString() === today)
+    .reduce((sum, log) => sum + Number(log.amount || 0), 0)
+})
+const showWalletAlert = computed(() => (
+  !walletAlertDismissed.value && todaySpend.value >= WALLET_ALERT_LIMIT
+))
 
 const applyProfile = (data) => {
   profile.value = data
@@ -90,6 +78,7 @@ const applyProfile = (data) => {
       name: data.name || '',
       username: data.username,
       email: data.email,
+      profile_image: data.image || null,
     }
   }
 }
@@ -108,6 +97,8 @@ const loadProfile = async () => {
   isLoading.value = true
   errorMessage.value = ''
   successMessage.value = ''
+  walletAlertDismissed.value = false
+  walletAlertMessage.value = pickRandomMessage(WALLET_ALERT_MESSAGES)
   isEditing.value = false
   try {
     await Promise.all([loadProfileData(), loadFriendships()])
@@ -201,6 +192,13 @@ onMounted(loadProfile)
         @friend-action="handleFriendAction"
       />
 
+      <WalletAlertBanner
+        v-if="showWalletAlert"
+        :amount="todaySpend"
+        :message="walletAlertMessage"
+        @close="walletAlertDismissed = true"
+      />
+
       <p v-if="successMessage" class="profile-message">{{ successMessage }}</p>
       <p v-if="errorMessage" class="profile-message error">{{ errorMessage }}</p>
 
@@ -242,7 +240,12 @@ onMounted(loadProfile)
       </nav>
 
       <Transition name="fade-slide" mode="out-in">
-        <ProfileGrid v-if="activeTab === 'posts'" key="posts" :logs="logs" />
+        <ProfileGrid
+          v-if="activeTab === 'posts'"
+          key="posts"
+          :logs="logs"
+          :is-own="isOwnProfile"
+        />
 
         <section v-else key="products" class="joined-products">
           <div class="product-section-head">
@@ -250,12 +253,21 @@ onMounted(loadProfile)
               <h2>가입 금융상품</h2>
               <p>
                 선택한 상품의 최고 금리를 비교합니다.
-                <span v-if="!profile.joined_products?.length">현재 예시 데이터가 표시됩니다.</span>
+                <span v-if="!canViewProducts">친구만 가입상품을 볼 수 있습니다.</span>
+                <span v-else-if="!displayedProducts.length">가입상품 없음</span>
               </p>
             </div>
             <RouterLink v-if="isOwnProfile" :to="{ name: 'finance-hub', query: { tab: 'products' } }">상품 찾기</RouterLink>
           </div>
 
+          <div v-if="!canViewProducts" class="products-empty glass-panel">
+            친구가 아닌 사용자의 가입상품은 볼 수 없습니다.
+          </div>
+          <div v-else-if="!displayedProducts.length" class="products-empty glass-panel">
+            가입상품 없음
+          </div>
+
+          <template v-else>
           <article v-for="item in displayedProducts" :key="item.id" class="product-card glass-panel">
             <span class="product-avatar">{{ item.product.product_type === 'deposit' ? '예' : '적' }}</span>
             <div class="product-copy">
@@ -280,6 +292,7 @@ onMounted(loadProfile)
               </button>
             </div>
           </article>
+          </template>
         </section>
       </Transition>
 
@@ -411,6 +424,16 @@ onMounted(loadProfile)
 .joined-products {
   display: grid;
   gap: 12px;
+}
+
+.products-empty {
+  display: grid;
+  min-height: 120px;
+  place-items: center;
+  padding: 18px;
+  color: var(--color-muted);
+  font-weight: 900;
+  text-align: center;
 }
 
 .product-section-head {

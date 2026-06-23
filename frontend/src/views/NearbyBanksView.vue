@@ -1,27 +1,56 @@
 <script setup>
-import { nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 
-import { searchNearbyBanks } from '../api/financial'
+import { getBankRoute, searchNearbyBanks } from '../api/financial'
 
 const query = ref('서울 강남구 테헤란로 212')
 const radius = ref(2000)
 const result = ref(null)
 const selectedBank = ref(null)
+const routeInfo = ref(null)
 const mapContainer = ref(null)
 const isLoading = ref(false)
+const isRouteLoading = ref(false)
 const errorMessage = ref('')
 const mapMessage = ref('')
+const routeMessage = ref('')
 let map = null
 let markers = []
+let routePolyline = null
+let originMarker = null
+let infoWindow = null
 let sdkPromise = null
+
+
+const formatDistance = (meters) => {
+  const value = Number(meters || 0)
+  return value >= 1000 ? `${(value / 1000).toFixed(1)}km` : `${value.toLocaleString()}m`
+}
+
+const formatDuration = (seconds) => `${Math.max(1, Math.round(Number(seconds || 0) / 60)).toLocaleString()}\ubd84`
+
+const routeSummary = computed(() => {
+  if (!routeInfo.value) return ''
+  const { distance, duration } = routeInfo.value.summary || {}
+  return `${formatDistance(distance)} \u00b7 ${formatDuration(duration)}`
+})
+
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}[char]))
+
 
 const loadKakaoSdk = () => {
   if (window.kakao?.maps) return new Promise((resolve) => window.kakao.maps.load(resolve))
   if (sdkPromise) return sdkPromise
   sdkPromise = new Promise((resolve, reject) => {
-    const key = import.meta.env.VITE_KAKAO_JS_KEY
+    const key = import.meta.env.VITE_KAKAO_JAVASCRIPT_KEY || import.meta.env.VITE_KAKAO_JS_KEY
     if (!key) {
-      reject(new Error('VITE_KAKAO_JS_KEY가 없어 목록만 표시합니다.'))
+      reject(new Error('VITE_KAKAO_JAVASCRIPT_KEY가 없어 목록만 표시합니다.'))
       return
     }
 
@@ -56,11 +85,21 @@ const loadKakaoSdk = () => {
   return sdkPromise
 }
 
+const clearRoute = () => {
+  routePolyline?.setMap(null)
+  originMarker?.setMap(null)
+  infoWindow?.close()
+  routePolyline = null
+  originMarker = null
+  infoWindow = null
+}
+
 const renderMap = async () => {
   if (!result.value || !mapContainer.value) return
   try {
     await loadKakaoSdk()
     mapMessage.value = ''
+    clearRoute()
     const center = new window.kakao.maps.LatLng(result.value.center.y, result.value.center.x)
     map = new window.kakao.maps.Map(mapContainer.value, { center, level: 4 })
     markers.forEach((marker) => marker.setMap(null))
@@ -70,8 +109,9 @@ const renderMap = async () => {
         position: new window.kakao.maps.LatLng(bank.y, bank.x),
         title: bank.name,
       })
+      marker.bankId = bank.id
       window.kakao.maps.event.addListener(marker, 'click', () => {
-        selectedBank.value = bank
+        selectBank(bank, true)
       })
       return marker
     })
@@ -80,10 +120,53 @@ const renderMap = async () => {
   }
 }
 
+
+const drawRoute = async (route) => {
+  if (!route?.path?.length || !mapContainer.value) return
+  await loadKakaoSdk()
+  if (!map) {
+    const center = new window.kakao.maps.LatLng(route.origin.y, route.origin.x)
+    map = new window.kakao.maps.Map(mapContainer.value, { center, level: 4 })
+  }
+
+  clearRoute()
+  const path = route.path.map((point) => new window.kakao.maps.LatLng(point.y, point.x))
+  routePolyline = new window.kakao.maps.Polyline({
+    path,
+    strokeWeight: 6,
+    strokeColor: '#2f6b5e',
+    strokeOpacity: 0.92,
+    strokeStyle: 'solid',
+  })
+  routePolyline.setMap(map)
+
+  originMarker = new window.kakao.maps.Marker({
+    map,
+    position: new window.kakao.maps.LatLng(route.origin.y, route.origin.x),
+    title: route.origin.name,
+  })
+
+  const bounds = new window.kakao.maps.LatLngBounds()
+  bounds.extend(new window.kakao.maps.LatLng(route.origin.y, route.origin.x))
+  path.forEach((point) => bounds.extend(point))
+  map.setBounds(bounds)
+
+  const destinationMarker = markers.find((marker) => marker.bankId === selectedBank.value?.id)
+  if (destinationMarker) {
+    infoWindow = new window.kakao.maps.InfoWindow({
+      content: `<div style="padding:10px 12px;font-size:13px;line-height:1.45;white-space:nowrap;"><strong>${escapeHtml(selectedBank.value.name)}</strong><br>${escapeHtml(routeSummary.value)}</div>`,
+    })
+    infoWindow.open(map, destinationMarker)
+  }
+}
+
 const search = async () => {
   if (!query.value.trim()) return
   isLoading.value = true
   errorMessage.value = ''
+  routeMessage.value = ''
+  routeInfo.value = null
+  clearRoute()
   try {
     result.value = (await searchNearbyBanks(query.value.trim(), radius.value)).data
     selectedBank.value = result.value.banks[0] || null
@@ -96,9 +179,42 @@ const search = async () => {
   }
 }
 
-const selectBank = (bank) => {
+
+const loadRoute = async (bank = selectedBank.value) => {
+  if (!bank) return
+  selectedBank.value = bank
+  isRouteLoading.value = true
+  errorMessage.value = ''
+  routeMessage.value = '\uacbd\ub85c\ub97c \ucc3e\ub294 \uc911\uc785\ub2c8\ub2e4.'
+  try {
+    routeInfo.value = (await getBankRoute(bank)).data
+    await nextTick()
+    try {
+      await drawRoute(routeInfo.value)
+      routeMessage.value = `${routeInfo.value.origin.name}\uc5d0\uc11c ${bank.name}\uae4c\uc9c0 \uacbd\ub85c\ub97c \uc9c0\ub3c4\uc5d0 \ud45c\uc2dc\ud588\uc2b5\ub2c8\ub2e4.`
+    } catch (error) {
+      routeMessage.value = `\uacbd\ub85c \uc815\ubcf4\ub294 \uac00\uc838\uc654\uc9c0\ub9cc \uc9c0\ub3c4 \ud45c\uc2dc\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. ${error.message}`
+    }
+  } catch (error) {
+    routeInfo.value = null
+    clearRoute()
+    routeMessage.value = ''
+    errorMessage.value = error.response?.data?.detail || '\uc740\ud589\uae4c\uc9c0\uc758 \uacbd\ub85c\ub97c \ucc3e\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.'
+  } finally {
+    isRouteLoading.value = false
+  }
+}
+
+const selectBank = (bank, shouldLoadRoute = false) => {
   selectedBank.value = bank
   if (map && window.kakao?.maps) map.panTo(new window.kakao.maps.LatLng(bank.y, bank.x))
+  if (shouldLoadRoute) {
+    loadRoute(bank)
+  } else {
+    routeInfo.value = null
+    routeMessage.value = ''
+    clearRoute()
+  }
 }
 
 onMounted(search)
@@ -124,6 +240,7 @@ onMounted(search)
     </form>
 
     <p v-if="errorMessage" class="state-card error">{{ errorMessage }}</p>
+    <p v-if="routeMessage" class="route-message">{{ routeMessage }}</p>
 
     <div class="bank-layout">
       <div class="map-card vintage-card">
@@ -162,7 +279,16 @@ onMounted(search)
           <small>{{ selectedBank.phone || '전화번호 정보 없음' }}</small>
         </div>
       </div>
-      <a :href="selectedBank.place_url" target="_blank" rel="noopener">카카오맵에서 보기</a>
+      <div class="selected-actions">
+        <div v-if="routeSummary" class="route-summary">
+          <span>{{ routeInfo.origin.name }} 출발</span>
+          <strong>{{ routeSummary }}</strong>
+        </div>
+        <button type="button" :disabled="isRouteLoading" @click="loadRoute()">
+          {{ isRouteLoading ? '경로 찾는 중' : '경로 찾기' }}
+        </button>
+        <a :href="selectedBank.place_url" target="_blank" rel="noopener">카카오맵에서 보기</a>
+      </div>
     </article>
   </section>
 </template>
@@ -206,13 +332,19 @@ onMounted(search)
     linear-gradient(135deg, #dfe8cf, #f7efd8);
 }
 
-.map-message {
+.map-message,
+.route-message {
   margin: 0;
   border-top: 2px solid var(--color-ink);
   background: rgba(216, 165, 38, 0.18);
   color: var(--color-dark-gold);
   padding: 12px;
   font-weight: 900;
+}
+
+.route-message {
+  border: 2px solid var(--color-ink);
+  border-radius: 16px;
 }
 
 .bank-list {
@@ -288,6 +420,42 @@ onMounted(search)
 .selected-card p {
   margin: 3px 0;
   color: var(--color-muted);
+}
+
+.selected-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.route-summary {
+  display: grid;
+  gap: 2px;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 900;
+  text-align: right;
+}
+
+.route-summary strong {
+  color: var(--color-ink);
+  font-size: 15px;
+}
+
+.selected-card button {
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-gold);
+  color: var(--color-ink);
+  padding: 9px 13px;
+  font-weight: 900;
+}
+
+.selected-card button:disabled {
+  opacity: 0.56;
+  cursor: wait;
 }
 
 .selected-card a {

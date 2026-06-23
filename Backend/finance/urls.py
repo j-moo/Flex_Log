@@ -36,6 +36,7 @@ urlpatterns = [
         name='finance-youtube-detail',
     ),
     path('banks/nearby/', views.nearby_bank_search, name='finance-nearby-bank-search'),
+    path('banks/route/', views.bank_route, name='finance-bank-route'),
     path('recommend/', views.recommend_products, name='finance-recommend'),
     path('recommend/latest/', views.latest_recommendations, name='finance-recommend-latest'),
     path('recommend/history/', views.recommendation_history, name='finance-recommend-history'),

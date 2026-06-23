@@ -18,24 +18,41 @@ defineProps({
     type: Number,
     default: 0,
   },
+  monthlyIncome: {
+    type: Number,
+    default: 0,
+  },
 })
 
+const emit = defineEmits(['edit-income'])
+
 const items = [
-  { key: 'asset', label: '총 자산', tone: 'gold' },
+  { key: 'asset', label: '주식 보유량', tone: 'gold' },
   { key: 'spend', label: '이번 달 소비', tone: 'red' },
   { key: 'products', label: '가입상품', tone: 'green' },
-  { key: 'stocks', label: '보유 주식', tone: 'blue' },
+  { key: 'income', label: '월 수입', tone: 'blue' },
 ]
 </script>
 
 <template>
   <div class="finance-summary">
     <article v-for="item in items" :key="item.key" :class="`tone-${item.tone}`">
-      <small>{{ item.label }}</small>
+      <div class="card-head">
+        <small>{{ item.label }}</small>
+        <button
+          v-if="item.key === 'income'"
+          class="income-plus"
+          type="button"
+          aria-label="월 수입 입력"
+          @click="emit('edit-income')"
+        >
+          +
+        </button>
+      </div>
       <strong v-if="item.key === 'asset'">{{ formatAmount(assetValue) }}</strong>
       <strong v-else-if="item.key === 'spend'">{{ formatAmount(monthlySpend) }}</strong>
       <strong v-else-if="item.key === 'products'">{{ productCount }}개</strong>
-      <strong v-else>{{ stockCount }}종목</strong>
+      <strong v-else>{{ formatAmount(monthlyIncome) }}</strong>
     </article>
   </div>
 </template>
@@ -57,10 +74,34 @@ const items = [
   padding: 16px;
 }
 
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
 small {
   color: var(--color-muted);
   font-size: 12px;
   font-weight: 900;
+}
+
+.income-plus {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid var(--color-ink);
+  border-radius: 50%;
+  background: var(--color-gold);
+  color: var(--color-ink);
+  padding: 0;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
 }
 
 strong {

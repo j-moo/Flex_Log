@@ -9,10 +9,11 @@ User = get_user_model()
 
 class FriendUserSerializer(serializers.ModelSerializer):
     display_name = serializers.SerializerMethodField()
+    profile_image = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'name', 'display_name')
+        fields = ('id', 'username', 'name', 'display_name', 'profile_image')
         read_only_fields = fields
 
     def get_display_name(self, obj):
@@ -20,6 +21,20 @@ class FriendUserSerializer(serializers.ModelSerializer):
         if profile and profile.nickname:
             return profile.nickname
         return obj.name or obj.username
+
+    def get_profile_image(self, obj):
+        profile = getattr(obj, 'profile', None)
+        image = getattr(profile, 'image', None)
+        if not image:
+            return None
+        try:
+            if image.name and not image.storage.exists(image.name):
+                return None
+            url = image.url
+        except (OSError, ValueError):
+            return None
+        request = self.context.get('request')
+        return request.build_absolute_uri(url) if request else url
 
 
 class FriendSerializer(serializers.ModelSerializer):
@@ -37,7 +52,7 @@ class FriendSerializer(serializers.ModelSerializer):
         if not request:
             return None
         counterpart = obj.friend if obj.user_id == request.user.id else obj.user
-        return FriendUserSerializer(counterpart).data
+        return FriendUserSerializer(counterpart, context=self.context).data
 
 
 class FriendCreateSerializer(serializers.ModelSerializer):

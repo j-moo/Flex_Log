@@ -21,6 +21,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     )
     friend_count = serializers.SerializerMethodField()
     joined_products = serializers.SerializerMethodField()
+    can_view_joined_products = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
@@ -35,6 +36,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'bio',
             'friend_count',
             'joined_products',
+            'can_view_joined_products',
             'created_at',
             'updated_at',
         )
@@ -45,6 +47,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'email',
             'friend_count',
             'joined_products',
+            'can_view_joined_products',
             'created_at',
             'updated_at',
         )
@@ -56,6 +59,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         ).count()
 
     def get_joined_products(self, obj):
+        if not self._can_view_joined_products(obj):
+            return []
+
         subscriptions = getattr(obj.user, 'active_joined_products', None)
         if subscriptions is None:
             subscriptions = UserFinancialProduct.objects.filter(
@@ -65,6 +71,34 @@ class ProfileSerializer(serializers.ModelSerializer):
                 'option__product__options',
             )
         return UserFinancialProductSerializer(subscriptions, many=True).data
+
+    def get_can_view_joined_products(self, obj):
+        return self._can_view_joined_products(obj)
+
+    def _can_view_joined_products(self, obj):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        if not user or not user.is_authenticated:
+            return False
+        if obj.user_id == user.id:
+            return True
+        return Friend.objects.filter(
+            (
+                Q(user=user, friend=obj.user)
+                | Q(user=obj.user, friend=user)
+            ),
+            status=Friend.Status.ACCEPTED,
+        ).exists()
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.image:
+            try:
+                if not instance.image.storage.exists(instance.image.name):
+                    data['image'] = None
+            except OSError:
+                data['image'] = None
+        return data
 
     @transaction.atomic
     def update(self, instance, validated_data):

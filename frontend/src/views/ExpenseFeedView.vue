@@ -119,7 +119,14 @@ onMounted(() => {
         <div v-if="suggestedFriends.length" class="suggest-list">
           <article v-for="friend in suggestedFriends" :key="friend.id" class="suggest-item">
             <RouterLink class="suggest-profile" :to="{ name: 'user-profile', params: { userId: friend.id } }">
-              <span>{{ (friend.display_name || friend.username).slice(0, 1).toUpperCase() }}</span>
+              <img
+                v-if="friend.profile_image && !friend.imageLoadFailed"
+                class="suggest-avatar"
+                :src="friend.profile_image"
+                alt="profile image"
+                @error="friend.imageLoadFailed = true"
+              >
+              <span v-else class="suggest-avatar">{{ (friend.display_name || friend.username).slice(0, 1).toUpperCase() }}</span>
               <div>
                 <strong>{{ friend.display_name || friend.username }}</strong>
                 <small>@{{ friend.username }}</small>
@@ -231,7 +238,7 @@ onMounted(() => {
   min-width: 0;
 }
 
-.suggest-profile > span {
+.suggest-avatar {
   display: grid;
   width: 38px;
   height: 38px;
@@ -241,6 +248,10 @@ onMounted(() => {
   background: var(--color-money);
   color: var(--color-paper);
   font-weight: 900;
+}
+
+img.suggest-avatar {
+  object-fit: cover;
 }
 
 .suggest-profile div {

@@ -31,8 +31,8 @@ export const updateExpense = (id, payload) => {
 }
 
 
-export const deleteExpense = (id) => {
-  return api.delete(`/api/v1/expenses/${id}/`)
+export const deleteExpense = (id, confirmation = {}) => {
+  return api.delete(`/api/v1/expenses/${id}/`, { data: confirmation })
 }
 
 

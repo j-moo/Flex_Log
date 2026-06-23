@@ -74,6 +74,31 @@ class MonthlyAIAnalysisAPITests(APITestCase):
         self.assertEqual(response.data['category_summary']['식비']['total'], 120000)
         self.assertTrue(MonthlyAIAnalysis.objects.filter(user=self.user).exists())
 
+    def test_monthly_income_drives_risk_level(self):
+        ExpenseLog.objects.create(
+            user=self.user,
+            category=self.category,
+            amount=900000,
+            content='수입 대비 큰 지출',
+        )
+
+        response = self.client.post(
+            '/api/v1/analysis/monthly/',
+            {'year': 2026, 'month': 6, 'monthly_income': 1000000},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['risk_level'], 'high')
+        self.assertIn('월 수입', response.data['summary'])
+
+    def test_get_monthly_analysis_validates_query_params(self):
+        response = self.client.get('/api/v1/analysis/monthly/?year=abc&month=13')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('year', response.data)
+        self.assertIn('month', response.data)
+
     def test_latest_returns_recent_analysis(self):
         MonthlyAIAnalysis.objects.create(
             user=self.user,

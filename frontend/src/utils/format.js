@@ -29,4 +29,7 @@ export const formatShortDate = (value) => {
   }).format(new Date(value))
 }
 
-export const isVideo = (url) => /\.(mp4|webm|ogg)(?:\?|$)/i.test(url || '')
+export const isVideo = (url) => {
+  const value = String(url || '').toLowerCase()
+  return value.startsWith('data:video/') || /\.(mp4|webm|ogg)(?:[?#].*)?$/i.test(value)
+}

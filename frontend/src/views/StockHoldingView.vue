@@ -14,12 +14,18 @@ const errorMessage = ref('')
 const actionMessage = ref('')
 const useMockData = ref(false)
 const deletingId = ref(null)
+const sellTarget = ref(null)
+const sellError = ref('')
 const form = reactive({
   keyword: '',
   quantity: '',
   average_price: '',
   memo: '',
 })
+const sellForm = reactive({
+  quantity: '',
+})
+const emit = defineEmits(['holdings-changed'])
 
 let chart = null
 let lineSeries = null
@@ -45,6 +51,10 @@ const portfolioProfitRate = computed(() => {
   if (!portfolioSummary.value.invested) return 0
   return (portfolioSummary.value.profit / portfolioSummary.value.invested) * 100
 })
+const sellQuantity = computed(() => Number(sellForm.quantity || 0))
+const sellPreviewAmount = computed(() =>
+  sellTarget.value ? sellQuantity.value * Number(sellTarget.value.current_price || 0) : 0,
+)
 
 const formatCurrency = (value) => `${Math.round(Number(value || 0)).toLocaleString('ko-KR')}원`
 const formatQuantity = (value) => Number(value || 0).toLocaleString('ko-KR')
@@ -151,19 +161,24 @@ const startRealtimeMock = () => {
   pollingTimer = window.setInterval(applyRealtimeTick, 5000)
 }
 
-const loadHoldings = async () => {
+const loadHoldings = async (preferredSymbol = selectedSymbol.value) => {
   isLoading.value = true
   errorMessage.value = ''
   try {
     const response = await getStockHoldings()
-    holdings.value = response.data.map(normalizeHolding)
+    const realHoldings = response.data.map(normalizeHolding)
+    holdings.value = realHoldings
+    emit('holdings-changed', realHoldings)
     useMockData.value = false
     if (!holdings.value.length) {
       holdings.value = (await getStocks()).map(normalizeHolding)
       useMockData.value = true
     }
-    selectedSymbol.value = holdings.value[0]?.symbol || ''
+    selectedSymbol.value = holdings.value.some((stock) => stock.symbol === preferredSymbol)
+      ? preferredSymbol
+      : holdings.value[0]?.symbol || ''
   } catch {
+    emit('holdings-changed', [])
     holdings.value = (await getStocks()).map(normalizeHolding)
     selectedSymbol.value = holdings.value[0]?.symbol || ''
     useMockData.value = true
@@ -175,6 +190,7 @@ const loadHoldings = async () => {
     startRealtimeMock()
   }
 }
+
 
 const selectStock = (symbol) => {
   selectedSymbol.value = symbol
@@ -213,32 +229,78 @@ const submitHolding = async () => {
     })
     actionMessage.value = `${candidate.name}을 보유 주식에 추가했습니다.`
     Object.assign(form, { keyword: '', quantity: '', average_price: '', memo: '' })
-    await loadHoldings()
+    await loadHoldings(candidate.symbol)
   } catch (error) {
     errorMessage.value = Object.values(error.response?.data || {}).flat().join(' ') || '보유 주식 추가에 실패했습니다.'
   }
 }
 
-const removeHolding = async (stock) => {
-  if (!window.confirm(`${stock.name} 보유 정보를 삭제할까요?`)) return
+const validateSellQuantity = (stock) => {
+  const quantity = Number(sellForm.quantity)
+  if (!Number.isFinite(quantity) || quantity <= 0) {
+    sellError.value = '판매할 수량을 올바르게 입력해주세요.'
+    return null
+  }
+  if (quantity > Number(stock.quantity)) {
+    sellError.value = '보유 수량보다 많이 판매할 수 없습니다.'
+    return null
+  }
+  return quantity
+}
+
+const removeMockHolding = (stock, quantity) => {
+  const remainingQuantity = Number(stock.quantity) - quantity
+  if (remainingQuantity <= 0) {
+    holdings.value = holdings.value.filter((item) => item.symbol !== stock.symbol)
+  } else {
+    holdings.value = holdings.value.map((item) => (
+      item.symbol === stock.symbol
+        ? normalizeHolding({ ...item, quantity: remainingQuantity })
+        : item
+    ))
+  }
+  selectedSymbol.value = holdings.value.some((item) => item.symbol === selectedSymbol.value)
+    ? selectedSymbol.value
+    : holdings.value[0]?.symbol || ''
+}
+
+const openSellModal = (stock) => {
+  sellTarget.value = stock
+  sellForm.quantity = String(stock.quantity)
+  sellError.value = ''
+}
+
+const closeSellModal = () => {
+  sellTarget.value = null
+  sellForm.quantity = ''
+  sellError.value = ''
+}
+
+const confirmSell = async () => {
+  const stock = sellTarget.value
+  if (!stock) return
+  const quantity = validateSellQuantity(stock)
+  if (quantity === null) return
   deletingId.value = stock.id || stock.symbol
   errorMessage.value = ''
   actionMessage.value = ''
+  sellError.value = ''
   try {
     if (useMockData.value) {
-      holdings.value = holdings.value.filter((item) => item.symbol !== stock.symbol)
-      selectedSymbol.value = holdings.value[0]?.symbol || ''
+      removeMockHolding(stock, quantity)
     } else {
-      await deleteStockHolding(stock.id)
-      await loadHoldings()
+      await deleteStockHolding(stock.id, quantity)
+      await loadHoldings(selectedSymbol.value)
     }
-    actionMessage.value = `${stock.name}을 삭제했습니다.`
+    actionMessage.value = `${stock.name} ${formatQuantity(quantity)}주를 판매했습니다.`
+    closeSellModal()
   } catch (error) {
-    errorMessage.value = error.response?.data?.detail || '보유 주식 삭제에 실패했습니다.'
+    sellError.value = error.response?.data?.detail || '보유 주식 판매에 실패했습니다.'
   } finally {
     deletingId.value = null
   }
 }
+
 
 watch(selectedSymbol, loadChart)
 
@@ -356,15 +418,75 @@ onBeforeUnmount(() => {
                 class="delete-button"
                 type="button"
                 :disabled="deletingId === (stock.id || stock.symbol)"
-                @click="removeHolding(stock)"
+                @click="openSellModal(stock)"
               >
-                삭제
+                판매
               </button>
             </article>
           </div>
         </section>
       </div>
     </template>
+
+    <Teleport to="body">
+      <div v-if="sellTarget" class="sell-backdrop" @click.self="closeSellModal">
+        <form class="sell-modal vintage-card" @submit.prevent="confirmSell">
+          <header>
+            <div>
+              <span>SELL STOCK</span>
+              <h2>{{ sellTarget.name }}</h2>
+              <p>{{ sellTarget.symbol }}</p>
+            </div>
+            <button type="button" aria-label="닫기" @click="closeSellModal">×</button>
+          </header>
+
+          <div class="sell-stats">
+            <div>
+              <span>보유 수량</span>
+              <strong>{{ formatQuantity(sellTarget.quantity) }}주</strong>
+            </div>
+            <div>
+              <span>현재가</span>
+              <strong>{{ formatCurrency(sellTarget.current_price) }}</strong>
+            </div>
+            <div>
+              <span>예상 판매금액</span>
+              <strong>{{ formatCurrency(sellPreviewAmount) }}</strong>
+            </div>
+          </div>
+
+          <label>
+            판매 수량
+            <input
+              v-model="sellForm.quantity"
+              class="form-control"
+              type="number"
+              min="0.0001"
+              :max="sellTarget.quantity"
+              step="0.0001"
+              required
+            >
+          </label>
+          <input
+            v-model="sellForm.quantity"
+            class="sell-range"
+            type="range"
+            min="0.0001"
+            :max="sellTarget.quantity"
+            step="0.0001"
+          >
+
+          <p v-if="sellError" class="sell-error">{{ sellError }}</p>
+
+          <div class="sell-actions">
+            <button type="button" class="ghost-button" @click="closeSellModal">취소</button>
+            <button class="vintage-button" :disabled="deletingId === (sellTarget.id || sellTarget.symbol)">
+              {{ deletingId === (sellTarget.id || sellTarget.symbol) ? '판매 중' : '판매하기' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </Teleport>
   </section>
 </template>
 
@@ -555,6 +677,111 @@ onBeforeUnmount(() => {
 .delete-button:disabled {
   opacity: 0.5;
   cursor: wait;
+}
+
+.sell-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: grid;
+  place-items: center;
+  background: rgba(23, 19, 13, 0.34);
+  padding: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.sell-modal {
+  display: grid;
+  gap: 16px;
+  width: min(100%, 460px);
+  padding: 20px;
+}
+
+.sell-modal header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.sell-modal header span {
+  color: var(--color-dark-gold);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.sell-modal h2,
+.sell-modal p {
+  margin: 0;
+}
+
+.sell-modal header > button,
+.ghost-button {
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-weight: 900;
+}
+
+.sell-modal header > button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.sell-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sell-stats div {
+  display: grid;
+  gap: 5px;
+  border: 2px solid rgba(23, 19, 13, 0.16);
+  border-radius: 14px;
+  background: rgba(255, 248, 231, 0.68);
+  padding: 10px;
+}
+
+.sell-stats span,
+.sell-modal label {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.sell-stats strong {
+  overflow-wrap: anywhere;
+}
+
+.sell-modal label {
+  display: grid;
+  gap: 6px;
+}
+
+.sell-range {
+  width: 100%;
+  accent-color: var(--color-gold);
+}
+
+.sell-error {
+  border-radius: 14px;
+  background: rgba(182, 74, 53, 0.12);
+  color: var(--color-red);
+  margin: 0;
+  padding: 10px 12px;
+  font-weight: 900;
+}
+
+.sell-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
 }
 
 .price-block {

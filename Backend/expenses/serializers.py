@@ -15,9 +15,11 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ExpenseLogSerializer(serializers.ModelSerializer):
+    title = serializers.CharField(max_length=150, required=False, allow_blank=True)
     user_id = serializers.IntegerField(source='user.id', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
     display_name = serializers.SerializerMethodField()
+    profile_image = serializers.SerializerMethodField()
     category_name = serializers.CharField(source='category.name', read_only=True)
     is_feed_visible = serializers.BooleanField(read_only=True)
     like_count = serializers.IntegerField(source='likes.count', read_only=True)
@@ -32,6 +34,7 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
             'user_id',
             'username',
             'display_name',
+            'profile_image',
             'category',
             'category_name',
             'title',
@@ -59,6 +62,7 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
             'user_id',
             'username',
             'display_name',
+            'profile_image',
             'category_name',
             'is_feed_visible',
             'like_count',
@@ -75,6 +79,20 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
         if profile and profile.nickname:
             return profile.nickname
         return obj.user.name or obj.user.username
+
+    def get_profile_image(self, obj):
+        profile = getattr(obj.user, 'profile', None)
+        image = getattr(profile, 'image', None)
+        if not image:
+            return None
+        try:
+            if image.name and not image.storage.exists(image.name):
+                return None
+            url = image.url
+        except (OSError, ValueError):
+            return None
+        request = self.context.get('request')
+        return request.build_absolute_uri(url) if request else url
 
     def get_is_liked(self, obj):
         request = self.context.get('request')
@@ -96,6 +114,15 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
         return data
 
     def get_media_source(self, instance):
+        if instance.media:
+            request = self.context.get('request')
+            try:
+                if instance.media.name and instance.media.storage.exists(instance.media.name):
+                    url = instance.media.url
+                    return request.build_absolute_uri(url) if request else url
+            except (OSError, ValueError):
+                pass
+
         if instance.media_data:
             content_type = (
                 instance.media_content_type
@@ -105,15 +132,7 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
             encoded = base64.b64encode(bytes(instance.media_data)).decode('ascii')
             return f'data:{content_type};base64,{encoded}'
 
-        if not instance.media:
-            return None
-
-        request = self.context.get('request')
-        try:
-            url = instance.media.url
-        except ValueError:
-            return None
-        return request.build_absolute_uri(url) if request else url
+        return None
 
     def create(self, validated_data):
         media_attrs = self.extract_media_attrs(validated_data)
@@ -134,11 +153,36 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
             return {}
 
         return {
-            'media': None,
-            'media_data': media_file.read(),
+            'media': media_file,
+            'media_data': None,
             'media_content_type': (getattr(media_file, 'content_type', '') or '')[:120],
             'media_name': Path(media_file.name).name[:255],
         }
+
+    def validate(self, attrs):
+        title = attrs.get('title')
+        if title is not None:
+            attrs['title'] = title.strip()
+
+        if not attrs.get('title') and not self.instance:
+            attrs['title'] = self.build_default_title(attrs)
+        elif self.instance and 'title' in attrs and not attrs['title']:
+            attrs['title'] = self.build_default_title(attrs) or self.instance.title
+
+        return attrs
+
+    def build_default_title(self, attrs):
+        content = (attrs.get('content') or '').strip()
+        if content:
+            return content.splitlines()[0][:150]
+
+        fallback = (
+            (attrs.get('overlay_text') or '').strip()
+            or (attrs.get('product_name') or '').strip()
+            or (attrs.get('merchant') or '').strip()
+            or '소비 기록'
+        )
+        return fallback[:150]
 
     def validate_media(self, value):
         if not value:

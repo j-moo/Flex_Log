@@ -282,11 +282,10 @@ class StockHoldingSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         user = getattr(request, 'user', None)
         symbol = attrs.get('symbol', getattr(self.instance, 'symbol', '')).strip().upper()
-        if user and user.is_authenticated:
+        if self.instance and user and user.is_authenticated:
             queryset = StockHolding.objects.filter(user=user, symbol=symbol)
-            if self.instance:
-                queryset = queryset.exclude(pk=self.instance.pk)
+            queryset = queryset.exclude(pk=self.instance.pk)
             if queryset.exists():
-                raise serializers.ValidationError({'symbol': '이미 등록된 종목 코드입니다.'})
+                raise serializers.ValidationError({'symbol': '\uc774\ubbf8 \ub4f1\ub85d\ub41c \uc885\ubaa9 \ucf54\ub4dc\uc785\ub2c8\ub2e4.'})
         attrs['symbol'] = symbol
         return attrs

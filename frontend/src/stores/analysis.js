@@ -32,11 +32,12 @@ export const useAnalysisStore = defineStore('analysis', () => {
     return response.data
   }
 
-  const analyzeCurrentMonth = async () => {
+  const analyzeCurrentMonth = async (monthlyIncome = 0) => {
     const today = new Date()
     const payload = {
       year: today.getFullYear(),
       month: today.getMonth() + 1,
+      monthly_income: Math.max(0, Math.round(Number(monthlyIncome || 0))),
     }
 
     isLoading.value = true

@@ -94,10 +94,20 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  transform: scale(1.08);
 }
 
 .brand-logo--small img,
 .brand-logo--medium img {
+  transform: scale(1.18);
+}
+
+.brand-logo--large img {
+  transform: scale(1.16);
+}
+
+.brand-logo--wide img {
   transform: scale(1.12);
 }
 

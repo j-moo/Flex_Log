@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import AnalysisView from '../views/AnalysisView.vue'
+import EasterEggView from '../views/EasterEggView.vue'
 import ExpenseFeedView from '../views/ExpenseFeedView.vue'
 import ExpenseDetailView from '../views/ExpenseDetailView.vue'
 import ExpenseFormView from '../views/ExpenseFormView.vue'
@@ -31,6 +32,7 @@ const router = createRouter({
     { path: '/signup', name: 'signup', component: SignUpView, meta: { guestOnly: true } },
     { path: '/login', name: 'login', component: LoginView, meta: { guestOnly: true } },
     { path: '/feed', name: 'feed', component: ExpenseFeedView, meta: { requiresAuth: true } },
+    { path: '/kerocya', name: 'easter-egg', component: EasterEggView, meta: { requiresAuth: true } },
     { path: '/mypage', name: 'mypage', component: MyPageView, meta: { requiresAuth: true } },
     { path: '/profile', name: 'profile', component: ProfileView, meta: { requiresAuth: true } },
     { path: '/profile/:userId', name: 'user-profile', component: ProfileView, meta: { requiresAuth: true } },

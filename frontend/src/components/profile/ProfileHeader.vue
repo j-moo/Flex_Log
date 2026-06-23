@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   profile: {
@@ -28,7 +28,16 @@ const props = defineProps({
 
 defineEmits(['friends', 'edit', 'friend-action'])
 
+const imageLoadFailed = ref(false)
 const initial = computed(() => (props.profile.nickname || props.profile.username || 'F').slice(0, 1).toUpperCase())
+const hasProfileImage = computed(() => Boolean(props.profile.image) && !imageLoadFailed.value)
+
+watch(
+  () => props.profile.image,
+  () => {
+    imageLoadFailed.value = false
+  },
+)
 </script>
 
 <template>
@@ -50,7 +59,7 @@ const initial = computed(() => (props.profile.nickname || props.profile.username
     </div>
 
     <div class="profile-main">
-      <img v-if="profile.image" :src="profile.image" alt="프로필 이미지">
+      <img v-if="hasProfileImage" :src="profile.image" alt="프로필 이미지" @error="imageLoadFailed = true">
       <span v-else class="profile-avatar">{{ initial }}</span>
 
       <div class="profile-copy">

@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from friends.models import Friend
 from finance.models import FinancialProduct, FinancialProductOption, UserFinancialProduct
 
 from .models import Profile
@@ -84,3 +85,62 @@ class ProfileAPITests(APITestCase):
             response.data['joined_products'][0]['option']['id'],
             active_option.id,
         )
+    def test_public_profile_hides_joined_products_from_non_friend(self):
+        other = User.objects.create_user(
+            username='product-owner',
+            email='owner@example.com',
+            password='StrongPass123!',
+        )
+        Profile.objects.create(user=other, nickname='owner')
+        product = FinancialProduct.objects.create(
+            product_type='saving',
+            fin_prdt_cd='PUBLIC001',
+            kor_co_nm='Test Bank',
+            fin_prdt_nm='Hidden Saving',
+        )
+        option = FinancialProductOption.objects.create(
+            product=product,
+            save_trm=12,
+            intr_rate='3.0000',
+            intr_rate2='3.5000',
+        )
+        UserFinancialProduct.objects.create(user=other, option=option)
+
+        response = self.client.get(f'/api/v1/profiles/{other.id}/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(response.data['can_view_joined_products'])
+        self.assertEqual(response.data['joined_products'], [])
+
+    def test_public_profile_shows_joined_products_to_friend(self):
+        other = User.objects.create_user(
+            username='friend-owner',
+            email='friend-owner@example.com',
+            password='StrongPass123!',
+        )
+        Profile.objects.create(user=other, nickname='friend-owner')
+        Friend.objects.create(
+            user=self.user,
+            friend=other,
+            status=Friend.Status.ACCEPTED,
+        )
+        product = FinancialProduct.objects.create(
+            product_type='deposit',
+            fin_prdt_cd='PUBLIC002',
+            kor_co_nm='Test Bank',
+            fin_prdt_nm='Visible Deposit',
+        )
+        option = FinancialProductOption.objects.create(
+            product=product,
+            save_trm=12,
+            intr_rate='3.0000',
+            intr_rate2='3.5000',
+        )
+        UserFinancialProduct.objects.create(user=other, option=option)
+
+        response = self.client.get(f'/api/v1/profiles/{other.id}/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['can_view_joined_products'])
+        self.assertEqual(len(response.data['joined_products']), 1)
+        self.assertEqual(response.data['joined_products'][0]['option']['id'], option.id)

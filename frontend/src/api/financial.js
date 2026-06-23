@@ -17,6 +17,9 @@ export const getYoutubeVideo = (videoId) =>
 export const searchNearbyBanks = (query, radius = 2000) =>
   api.get('/api/v1/finance/banks/nearby/', { params: { query, radius } })
 
+export const getBankRoute = (bank) =>
+  api.get('/api/v1/finance/banks/route/', { params: { x: bank.x, y: bank.y, name: bank.name } })
+
 export const getStockQuote = (symbol) =>
   api.get('/api/v1/finance/quote/', { params: { symbol } })
 
@@ -29,4 +32,5 @@ export const createStockHolding = (payload) => api.post('/api/v1/finance/stocks/
 
 export const updateStockHolding = (id, payload) => api.patch(`/api/v1/finance/stocks/${id}/`, payload)
 
-export const deleteStockHolding = (id) => api.delete(`/api/v1/finance/stocks/${id}/`)
+export const deleteStockHolding = (id, quantity) =>
+  api.delete(`/api/v1/finance/stocks/${id}/`, { data: { quantity } })

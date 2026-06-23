@@ -159,3 +159,12 @@ KAKAO_LOCAL_API_BASE_URL = os.getenv(
     'KAKAO_LOCAL_API_BASE_URL',
     'https://dapi.kakao.com/v2/local',
 )
+
+KAKAO_MOBILITY_API_KEY = os.getenv('KAKAO_MOBILITY_API_KEY') or KAKAO_REST_API_KEY
+KAKAO_MOBILITY_API_BASE_URL = os.getenv(
+    'KAKAO_MOBILITY_API_BASE_URL',
+    'https://apis-navi.kakaomobility.com',
+)
+KAKAO_ROUTE_ORIGIN_X = float(os.getenv('KAKAO_ROUTE_ORIGIN_X', '127.039585'))
+KAKAO_ROUTE_ORIGIN_Y = float(os.getenv('KAKAO_ROUTE_ORIGIN_Y', '37.5012743'))
+KAKAO_ROUTE_ORIGIN_NAME = os.getenv('KAKAO_ROUTE_ORIGIN_NAME', '\uba40\ud2f0\ucea0\ud37c\uc2a4 \uc5ed\uc0bc')

@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useAccountStore } from '../../stores/account'
@@ -10,6 +10,11 @@ const emit = defineEmits(['logout', 'compose'])
 const route = useRoute()
 const router = useRouter()
 const account = useAccountStore()
+const imageLoadFailed = ref(false)
+const brandClickCount = ref(0)
+const isDarkMode = ref(false)
+const THEME_KEY = 'flexlog.theme'
+let brandClickResetTimer = null
 
 const navItems = [
   {
@@ -61,6 +66,38 @@ const userName = computed(() =>
   account.user?.name || account.user?.username || account.user?.email || 'Flexer',
 )
 
+const profileImage = computed(() => (
+  imageLoadFailed.value ? null : account.user?.profile_image
+))
+
+watch(() => account.user?.profile_image, () => {
+  imageLoadFailed.value = false
+})
+
+const applyTheme = (dark) => {
+  isDarkMode.value = dark
+  document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+  window.localStorage.setItem(THEME_KEY, dark ? 'dark' : 'light')
+}
+
+const toggleTheme = () => {
+  applyTheme(!isDarkMode.value)
+}
+
+onMounted(() => {
+  const savedTheme = window.localStorage.getItem(THEME_KEY)
+  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
+  applyTheme(savedTheme ? savedTheme === 'dark' : Boolean(prefersDark))
+
+  if (account.isAuthenticated && !account.user?.profile_image) {
+    account.fetchMe().catch(() => {})
+  }
+})
+
+onBeforeUnmount(() => {
+  if (brandClickResetTimer) window.clearTimeout(brandClickResetTimer)
+})
+
 const isActive = (item) => item.matches.includes(route.name)
 
 const handleNav = (item) => {
@@ -70,12 +107,33 @@ const handleNav = (item) => {
   }
   router.push({ name: item.name })
 }
+
+const resetBrandClicks = () => {
+  brandClickCount.value = 0
+  if (brandClickResetTimer) window.clearTimeout(brandClickResetTimer)
+  brandClickResetTimer = null
+}
+
+const handleBrandClick = () => {
+  brandClickCount.value += 1
+  if (brandClickResetTimer) window.clearTimeout(brandClickResetTimer)
+
+  // 짧은 시간 안의 연속 로고 클릭만 이스터에그 진입 시도로 계산한다.
+  if (brandClickCount.value >= 15) {
+    resetBrandClicks()
+    router.push({ name: 'easter-egg' })
+    return
+  }
+
+  brandClickResetTimer = window.setTimeout(resetBrandClicks, 1800)
+  if (route.name !== 'feed') router.push({ name: 'feed' })
+}
 </script>
 
 <template>
   <header class="top-bar">
     <div class="top-bar__inner">
-      <button class="brand-link" type="button" @click="router.push({ name: 'feed' })">
+      <button class="brand-link" type="button" @click="handleBrandClick">
         <BrandLogo rotating size="small" />
         <span class="brand-type">Flex-Log</span>
       </button>
@@ -99,10 +157,26 @@ const handleNav = (item) => {
 
       <div class="top-actions">
         <RouterLink class="profile-chip" :to="{ name: 'profile' }">
-          <span>{{ userName.slice(0, 1).toUpperCase() }}</span>
+          <img
+            v-if="profileImage"
+            class="profile-chip__image"
+            :src="profileImage"
+            alt="profile image"
+            @error="imageLoadFailed = true"
+          >
+          <span v-else>{{ userName.slice(0, 1).toUpperCase() }}</span>
           <strong>{{ userName }}</strong>
         </RouterLink>
         <button class="logout-button" type="button" @click="$emit('logout')">로그아웃</button>
+        <button
+          class="theme-toggle"
+          type="button"
+          :aria-pressed="isDarkMode"
+          :aria-label="isDarkMode ? '라이트 모드로 전환' : '다크 모드로 전환'"
+          @click="toggleTheme"
+        >
+          <span></span>
+        </button>
       </div>
     </div>
   </header>
@@ -116,6 +190,10 @@ const handleNav = (item) => {
   border-bottom: 0;
   background: rgba(247, 239, 216, 0.76);
   backdrop-filter: blur(18px);
+}
+
+:global(html[data-theme='dark']) .top-bar {
+  background: rgba(19, 22, 25, 0.78);
 }
 
 .top-bar__inner {
@@ -238,6 +316,7 @@ const handleNav = (item) => {
   font-weight: 900;
 }
 
+.profile-chip__image,
 .profile-chip span {
   display: grid;
   width: 30px;
@@ -246,6 +325,11 @@ const handleNav = (item) => {
   border-radius: 50%;
   background: var(--color-money);
   color: var(--color-paper);
+  font-weight: 900;
+}
+
+.profile-chip__image {
+  object-fit: cover;
 }
 
 .profile-chip strong {
@@ -263,6 +347,33 @@ const handleNav = (item) => {
   padding: 9px 13px;
   font-size: 12px;
   font-weight: 900;
+}
+
+.theme-toggle {
+  position: relative;
+  width: 54px;
+  height: 30px;
+  flex: 0 0 auto;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-paper);
+  padding: 2px;
+  box-shadow: 2px 2px 0 var(--color-ink);
+}
+
+.theme-toggle span {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  box-shadow: inset 0 0 0 2px rgba(23, 19, 13, 0.18);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.theme-toggle[aria-pressed='true'] span {
+  background: var(--color-blue);
+  transform: translateX(24px);
 }
 
 @media (max-width: 900px) {

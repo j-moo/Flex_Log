@@ -47,8 +47,8 @@ def get_financial_product_candidates(user, analysis, limit=10):
     risk_level = getattr(analysis, 'risk_level', 'medium') or 'medium'
     products = FinancialProduct.objects.filter(is_active=True).prefetch_related('options')
 
-    all_candidates = []
-    risk_candidates = []
+    all_candidates = {}
+    risk_candidates = {}
     for product in products:
         for option in product.options.all():
             term = to_int(option.save_trm)
@@ -70,11 +70,15 @@ def get_financial_product_candidates(user, analysis, limit=10):
                 'rsrv_type_nm': option.rsrv_type_nm,
                 'intr_rate_type_nm': option.intr_rate_type_nm,
             }
-            all_candidates.append(candidate)
+            current = all_candidates.get(product.id)
+            if not current or candidate['rate_for_sort'] > current['rate_for_sort']:
+                all_candidates[product.id] = candidate
             if matches_risk_term(risk_level, product.product_type, term):
-                risk_candidates.append(candidate)
+                current = risk_candidates.get(product.id)
+                if not current or candidate['rate_for_sort'] > current['rate_for_sort']:
+                    risk_candidates[product.id] = candidate
 
-    candidates = risk_candidates or all_candidates
+    candidates = list((risk_candidates or all_candidates).values())
     candidates.sort(key=lambda item: item['rate_for_sort'], reverse=True)
     return candidates[:limit]
 
@@ -273,11 +277,14 @@ def save_recommendations(user, analysis, payloads, candidates):
         candidate_by_product_id.setdefault(candidate['product_id'], candidate)
 
     saved = []
+    seen_product_ids = set()
     for index, payload in enumerate(payloads, start=1):
         product = None
         candidate = None
         product_id = payload.get('product_id')
         if product_id:
+            if product_id in seen_product_ids:
+                continue
             try:
                 product = FinancialProduct.objects.prefetch_related('options').get(
                     id=product_id,
@@ -286,6 +293,7 @@ def save_recommendations(user, analysis, payloads, candidates):
             except FinancialProduct.DoesNotExist:
                 continue
             candidate = candidate_by_product_id.get(product.id)
+            seen_product_ids.add(product.id)
 
         option = None
         if product and not candidate:
