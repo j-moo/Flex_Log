@@ -110,6 +110,7 @@ def normalize_ai_result(data):
 def build_ai_prompt(data):
     return (
         '다음 월별 소비 집계 데이터를 바탕으로 소비 패턴을 분석해 주세요.\n'
+        'monthly_income 값이 0보다 크면 월 수입 대비 소비 비율을 위험도 판단의 핵심 기준으로 사용하세요.\n'
         '반드시 아래 키만 가진 한국어 JSON 객체로만 답하세요.\n'
         '마크다운 코드블록, 설명 문장, 추가 텍스트는 포함하지 마세요.\n\n'
         '필수 형식:\n'
@@ -172,6 +173,24 @@ def request_gms_analysis(data):
         return None
 
 
+def calculate_risk_level(data):
+    total_amount = data['total_amount']
+    monthly_income = int(data.get('monthly_income') or 0)
+    if monthly_income > 0:
+        income_ratio = total_amount / monthly_income
+        if income_ratio >= 0.9:
+            return 'high'
+        if income_ratio >= 0.6:
+            return 'medium'
+        return 'low'
+
+    if total_amount >= 1_000_000:
+        return 'high'
+    if total_amount >= 500_000:
+        return 'medium'
+    return 'low'
+
+
 def fallback_analysis(data):
     if data['log_count'] == 0:
         return {
@@ -183,12 +202,9 @@ def fallback_analysis(data):
         }
 
     total_amount = data['total_amount']
-    if total_amount >= 1_000_000:
-        risk_level = 'high'
-    elif total_amount >= 500_000:
-        risk_level = 'medium'
-    else:
-        risk_level = 'low'
+    monthly_income = int(data.get('monthly_income') or 0)
+    risk_level = calculate_risk_level(data)
+    income_ratio = round((total_amount / monthly_income) * 100, 1) if monthly_income else None
 
     top_name, top_data = max(
         data['category_summary'].items(),
@@ -201,6 +217,11 @@ def fallback_analysis(data):
         'summary': (
             f"{data['year']}년 {data['month']}월에는 총 {total_amount:,}원을 "
             f"{data['log_count']}건에 사용했고, 평균 소비 금액은 {data['average_amount']:,}원입니다."
+            + (
+                f" 월 수입 {monthly_income:,}원 대비 {income_ratio}%를 사용했습니다."
+                if monthly_income
+                else ''
+            )
         ),
         'problem': f'{top_name} 지출이 {top_total:,}원, {top_count}건으로 가장 큽니다.',
         'feedback': f'{top_name} 소비를 먼저 점검하면 전체 지출을 줄이는 효과가 큽니다.',
@@ -231,8 +252,15 @@ def create_monthly_ai_analysis(user, data, ai_result):
 def monthly_analysis(request):
     if request.method == 'GET':
         today = timezone.localdate()
-        year = int(request.query_params.get('year', today.year))
-        month = int(request.query_params.get('month', today.month))
+        serializer = MonthlyAIAnalysisRequestSerializer(
+            data={
+                'year': request.query_params.get('year', today.year),
+                'month': request.query_params.get('month', today.month),
+            },
+        )
+        serializer.is_valid(raise_exception=True)
+        year = serializer.validated_data['year']
+        month = serializer.validated_data['month']
         data = aggregate_monthly_expenses(request.user, year, month)
         basic_analysis = save_basic_monthly_analysis(request.user, data)
         response_data = MonthlyAnalysisSerializer(basic_analysis).data
@@ -246,9 +274,12 @@ def monthly_analysis(request):
     year = serializer.validated_data['year']
     month = serializer.validated_data['month']
     data = aggregate_monthly_expenses(request.user, year, month)
+    data['monthly_income'] = serializer.validated_data.get('monthly_income', 0)
     save_basic_monthly_analysis(request.user, data)
 
     ai_result = request_gms_analysis(data) or fallback_analysis(data)
+    if data['monthly_income'] > 0:
+        ai_result['risk_level'] = calculate_risk_level(data)
     analysis = create_monthly_ai_analysis(request.user, data, ai_result)
 
     return Response(

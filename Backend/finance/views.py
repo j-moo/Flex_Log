@@ -1,3 +1,5 @@
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
@@ -28,8 +30,26 @@ from .serializers import (
 )
 from .services.kiwoom_api import get_chart, get_quote
 from .services.kiwoom_auth import KiwoomAPIError
-from .services.kakao_local import KakaoLocalAPIError, search_nearby_banks
+from .services.kakao_local import (
+    KakaoLocalAPIError,
+    search_driving_route,
+    search_nearby_banks,
+)
 from .services.youtube_api import YouTubeAPIError, get_video_detail, search_videos
+
+
+MONEY_QUANT = Decimal('0.01')
+
+
+def quantize_money(value):
+    return value.quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
+
+
+def kiwoom_error_status(exc):
+    message = str(exc)
+    if message.startswith('symbol must') or message.startswith('Unsupported period'):
+        return status.HTTP_400_BAD_REQUEST
+    return status.HTTP_503_SERVICE_UNAVAILABLE
 
 
 def apply_product_filters(request, product_type=None):
@@ -338,6 +358,35 @@ def nearby_bank_search(request):
         )
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def bank_route(request):
+    raw_x = request.query_params.get('x')
+    raw_y = request.query_params.get('y')
+    if not raw_x or not raw_y:
+        return Response(
+            {'detail': '\ubaa9\uc801\uc9c0 x, y \uc88c\ud45c\uac00 \ud544\uc694\ud569\ub2c8\ub2e4.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    try:
+        destination_x = float(raw_x)
+        destination_y = float(raw_y)
+    except (TypeError, ValueError):
+        return Response(
+            {'detail': 'x, y \uc88c\ud45c\ub294 \uc22b\uc790\uc5ec\uc57c \ud569\ub2c8\ub2e4.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    destination_name = request.query_params.get('name', '').strip()
+    try:
+        return Response(search_driving_route(destination_x, destination_y, destination_name))
+    except KakaoLocalAPIError as exc:
+        return Response(
+            {'detail': str(exc)},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def recommend_products(request):
@@ -351,9 +400,23 @@ def recommend_products(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def latest_recommendations(request):
-    recommendations = FinancialProductRecommendation.objects.filter(
+    queryset = FinancialProductRecommendation.objects.filter(
         user=request.user,
-    ).order_by('-created_at', 'priority')[:5]
+    ).order_by('-created_at', 'priority')
+    recommendations = []
+    seen_products = set()
+    for recommendation in queryset:
+        key = recommendation.product_id or (
+            recommendation.bank_name,
+            recommendation.product_name,
+            recommendation.save_trm,
+        )
+        if key in seen_products:
+            continue
+        seen_products.add(key)
+        recommendations.append(recommendation)
+        if len(recommendations) == 5:
+            break
     return Response(
         FinancialProductRecommendationSerializer(recommendations, many=True).data
     )
@@ -383,7 +446,7 @@ def stock_quote(request):
     try:
         return Response(get_quote(symbol))
     except KiwoomAPIError as exc:
-        return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': str(exc)}, status=kiwoom_error_status(exc))
 
 
 @api_view(['GET'])
@@ -400,7 +463,7 @@ def stock_chart(request):
     try:
         return Response(get_chart(symbol, period))
     except KiwoomAPIError as exc:
-        return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': str(exc)}, status=kiwoom_error_status(exc))
 
 
 class StockHoldingListCreateView(generics.ListCreateAPIView):
@@ -410,8 +473,44 @@ class StockHoldingListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return StockHolding.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        holding = StockHolding.objects.select_for_update().filter(
+            user=request.user,
+            symbol=data['symbol'],
+        ).first()
+
+        if holding:
+            added_quantity = data['quantity']
+            total_quantity = holding.quantity + added_quantity
+            invested_amount = (
+                holding.quantity * holding.average_price
+                + added_quantity * data['average_price']
+            )
+            holding.quantity = total_quantity
+            holding.average_price = quantize_money(invested_amount / total_quantity)
+            holding.name = data.get('name') or holding.name
+            if 'current_price' in data:
+                holding.current_price = data['current_price']
+            if data.get('memo'):
+                holding.memo = data['memo']
+            holding.save(
+                update_fields=(
+                    'quantity',
+                    'average_price',
+                    'name',
+                    'current_price',
+                    'memo',
+                    'updated_at',
+                ),
+            )
+            return Response(self.get_serializer(holding).data, status=status.HTTP_200_OK)
+
+        holding = serializer.save(user=request.user)
+        return Response(self.get_serializer(holding).data, status=status.HTTP_201_CREATED)
 
 
 class StockHoldingDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -420,3 +519,41 @@ class StockHoldingDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return StockHolding.objects.filter(user=self.request.user)
+
+    @transaction.atomic
+    def destroy(self, request, *args, **kwargs):
+        lookup_url_kwarg = self.lookup_url_kwarg or self.lookup_field
+        holding = get_object_or_404(
+            self.get_queryset().select_for_update(),
+            **{self.lookup_field: self.kwargs[lookup_url_kwarg]},
+        )
+        raw_quantity = request.data.get('quantity') or request.query_params.get('quantity')
+        if raw_quantity in (None, ''):
+            holding.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        try:
+            quantity = Decimal(str(raw_quantity))
+        except (InvalidOperation, TypeError, ValueError):
+            return Response(
+                {'detail': '\uc0ad\uc81c \uc218\ub7c9\uc740 \uc22b\uc790\uc5ec\uc57c \ud569\ub2c8\ub2e4.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if quantity <= 0:
+            return Response(
+                {'detail': '\uc0ad\uc81c \uc218\ub7c9\uc740 0\ubcf4\ub2e4 \ucee4\uc57c \ud569\ub2c8\ub2e4.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if quantity > holding.quantity:
+            return Response(
+                {'detail': '\ubcf4\uc720 \uc218\ub7c9\ubcf4\ub2e4 \ub9ce\uc774 \uc0ad\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if quantity == holding.quantity:
+            holding.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        holding.quantity -= quantity
+        holding.save(update_fields=('quantity', 'updated_at'))
+        return Response(self.get_serializer(holding).data, status=status.HTTP_200_OK)

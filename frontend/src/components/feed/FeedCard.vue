@@ -14,11 +14,16 @@ const props = defineProps({
 })
 
 const isLiking = ref(false)
+const avatarImageFailed = ref(false)
 const commentSection = ref(null)
 
 const avatarLetter = computed(() =>
   (props.log.display_name || props.log.username || 'F').slice(0, 1).toUpperCase(),
 )
+
+const hasAvatarImage = computed(() => (
+  Boolean(props.log.profile_image) && !avatarImageFailed.value
+))
 
 const overlayBoxes = computed(() => {
   const boxes = props.log.overlay_style?.boxes
@@ -39,6 +44,7 @@ const overlayBoxes = computed(() => {
 })
 
 const amountLabel = computed(() => formatAmount(props.log.amount))
+const displayText = computed(() => props.log.content || props.log.title || '')
 
 const boxStyle = (box) => ({
   left: `${Number(box.x ?? 50)}%`,
@@ -65,7 +71,14 @@ const toggleLike = async () => {
   <article class="feed-card">
     <header class="post-header">
       <RouterLink class="post-user" :to="{ name: 'user-profile', params: { userId: log.user_id } }">
-        <span class="avatar">{{ avatarLetter }}</span>
+        <img
+          v-if="hasAvatarImage"
+          class="avatar"
+          :src="log.profile_image"
+          alt="profile image"
+          @error="avatarImageFailed = true"
+        >
+        <span v-else class="avatar">{{ avatarLetter }}</span>
         <span>
           <strong>{{ log.display_name || log.username }}</strong>
           <small>{{ formatDate(log.created_at) }}</small>
@@ -74,7 +87,7 @@ const toggleLike = async () => {
       <span class="vintage-badge">{{ log.category_name || '소비' }}</span>
     </header>
 
-    <div class="post-media">
+    <div class="post-media" :class="{ 'has-media': log.media }">
       <video v-if="log.media && isVideo(log.media)" :src="log.media" controls playsinline></video>
       <img v-else-if="log.media" :src="log.media" :alt="log.title || '소비 기록 이미지'">
       <div v-else class="media-fallback">
@@ -111,8 +124,7 @@ const toggleLike = async () => {
 
       <p class="caption">
         <strong>{{ log.display_name || log.username }}</strong>
-        <b v-if="log.title">{{ log.title }}</b>
-        <span v-if="log.content"> {{ log.content }}</span>
+        <span v-if="displayText"> {{ displayText }}</span>
       </p>
 
       <p v-if="log.product_name || log.merchant" class="purchase-meta">
@@ -164,6 +176,7 @@ const toggleLike = async () => {
   background: var(--color-money);
   color: var(--color-paper);
   font-weight: 900;
+  object-fit: cover;
 }
 
 .post-user > span:last-child {
@@ -193,11 +206,20 @@ const toggleLike = async () => {
   background: #262017;
 }
 
+.post-media.has-media {
+  aspect-ratio: auto;
+}
+
 .post-media img,
 .post-media video {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
+  object-fit: contain;
+}
+
+.post-media video {
+  display: block;
+  background: #262017;
 }
 
 .media-fallback {
@@ -293,7 +315,7 @@ const toggleLike = async () => {
 }
 
 @media (min-width: 700px) {
-  .post-media {
+  .post-media:not(.has-media) {
     aspect-ratio: 4 / 3;
   }
 }

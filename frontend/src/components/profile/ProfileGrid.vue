@@ -6,6 +6,7 @@ defineProps({
     type: Array,
     default: () => [],
   },
+  isOwn: Boolean,
 })
 
 const icons = {
@@ -20,7 +21,7 @@ const icons = {
 
 <template>
   <div v-if="logs.length" class="profile-post-grid">
-    <RouterLink v-for="log in logs" :key="log.id" :to="{ name: 'log-detail', params: { id: log.id } }">
+    <RouterLink v-for="log in logs" :key="log.id" class="post-preview" :to="{ name: 'log-detail', params: { id: log.id } }">
       <video v-if="log.media && isVideo(log.media)" :src="log.media" muted></video>
       <img v-else-if="log.media" :src="log.media" :alt="log.title">
       <div v-else class="grid-fallback">
@@ -34,10 +35,13 @@ const icons = {
     </RouterLink>
   </div>
 
-  <div v-else class="empty-grid glass-panel">
-    <span>+</span>
-    <strong>게시글 없음</strong>
-    <p>소비 순간을 첫 게시글로 남겨보세요.</p>
+  <div v-else class="empty-grid glass-panel" :class="{ compact: !isOwn }">
+    <template v-if="isOwn">
+      <span>+</span>
+      <strong>게시글 없음</strong>
+      <p>소비 순간을 첫 게시글로 남겨보세요.</p>
+    </template>
+    <strong v-else>게시글 없음</strong>
   </div>
 </template>
 
@@ -48,7 +52,7 @@ const icons = {
   gap: 6px;
 }
 
-.profile-post-grid > a {
+.post-preview {
   position: relative;
   display: grid;
   aspect-ratio: 1;
@@ -92,7 +96,7 @@ const icons = {
   transition: opacity 0.16s ease;
 }
 
-.profile-post-grid > a:hover .grid-overlay {
+.post-preview:hover .grid-overlay {
   opacity: 1;
 }
 
@@ -102,6 +106,14 @@ const icons = {
   place-content: center;
   justify-items: center;
   text-align: center;
+}
+
+.empty-grid.compact {
+  min-height: 120px;
+}
+
+.empty-grid.compact strong {
+  margin-top: 0;
 }
 
 .empty-grid > span {

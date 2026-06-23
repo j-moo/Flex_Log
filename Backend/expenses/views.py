@@ -1,3 +1,5 @@
+import re
+
 from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
@@ -9,6 +11,21 @@ from friends.models import Friend
 
 from .models import Category, Comment, ExpenseLog, Like
 from .serializers import CategorySerializer, CommentSerializer, ExpenseLogSerializer
+
+
+EXPENSE_DELETE_CONFIRM_TEXT = (
+    '정말 삭제하시겠습니까? 이거 삭제하면 로그 날아감 지인짜로오. '
+    'AI 분석이랑 소비 통계에도 영향을 끼칩니다. 삭제된 피드는 복구할 수 없고, '
+    '월별 소비 분석과 추천 결과도 달라질 수 있습니다.'
+)
+DELETE_CONFIRM_CODE_PATTERN = re.compile(r'^\d{4}$')
+
+
+def validate_delete_confirmation(data):
+    code = str(data.get('confirmation_code', ''))
+    text = str(data.get('confirmation_text', ''))
+    expected = f'{EXPENSE_DELETE_CONFIRM_TEXT} 확인코드: {code}'
+    return bool(DELETE_CONFIRM_CODE_PATTERN.fullmatch(code) and text == expected)
 
 
 def accepted_friend_ids(user):
@@ -69,8 +86,18 @@ class ExpenseLogDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         if self.request.method in {'PATCH', 'PUT', 'DELETE'}:
+            # 수정/삭제는 소비 통계와 AI 분석 원본 데이터에 영향을 주므로 작성자 본인 로그로 제한한다.
             return base_log_queryset().filter(user=self.request.user)
         return accessible_log_queryset(self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        # 프론트 확인 모달을 우회한 DELETE 요청도 서버에서 한 번 더 차단한다.
+        if not validate_delete_confirmation(request.data):
+            return Response(
+                {'detail': '삭제 확인 문구가 일치하지 않습니다.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return super().destroy(request, *args, **kwargs)
 
 
 class FriendFeedListView(generics.ListAPIView):

@@ -27,7 +27,6 @@ const activeOverlayId = ref(1)
 const dragOverlayId = ref(null)
 
 const form = reactive({
-  title: '',
   category: '',
   amount: '',
   product_name: '',
@@ -55,6 +54,14 @@ const normalizedOverlayText = computed(() =>
     .join(' / ')
     .slice(0, 120),
 )
+
+const buildTitle = (content, selectedCategory) => {
+  const firstLine = content
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .find(Boolean)
+  return (firstLine || normalizedOverlayText.value || `${selectedCategory?.name || '소비'} 기록`).slice(0, 150)
+}
 
 const overlayStyle = (box) => ({
   left: `${box.x}%`,
@@ -140,12 +147,11 @@ const loadData = async () => {
 
     if (logResponse) {
       const data = logResponse.data
-      form.title = data.title || ''
       form.category = String(data.category)
       form.amount = String(data.amount || '')
       form.product_name = data.product_name || ''
       form.merchant = data.merchant || ''
-      form.content = data.content || ''
+      form.content = data.content || data.title || ''
       form.visibility = data.visibility || 'friends'
       form.hide_amount = Boolean(data.hide_amount)
       form.is_visible = Boolean(data.is_visible)
@@ -193,13 +199,14 @@ const submit = async () => {
   errorMessage.value = ''
 
   const selectedCategory = categories.value.find((item) => String(item.id) === String(form.category))
+  const content = form.content.trim()
   const payload = new FormData()
-  payload.append('title', form.title.trim() || normalizedOverlayText.value || `${selectedCategory?.name || '소비'} 기록`)
+  payload.append('title', buildTitle(content, selectedCategory))
   payload.append('category', form.category)
   payload.append('amount', form.amount)
   payload.append('product_name', form.product_name)
   payload.append('merchant', form.merchant)
-  payload.append('content', form.content)
+  payload.append('content', content)
   payload.append('overlay_text', normalizedOverlayText.value)
   payload.append(
     'overlay_style',
@@ -312,18 +319,13 @@ onBeforeUnmount(() => {
               </div>
 
               <label>
-                제목
-                <input v-model.trim="form.title" class="form-control" maxlength="150" placeholder="오늘의 소비 한 줄">
-              </label>
-
-              <label>
-                본문
+                내용
                 <textarea
                   v-model="form.content"
                   class="form-control"
-                  rows="4"
+                  rows="5"
                   maxlength="2000"
-                  placeholder="기록하고 싶은 이야기를 남겨보세요."
+                  placeholder="오늘의 소비를 기록해보세요."
                 ></textarea>
               </label>
 

@@ -2,8 +2,11 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { getExpenses } from '../api/expenses'
+import WalletAlertBanner from '../components/common/WalletAlertBanner.vue'
+import { WALLET_ALERT_LIMIT, WALLET_ALERT_MESSAGES, pickRandomMessage } from '../constants/expense'
 import { useAnalysisStore } from '../stores/analysis'
 import { formatAmount, formatDate } from '../utils/format'
+import { getMonthlyIncome, MONTHLY_INCOME_EVENT } from '../utils/monthlyIncome'
 
 const analysisStore = useAnalysisStore()
 
@@ -18,31 +21,40 @@ const localResult = ref(null)
 const logs = ref([])
 const typedText = ref('')
 const isLocalLoading = ref(false)
+const monthlyIncome = ref(getMonthlyIncome())
+const walletAlertDismissed = ref(false)
+const walletAlertMessage = ref(pickRandomMessage(WALLET_ALERT_MESSAGES))
 let typingTimer = null
 
 const result = computed(() => (activePeriod.value === 'month' ? analysisStore.latest : localResult.value))
 const categoryItems = computed(() => result.value?.category_items || [])
 const activeCopy = computed(() => periods.find((item) => item.id === activePeriod.value)?.copy || '')
 const isLoading = computed(() => analysisStore.isLoading || isLocalLoading.value)
-const riskLabel = computed(() => {
-  if (result.value?.risk_level === 'high') return '높음'
-  if (result.value?.risk_level === 'medium') return '보통'
-  if (result.value?.risk_level === 'low') return '낮음'
-  return '-'
+const todaySpend = computed(() => {
+  const today = new Date().toDateString()
+  return logs.value
+    .filter((log) => new Date(log.created_at).toDateString() === today)
+    .reduce((sum, log) => sum + Number(log.amount || 0), 0)
 })
-const riskClass = computed(() => {
-  if (result.value?.risk_level === 'low') return 'risk-low'
-  if (result.value?.risk_level === 'high') return 'risk-high'
-  return 'risk-medium'
-})
+const showWalletAlert = computed(() => (
+  !walletAlertDismissed.value && todaySpend.value >= WALLET_ALERT_LIMIT
+))
 const typingSource = computed(() => {
   if (!result.value) return ''
+  const incomeLine = monthlyIncome.value
+    ? `월 수입 기준: ${formatAmount(monthlyIncome.value)} 중 ${incomeRatioLabel.value}를 소비했습니다.`
+    : '월 수입 기준: 월 수입을 입력하면 위험도 평가가 더 정확해집니다.'
   return [
+    incomeLine,
     `AI 소비 분석: ${result.value.summary}`,
     `피드백: ${result.value.feedback}`,
     `개선 포인트: ${result.value.saving_tip}`,
     `종합 의견: ${result.value.problem}`,
   ].join('\n\n')
+})
+const incomeRatioLabel = computed(() => {
+  if (!monthlyIncome.value || !result.value?.total_amount) return '0.0%'
+  return `${((Number(result.value.total_amount || 0) / monthlyIncome.value) * 100).toFixed(1)}%`
 })
 
 const runTyping = () => {
@@ -67,6 +79,51 @@ const getPeriodLogs = (period) => {
   })
 }
 
+const getPeriodBudget = (period) => {
+  if (!monthlyIncome.value) return 0
+  const now = new Date()
+  if (period === 'today') {
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+    return monthlyIncome.value / daysInMonth
+  }
+  if (period === 'year') return monthlyIncome.value * 12
+  return monthlyIncome.value
+}
+
+const assessRiskLevel = (total, period) => {
+  const budget = getPeriodBudget(period)
+  if (budget > 0) {
+    const ratio = total / budget
+    if (ratio >= 0.9) return 'high'
+    if (ratio >= 0.6) return 'medium'
+    return 'low'
+  }
+  return total >= (period === 'today' ? 100000 : 5000000)
+    ? 'high'
+    : total >= (period === 'today' ? 50000 : 2400000)
+      ? 'medium'
+      : 'low'
+}
+
+const displayedRiskLevel = computed(() => {
+  if (!result.value) return null
+  if (monthlyIncome.value) {
+    return assessRiskLevel(Number(result.value.total_amount || 0), activePeriod.value)
+  }
+  return result.value.risk_level
+})
+const riskLabel = computed(() => {
+  if (displayedRiskLevel.value === 'high') return '높음'
+  if (displayedRiskLevel.value === 'medium') return '보통'
+  if (displayedRiskLevel.value === 'low') return '낮음'
+  return '-'
+})
+const riskClass = computed(() => {
+  if (displayedRiskLevel.value === 'low') return 'risk-low'
+  if (displayedRiskLevel.value === 'high') return 'risk-high'
+  return 'risk-medium'
+})
+
 const buildLocalAnalysis = (period) => {
   const periodLogs = getPeriodLogs(period)
   const total = periodLogs.reduce((sum, log) => sum + Number(log.amount || 0), 0)
@@ -88,14 +145,13 @@ const buildLocalAnalysis = (period) => {
     .sort((a, b) => b.total - a.total)
   const top = category_items[0]
   const label = period === 'today' ? '오늘' : '올해'
-  const risk_level = total >= (period === 'today' ? 100000 : 5000000)
-    ? 'high'
-    : total >= (period === 'today' ? 50000 : 2400000)
-      ? 'medium'
-      : 'low'
+  const risk_level = assessRiskLevel(total, period)
+  const periodBudget = getPeriodBudget(period)
+  const incomeRatio = periodBudget ? Math.round((total / periodBudget) * 1000) / 10 : 0
 
   if (!periodLogs.length) {
     return {
+      monthly_income: monthlyIncome.value,
       total_amount: 0,
       log_count: 0,
       average_amount: 0,
@@ -109,11 +165,15 @@ const buildLocalAnalysis = (period) => {
   }
 
   return {
+    monthly_income: monthlyIncome.value,
+    income_ratio: incomeRatio,
     total_amount: total,
     log_count: periodLogs.length,
     average_amount: Math.round(total / periodLogs.length),
     category_items,
-    summary: `${label} 총 ${formatAmount(total)}을 ${periodLogs.length}건 기록했습니다.`,
+    summary: periodBudget
+      ? `${label} 총 ${formatAmount(total)}을 ${periodLogs.length}건 기록했고 기준 예산의 ${incomeRatio}%를 사용했습니다.`
+      : `${label} 총 ${formatAmount(total)}을 ${periodLogs.length}건 기록했습니다.`,
     problem: top ? `${top.name} 비중이 ${top.ratio}%로 가장 큽니다.` : '뚜렷한 집중 카테고리가 없습니다.',
     feedback: top ? `${top.name} 소비를 먼저 조정하면 전체 흐름이 가장 빠르게 바뀝니다.` : '현재 소비 흐름은 비교적 고르게 분산되어 있습니다.',
     saving_tip: period === 'today'
@@ -125,7 +185,7 @@ const buildLocalAnalysis = (period) => {
 
 const analyze = async () => {
   if (activePeriod.value === 'month') {
-    await analysisStore.analyzeCurrentMonth()
+    await analysisStore.analyzeCurrentMonth(monthlyIncome.value)
   } else {
     isLocalLoading.value = true
     await new Promise((resolve) => window.setTimeout(resolve, 650))
@@ -133,6 +193,15 @@ const analyze = async () => {
     isLocalLoading.value = false
   }
   runTyping()
+}
+
+const syncMonthlyIncome = (event) => {
+  monthlyIncome.value = event?.type === MONTHLY_INCOME_EVENT
+    ? Number(event.detail || 0)
+    : getMonthlyIncome()
+  if (activePeriod.value !== 'month') {
+    localResult.value = buildLocalAnalysis(activePeriod.value)
+  }
 }
 
 watch(activePeriod, () => {
@@ -145,6 +214,9 @@ watch(typingSource, () => {
 })
 
 onMounted(async () => {
+  monthlyIncome.value = getMonthlyIncome()
+  window.addEventListener(MONTHLY_INCOME_EVENT, syncMonthlyIncome)
+  window.addEventListener('storage', syncMonthlyIncome)
   const [logsResult] = await Promise.allSettled([
     getExpenses(),
     analysisStore.fetchLatest(),
@@ -156,6 +228,8 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   window.clearInterval(typingTimer)
+  window.removeEventListener(MONTHLY_INCOME_EVENT, syncMonthlyIncome)
+  window.removeEventListener('storage', syncMonthlyIncome)
 })
 </script>
 
@@ -171,6 +245,13 @@ onBeforeUnmount(() => {
         {{ isLoading ? '분석중...' : 'AI 분석 요청' }}
       </button>
     </header>
+
+    <WalletAlertBanner
+      v-if="showWalletAlert"
+      :amount="todaySpend"
+      :message="walletAlertMessage"
+      @close="walletAlertDismissed = true"
+    />
 
     <div class="period-tabs">
       <button
@@ -216,6 +297,10 @@ onBeforeUnmount(() => {
         <article class="vintage-card">
           <span>평균 소비 금액</span>
           <strong>{{ formatAmount(result.average_amount) }}</strong>
+        </article>
+        <article class="vintage-card">
+          <span>월 수입</span>
+          <strong>{{ formatAmount(monthlyIncome) }}</strong>
         </article>
         <article class="vintage-card">
           <span>위험도</span>
@@ -348,7 +433,7 @@ onBeforeUnmount(() => {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
 }
 

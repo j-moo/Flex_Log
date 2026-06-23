@@ -21,6 +21,10 @@ const isLoading = ref(false)
 const comments = ref([])
 const content = ref('')
 const errorMessage = ref('')
+const editingId = ref(null)
+const editContent = ref('')
+const editingError = ref('')
+const editingPending = ref(false)
 
 const toggle = async () => {
   isOpen.value = !isOpen.value
@@ -52,10 +56,35 @@ const submit = async () => {
   }
 }
 
-const edit = async (comment) => {
-  const value = window.prompt('댓글을 수정하세요.', comment.content)?.trim()
-  if (!value || value === comment.content) return
-  Object.assign(comment, (await updateComment(props.logId, comment.id, value)).data)
+const startEdit = (comment) => {
+  editingId.value = comment.id
+  editContent.value = comment.content
+  editingError.value = ''
+}
+
+const cancelEdit = () => {
+  editingId.value = null
+  editContent.value = ''
+  editingError.value = ''
+}
+
+const saveEdit = async (comment) => {
+  const value = editContent.value.trim()
+  if (!value || value === comment.content) {
+    cancelEdit()
+    return
+  }
+
+  editingPending.value = true
+  editingError.value = ''
+  try {
+    Object.assign(comment, (await updateComment(props.logId, comment.id, value)).data)
+    cancelEdit()
+  } catch {
+    editingError.value = '댓글을 수정하지 못했습니다.'
+  } finally {
+    editingPending.value = false
+  }
 }
 
 const remove = async (comment) => {
@@ -78,9 +107,26 @@ const remove = async (comment) => {
         <p v-else-if="!comments.length" class="comment-status">첫 댓글을 남겨보세요.</p>
 
         <div v-for="comment in comments" :key="comment.id" class="comment-row">
-          <p><strong>{{ comment.display_name }}</strong> {{ comment.content }}</p>
+          <div class="comment-content">
+            <form v-if="editingId === comment.id" class="comment-edit-form" @submit.prevent="saveEdit(comment)">
+              <strong>{{ comment.display_name }}</strong>
+              <input
+                v-model="editContent"
+                maxlength="500"
+                aria-label="댓글 수정 내용"
+                :disabled="editingPending"
+                autofocus
+              >
+              <div class="comment-edit-actions">
+                <button type="submit" :disabled="editingPending || !editContent.trim()">저장</button>
+                <button type="button" :disabled="editingPending" @click="cancelEdit">취소</button>
+              </div>
+              <small v-if="editingError">{{ editingError }}</small>
+            </form>
+            <p v-else><strong>{{ comment.display_name }}</strong> {{ comment.content }}</p>
+          </div>
           <div v-if="comment.can_edit" class="comment-menu">
-            <button type="button" @click="edit(comment)">수정</button>
+            <button type="button" :disabled="editingId === comment.id" @click="startEdit(comment)">수정</button>
             <button type="button" @click="remove(comment)">삭제</button>
           </div>
         </div>
@@ -135,6 +181,11 @@ const remove = async (comment) => {
   gap: 10px;
 }
 
+.comment-content {
+  flex: 1;
+  min-width: 0;
+}
+
 .comment-row p {
   margin: 0;
   font-size: 13px;
@@ -161,6 +212,46 @@ const remove = async (comment) => {
 
 .comment-menu button:last-child {
   color: var(--color-red);
+}
+
+.comment-edit-form {
+  display: grid;
+  gap: 7px;
+}
+
+.comment-edit-form input {
+  width: 100%;
+  border: 2px solid rgba(23, 19, 13, 0.18);
+  border-radius: 12px;
+  background: rgba(255, 248, 231, 0.86);
+  color: var(--color-ink);
+  padding: 8px 10px;
+  outline: none;
+}
+
+.comment-edit-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.comment-edit-actions button {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(216, 165, 38, 0.18);
+  color: var(--color-dark-gold);
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.comment-edit-actions button:last-child {
+  background: rgba(23, 19, 13, 0.08);
+  color: var(--color-muted);
+}
+
+.comment-edit-form small {
+  color: var(--color-red);
+  font-weight: 900;
 }
 
 .comment-form {

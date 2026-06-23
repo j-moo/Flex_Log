@@ -2,15 +2,21 @@
 import { onMounted, ref } from 'vue'
 
 import { deleteExpense, getExpenses } from '../api/expenses'
+import ExpenseDeleteConfirmModal from '../components/feed/ExpenseDeleteConfirmModal.vue'
 import { formatAmount, formatDate, isVideo } from '../utils/format'
 
 const logs = ref([])
 const isLoading = ref(true)
 const errorMessage = ref('')
+const successMessage = ref('')
+const deleteTarget = ref(null)
+const deleteErrorMessage = ref('')
+const isDeleting = ref(false)
 
 const loadLogs = async () => {
   isLoading.value = true
   errorMessage.value = ''
+  successMessage.value = ''
   try {
     logs.value = (await getExpenses()).data
   } catch {
@@ -20,13 +26,36 @@ const loadLogs = async () => {
   }
 }
 
-const removeLog = async (log) => {
-  if (!window.confirm('이 소비 로그를 삭제할까요?')) return
+const openDeleteConfirm = (log) => {
+  deleteTarget.value = log
+  deleteErrorMessage.value = ''
+  errorMessage.value = ''
+  successMessage.value = ''
+}
+
+const closeDeleteConfirm = () => {
+  if (isDeleting.value) return
+  deleteTarget.value = null
+  deleteErrorMessage.value = ''
+}
+
+const removeLog = async (confirmation) => {
+  if (!deleteTarget.value) return
+  isDeleting.value = true
+  deleteErrorMessage.value = ''
+  errorMessage.value = ''
+  successMessage.value = ''
+
   try {
-    await deleteExpense(log.id)
-    logs.value = logs.value.filter((item) => item.id !== log.id)
-  } catch {
-    errorMessage.value = '소비 로그를 삭제하지 못했습니다.'
+    await deleteExpense(deleteTarget.value.id, confirmation)
+    logs.value = logs.value.filter((item) => item.id !== deleteTarget.value.id)
+    successMessage.value = '소비 로그를 삭제했습니다.'
+    deleteTarget.value = null
+    deleteErrorMessage.value = ''
+  } catch (error) {
+    deleteErrorMessage.value = error.response?.data?.detail || '소비 로그를 삭제하지 못했습니다.'
+  } finally {
+    isDeleting.value = false
   }
 }
 
@@ -43,6 +72,7 @@ onMounted(loadLogs)
       <RouterLink class="vintage-button" :to="{ name: 'log-create' }">로그 작성</RouterLink>
     </div>
 
+    <div v-if="successMessage" class="notice-card">{{ successMessage }}</div>
     <div v-if="isLoading" class="state-card">불러오는 중입니다.</div>
     <div v-else-if="errorMessage" class="state-card error">{{ errorMessage }}</div>
 
@@ -64,7 +94,7 @@ onMounted(loadLogs)
           <small>{{ formatDate(log.created_at) }}</small>
           <div class="log-actions">
             <RouterLink :to="{ name: 'log-edit', params: { id: log.id } }">수정</RouterLink>
-            <button type="button" @click="removeLog(log)">삭제</button>
+            <button type="button" @click="openDeleteConfirm(log)">삭제</button>
           </div>
         </div>
       </article>
@@ -76,6 +106,15 @@ onMounted(loadLogs)
         <RouterLink class="vintage-button" :to="{ name: 'log-create' }">첫 로그 작성</RouterLink>
       </div>
     </div>
+
+    <ExpenseDeleteConfirmModal
+      :open="Boolean(deleteTarget)"
+      :target-title="deleteTarget?.title || deleteTarget?.content || '선택한 소비 로그'"
+      :is-deleting="isDeleting"
+      :error-message="deleteErrorMessage"
+      @close="closeDeleteConfirm"
+      @confirm="removeLog"
+    />
   </section>
 </template>
 

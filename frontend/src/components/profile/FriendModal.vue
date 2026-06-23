@@ -107,7 +107,14 @@ onMounted(load)
           <div class="friend-list">
             <article v-for="user in users" :key="user.id">
               <RouterLink class="person-link" :to="{ name: 'user-profile', params: { userId: user.id } }" @click="$emit('close')">
-                <span class="friend-avatar">{{ user.display_name.slice(0, 1) }}</span>
+                <img
+                  v-if="user.profile_image && !user.imageLoadFailed"
+                  class="friend-avatar"
+                  :src="user.profile_image"
+                  alt="profile image"
+                  @error="user.imageLoadFailed = true"
+                >
+                <span v-else class="friend-avatar">{{ user.display_name.slice(0, 1) }}</span>
                 <div>
                   <strong>{{ user.display_name }}</strong>
                   <small>@{{ user.username }}</small>
@@ -141,7 +148,14 @@ onMounted(load)
                 :to="{ name: 'user-profile', params: { userId: person(item).id } }"
                 @click="$emit('close')"
               >
-                <span class="friend-avatar">{{ person(item).display_name.slice(0, 1) }}</span>
+                <img
+                  v-if="person(item).profile_image && !person(item).imageLoadFailed"
+                  class="friend-avatar"
+                  :src="person(item).profile_image"
+                  alt="profile image"
+                  @error="person(item).imageLoadFailed = true"
+                >
+                <span v-else class="friend-avatar">{{ person(item).display_name.slice(0, 1) }}</span>
                 <div>
                   <strong>{{ person(item).display_name }}</strong>
                   <small>
@@ -273,6 +287,7 @@ onMounted(load)
   background: var(--color-money);
   color: var(--color-paper);
   font-weight: 900;
+  object-fit: cover;
 }
 
 .person-link div {

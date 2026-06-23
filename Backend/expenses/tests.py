@@ -8,6 +8,18 @@ from .models import Category, ExpenseLog, Like
 
 
 User = get_user_model()
+DELETE_CONFIRM_TEXT = (
+    '정말 삭제하시겠습니까? 이거 삭제하면 로그 날아감 지인짜로오. '
+    'AI 분석이랑 소비 통계에도 영향을 끼칩니다. 삭제된 피드는 복구할 수 없고, '
+    '월별 소비 분석과 추천 결과도 달라질 수 있습니다.'
+)
+
+
+def delete_confirmation_payload(code='4827'):
+    return {
+        'confirmation_code': code,
+        'confirmation_text': f'{DELETE_CONFIRM_TEXT} 확인코드: {code}',
+    }
 
 
 class ExpenseModelTests(TestCase):
@@ -127,10 +139,45 @@ class ExpenseAPITests(APITestCase):
             user=self.user, category=self.category, amount=10000
         )
 
-        response = self.client.delete(f'{self.list_url}{expense.id}/')
+        response = self.client.delete(
+            f'{self.list_url}{expense.id}/',
+            delete_confirmation_payload(),
+            format='json',
+        )
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(ExpenseLog.objects.filter(pk=expense.id).exists())
+
+    def test_delete_requires_confirmation_text(self):
+        expense = ExpenseLog.objects.create(
+            user=self.user, category=self.category, amount=10000
+        )
+
+        response = self.client.delete(
+            f'{self.list_url}{expense.id}/',
+            {
+                'confirmation_code': '4827',
+                'confirmation_text': '틀린 문구',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertTrue(ExpenseLog.objects.filter(pk=expense.id).exists())
+
+    def test_cannot_delete_other_users_expense(self):
+        expense = ExpenseLog.objects.create(
+            user=self.other_user, category=self.category, amount=20000
+        )
+
+        response = self.client.delete(
+            f'{self.list_url}{expense.id}/',
+            delete_confirmation_payload(),
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(ExpenseLog.objects.filter(pk=expense.id).exists())
 
     def test_expenses_require_authentication(self):
         self.client.force_authenticate(user=None)

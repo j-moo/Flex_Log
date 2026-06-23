@@ -54,7 +54,23 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    profile_image = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'name')
+        fields = ('id', 'username', 'email', 'name', 'profile_image')
         read_only_fields = fields
+
+    def get_profile_image(self, obj):
+        profile = getattr(obj, 'profile', None)
+        image = getattr(profile, 'image', None)
+        if not image:
+            return None
+        try:
+            if image.name and not image.storage.exists(image.name):
+                return None
+            url = image.url
+        except (OSError, ValueError):
+            return None
+        request = self.context.get('request')
+        return request.build_absolute_uri(url) if request else url

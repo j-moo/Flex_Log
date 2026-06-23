@@ -1,0 +1,1679 @@
+{
+  "generated_at": "2026-06-23T02:44:25.209594+00:00",
+  "password": "rkskekfk",
+  "username_note": "pjh2 is used for Park Jinhyeok because pjh is already used by Park Junhyeong.",
+  "users": [
+    {
+      "id": 6,
+      "username": "kjm",
+      "password": "rkskekfk",
+      "name": "김종무",
+      "email": "kjm@example.com",
+      "profile_image": "/media/profiles/demo/kjm.png"
+    },
+    {
+      "id": 7,
+      "username": "pjh",
+      "password": "rkskekfk",
+      "name": "박준형",
+      "email": "pjh@example.com",
+      "profile_image": "/media/profiles/demo/pjh.png"
+    },
+    {
+      "id": 8,
+      "username": "kyb",
+      "password": "rkskekfk",
+      "name": "김영빈",
+      "email": "kyb@example.com",
+      "profile_image": "/media/profiles/demo/kyb.png"
+    },
+    {
+      "id": 9,
+      "username": "pjh2",
+      "password": "rkskekfk",
+      "name": "박진혁",
+      "email": "pjh2@example.com",
+      "profile_image": "/media/profiles/demo/pjh2.png"
+    },
+    {
+      "id": 10,
+      "username": "lbm",
+      "password": "rkskekfk",
+      "name": "이봉민",
+      "email": "lbm@example.com",
+      "profile_image": "/media/profiles/demo/lbm.png"
+    },
+    {
+      "id": 11,
+      "username": "ksw",
+      "password": "rkskekfk",
+      "name": "김수원",
+      "email": "ksw@example.com",
+      "profile_image": "/media/profiles/demo/ksw.png"
+    },
+    {
+      "id": 12,
+      "username": "kyj",
+      "password": "rkskekfk",
+      "name": "구윤지",
+      "email": "kyj@example.com",
+      "profile_image": "/media/profiles/demo/kyj.png"
+    },
+    {
+      "id": 13,
+      "username": "ljj",
+      "password": "rkskekfk",
+      "name": "이재준",
+      "email": "ljj@example.com",
+      "profile_image": "/media/profiles/demo/ljj.png"
+    },
+    {
+      "id": 14,
+      "username": "kwb",
+      "password": "rkskekfk",
+      "name": "곽우빈",
+      "email": "kwb@example.com",
+      "profile_image": "/media/profiles/demo/kwb.png"
+    },
+    {
+      "id": 15,
+      "username": "syj",
+      "password": "rkskekfk",
+      "name": "서유정",
+      "email": "syj@example.com",
+      "profile_image": "/media/profiles/demo/syj.png"
+    }
+  ],
+  "friendships": [
+    {
+      "id": 7,
+      "user": "kjm",
+      "friend": "pjh",
+      "status": "accepted"
+    },
+    {
+      "id": 8,
+      "user": "kjm",
+      "friend": "kyb",
+      "status": "accepted"
+    },
+    {
+      "id": 9,
+      "user": "kjm",
+      "friend": "ksw",
+      "status": "accepted"
+    },
+    {
+      "id": 10,
+      "user": "pjh",
+      "friend": "pjh2",
+      "status": "accepted"
+    },
+    {
+      "id": 11,
+      "user": "pjh",
+      "friend": "kyj",
+      "status": "accepted"
+    },
+    {
+      "id": 12,
+      "user": "kyb",
+      "friend": "lbm",
+      "status": "accepted"
+    },
+    {
+      "id": 13,
+      "user": "kyb",
+      "friend": "ljj",
+      "status": "accepted"
+    },
+    {
+      "id": 14,
+      "user": "pjh2",
+      "friend": "ksw",
+      "status": "accepted"
+    },
+    {
+      "id": 15,
+      "user": "lbm",
+      "friend": "kyj",
+      "status": "accepted"
+    },
+    {
+      "id": 16,
+      "user": "ksw",
+      "friend": "ljj",
+      "status": "accepted"
+    },
+    {
+      "id": 17,
+      "user": "kyj",
+      "friend": "kwb",
+      "status": "accepted"
+    },
+    {
+      "id": 18,
+      "user": "ljj",
+      "friend": "syj",
+      "status": "accepted"
+    },
+    {
+      "id": 19,
+      "user": "kwb",
+      "friend": "syj",
+      "status": "accepted"
+    }
+  ],
+  "feeds": [
+    {
+      "id": 15,
+      "username": "kjm",
+      "title": "KJM flex #1",
+      "media": "/media/expenses/demo/kjm-01.mp4",
+      "media_type": "video",
+      "amount": 9000,
+      "category": "식비",
+      "likes": [
+        "pjh",
+        "kyb"
+      ],
+      "comments": [
+        {
+          "username": "pjh2",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "username": "kjm",
+      "title": "KJM flex #2",
+      "media": "/media/expenses/demo/kjm-02.png",
+      "media_type": "image",
+      "amount": 10700,
+      "category": "카페",
+      "likes": [
+        "kyb",
+        "pjh2",
+        "lbm"
+      ],
+      "comments": [
+        {
+          "username": "lbm",
+          "content": "Great flex log."
+        },
+        {
+          "username": "ksw",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "username": "pjh",
+      "title": "PJH flex #1",
+      "media": "/media/expenses/demo/pjh-01.mp4",
+      "media_type": "video",
+      "amount": 11300,
+      "category": "카페",
+      "likes": [
+        "kyb",
+        "pjh2"
+      ],
+      "comments": [
+        {
+          "username": "lbm",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "username": "pjh",
+      "title": "PJH flex #2",
+      "media": "/media/expenses/demo/pjh-02.png",
+      "media_type": "image",
+      "amount": 13000,
+      "category": "교통비",
+      "likes": [
+        "pjh2",
+        "lbm",
+        "ksw"
+      ],
+      "comments": [
+        {
+          "username": "ksw",
+          "content": "Great flex log."
+        },
+        {
+          "username": "kyj",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "username": "pjh",
+      "title": "PJH flex #3",
+      "media": "/media/expenses/demo/pjh-03.png",
+      "media_type": "image",
+      "amount": 14700,
+      "category": "쇼핑",
+      "likes": [
+        "lbm",
+        "ksw",
+        "kyj",
+        "ljj"
+      ],
+      "comments": [
+        {
+          "username": "kyj",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "username": "kyb",
+      "title": "KYB flex #1",
+      "media": "/media/expenses/demo/kyb-01.mp4",
+      "media_type": "video",
+      "amount": 13600,
+      "category": "교통비",
+      "likes": [
+        "pjh2",
+        "lbm"
+      ],
+      "comments": [
+        {
+          "username": "ksw",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "username": "kyb",
+      "title": "KYB flex #2",
+      "media": "/media/expenses/demo/kyb-02.png",
+      "media_type": "image",
+      "amount": 15300,
+      "category": "쇼핑",
+      "likes": [
+        "lbm",
+        "ksw",
+        "kyj"
+      ],
+      "comments": [
+        {
+          "username": "kyj",
+          "content": "Great flex log."
+        },
+        {
+          "username": "ljj",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "username": "pjh2",
+      "title": "PJH2 flex #1",
+      "media": "/media/expenses/demo/pjh2-01.mp4",
+      "media_type": "video",
+      "amount": 15900,
+      "category": "쇼핑",
+      "likes": [
+        "lbm",
+        "ksw"
+      ],
+      "comments": [
+        {
+          "username": "kyj",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "username": "pjh2",
+      "title": "PJH2 flex #2",
+      "media": "/media/expenses/demo/pjh2-02.png",
+      "media_type": "image",
+      "amount": 17600,
+      "category": "문화생활",
+      "likes": [
+        "ksw",
+        "kyj",
+        "ljj"
+      ],
+      "comments": [
+        {
+          "username": "ljj",
+          "content": "Great flex log."
+        },
+        {
+          "username": "kwb",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "username": "pjh2",
+      "title": "PJH2 flex #3",
+      "media": "/media/expenses/demo/pjh2-03.png",
+      "media_type": "image",
+      "amount": 19300,
+      "category": "구독",
+      "likes": [
+        "kyj",
+        "ljj",
+        "kwb",
+        "syj"
+      ],
+      "comments": [
+        {
+          "username": "kwb",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "username": "lbm",
+      "title": "LBM flex #1",
+      "media": "/media/expenses/demo/lbm-01.mp4",
+      "media_type": "video",
+      "amount": 18200,
+      "category": "문화생활",
+      "likes": [
+        "ksw",
+        "kyj"
+      ],
+      "comments": [
+        {
+          "username": "ljj",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "username": "lbm",
+      "title": "LBM flex #2",
+      "media": "/media/expenses/demo/lbm-02.png",
+      "media_type": "image",
+      "amount": 19900,
+      "category": "구독",
+      "likes": [
+        "kyj",
+        "ljj",
+        "kwb"
+      ],
+      "comments": [
+        {
+          "username": "kwb",
+          "content": "Great flex log."
+        },
+        {
+          "username": "syj",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "username": "ksw",
+      "title": "KSW flex #1",
+      "media": "/media/expenses/demo/ksw-01.mp4",
+      "media_type": "video",
+      "amount": 20500,
+      "category": "구독",
+      "likes": [
+        "kyj",
+        "ljj"
+      ],
+      "comments": [
+        {
+          "username": "kwb",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "username": "ksw",
+      "title": "KSW flex #2",
+      "media": "/media/expenses/demo/ksw-02.png",
+      "media_type": "image",
+      "amount": 22200,
+      "category": "기타",
+      "likes": [
+        "ljj",
+        "kwb",
+        "syj"
+      ],
+      "comments": [
+        {
+          "username": "syj",
+          "content": "Great flex log."
+        },
+        {
+          "username": "kjm",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "username": "ksw",
+      "title": "KSW flex #3",
+      "media": "/media/expenses/demo/ksw-03.png",
+      "media_type": "image",
+      "amount": 23900,
+      "category": "식비",
+      "likes": [
+        "kwb",
+        "syj",
+        "kjm",
+        "pjh"
+      ],
+      "comments": [
+        {
+          "username": "kjm",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "username": "ksw",
+      "title": "KSW flex #4",
+      "media": "/media/expenses/demo/ksw-04.png",
+      "media_type": "image",
+      "amount": 25600,
+      "category": "카페",
+      "likes": [
+        "syj",
+        "kjm"
+      ],
+      "comments": [
+        {
+          "username": "pjh",
+          "content": "Good spending note."
+        },
+        {
+          "username": "kyb",
+          "content": "Saved for later."
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "username": "ksw",
+      "title": "KSW flex #5",
+      "media": "/media/expenses/demo/ksw-05.png",
+      "media_type": "image",
+      "amount": 27300,
+      "category": "교통비",
+      "likes": [
+        "kjm",
+        "pjh",
+        "kyb"
+      ],
+      "comments": [
+        {
+          "username": "kyb",
+          "content": "Saved for later."
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "username": "ksw",
+      "title": "KSW flex #6",
+      "media": "/media/expenses/demo/ksw-06.png",
+      "media_type": "image",
+      "amount": 29000,
+      "category": "쇼핑",
+      "likes": [
+        "pjh",
+        "kyb",
+        "pjh2",
+        "lbm"
+      ],
+      "comments": [
+        {
+          "username": "pjh2",
+          "content": "Nice record!"
+        },
+        {
+          "username": "lbm",
+          "content": "Great flex log."
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "username": "ksw",
+      "title": "KSW flex #7",
+      "media": "/media/expenses/demo/ksw-07.png",
+      "media_type": "image",
+      "amount": 30700,
+      "category": "문화생활",
+      "likes": [
+        "kyb",
+        "pjh2"
+      ],
+      "comments": [
+        {
+          "username": "lbm",
+          "content": "Great flex log."
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "username": "ksw",
+      "title": "KSW flex #8",
+      "media": "/media/expenses/demo/ksw-08.mp4",
+      "media_type": "video",
+      "amount": 32400,
+      "category": "구독",
+      "likes": [
+        "pjh2",
+        "lbm",
+        "kyj"
+      ],
+      "comments": [
+        {
+          "username": "kyj",
+          "content": "This looks useful."
+        },
+        {
+          "username": "ljj",
+          "content": "Good spending note."
+        }
+      ]
+    },
+    {
+      "id": 35,
+      "username": "ksw",
+      "title": "KSW flex #9",
+      "media": "/media/expenses/demo/ksw-09.png",
+      "media_type": "image",
+      "amount": 34100,
+      "category": "기타",
+      "likes": [
+        "lbm",
+        "kyj",
+        "ljj",
+        "kwb"
+      ],
+      "comments": [
+        {
+          "username": "ljj",
+          "content": "Good spending note."
+        }
+      ]
+    },
+    {
+      "id": 36,
+      "username": "ksw",
+      "title": "KSW flex #10",
+      "media": "/media/expenses/demo/ksw-10.png",
+      "media_type": "image",
+      "amount": 35800,
+      "category": "식비",
+      "likes": [
+        "kyj",
+        "ljj"
+      ],
+      "comments": [
+        {
+          "username": "kwb",
+          "content": "Saved for later."
+        },
+        {
+          "username": "syj",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 37,
+      "username": "ksw",
+      "title": "KSW flex #11",
+      "media": "/media/expenses/demo/ksw-11.png",
+      "media_type": "image",
+      "amount": 37500,
+      "category": "카페",
+      "likes": [
+        "ljj",
+        "kwb",
+        "syj"
+      ],
+      "comments": [
+        {
+          "username": "syj",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 38,
+      "username": "ksw",
+      "title": "KSW flex #12",
+      "media": "/media/expenses/demo/ksw-12.png",
+      "media_type": "image",
+      "amount": 39200,
+      "category": "교통비",
+      "likes": [
+        "kwb",
+        "syj",
+        "kjm",
+        "pjh"
+      ],
+      "comments": [
+        {
+          "username": "kjm",
+          "content": "Great flex log."
+        },
+        {
+          "username": "pjh",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 39,
+      "username": "ksw",
+      "title": "KSW flex #13",
+      "media": "/media/expenses/demo/ksw-13.png",
+      "media_type": "image",
+      "amount": 40900,
+      "category": "쇼핑",
+      "likes": [
+        "syj",
+        "kjm"
+      ],
+      "comments": [
+        {
+          "username": "pjh",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 40,
+      "username": "ksw",
+      "title": "KSW flex #14",
+      "media": "/media/expenses/demo/ksw-14.png",
+      "media_type": "image",
+      "amount": 42600,
+      "category": "문화생활",
+      "likes": [
+        "kjm",
+        "pjh",
+        "kyb"
+      ],
+      "comments": [
+        {
+          "username": "kyb",
+          "content": "Good spending note."
+        },
+        {
+          "username": "pjh2",
+          "content": "Saved for later."
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "username": "ksw",
+      "title": "KSW flex #15",
+      "media": "/media/expenses/demo/ksw-15.mp4",
+      "media_type": "video",
+      "amount": 44300,
+      "category": "구독",
+      "likes": [
+        "pjh",
+        "kyb",
+        "pjh2",
+        "lbm"
+      ],
+      "comments": [
+        {
+          "username": "pjh2",
+          "content": "Saved for later."
+        }
+      ]
+    },
+    {
+      "id": 42,
+      "username": "ksw",
+      "title": "KSW flex #16",
+      "media": "/media/expenses/demo/ksw-16.png",
+      "media_type": "image",
+      "amount": 46000,
+      "category": "기타",
+      "likes": [
+        "kyb",
+        "pjh2"
+      ],
+      "comments": [
+        {
+          "username": "lbm",
+          "content": "Nice record!"
+        },
+        {
+          "username": "kyj",
+          "content": "Great flex log."
+        }
+      ]
+    },
+    {
+      "id": 43,
+      "username": "ksw",
+      "title": "KSW flex #17",
+      "media": "/media/expenses/demo/ksw-17.png",
+      "media_type": "image",
+      "amount": 47700,
+      "category": "식비",
+      "likes": [
+        "pjh2",
+        "lbm",
+        "kyj"
+      ],
+      "comments": [
+        {
+          "username": "kyj",
+          "content": "Great flex log."
+        }
+      ]
+    },
+    {
+      "id": 44,
+      "username": "ksw",
+      "title": "KSW flex #18",
+      "media": "/media/expenses/demo/ksw-18.png",
+      "media_type": "image",
+      "amount": 49400,
+      "category": "카페",
+      "likes": [
+        "lbm",
+        "kyj",
+        "ljj",
+        "kwb"
+      ],
+      "comments": [
+        {
+          "username": "ljj",
+          "content": "This looks useful."
+        },
+        {
+          "username": "kwb",
+          "content": "Good spending note."
+        }
+      ]
+    },
+    {
+      "id": 45,
+      "username": "ksw",
+      "title": "KSW flex #19",
+      "media": "/media/expenses/demo/ksw-19.png",
+      "media_type": "image",
+      "amount": 51100,
+      "category": "교통비",
+      "likes": [
+        "kyj",
+        "ljj"
+      ],
+      "comments": [
+        {
+          "username": "kwb",
+          "content": "Good spending note."
+        }
+      ]
+    },
+    {
+      "id": 46,
+      "username": "ksw",
+      "title": "KSW flex #20",
+      "media": "/media/expenses/demo/ksw-20.png",
+      "media_type": "image",
+      "amount": 52800,
+      "category": "쇼핑",
+      "likes": [
+        "ljj",
+        "kwb",
+        "syj"
+      ],
+      "comments": [
+        {
+          "username": "syj",
+          "content": "Saved for later."
+        },
+        {
+          "username": "kjm",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 47,
+      "username": "ksw",
+      "title": "KSW flex #21",
+      "media": "/media/expenses/demo/ksw-21.png",
+      "media_type": "image",
+      "amount": 54500,
+      "category": "문화생활",
+      "likes": [
+        "kwb",
+        "syj",
+        "kjm",
+        "pjh"
+      ],
+      "comments": [
+        {
+          "username": "kjm",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 48,
+      "username": "ksw",
+      "title": "KSW flex #22",
+      "media": "/media/expenses/demo/ksw-22.mp4",
+      "media_type": "video",
+      "amount": 56200,
+      "category": "구독",
+      "likes": [
+        "syj",
+        "kjm"
+      ],
+      "comments": [
+        {
+          "username": "pjh",
+          "content": "Great flex log."
+        },
+        {
+          "username": "kyb",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 49,
+      "username": "ksw",
+      "title": "KSW flex #23",
+      "media": "/media/expenses/demo/ksw-23.png",
+      "media_type": "image",
+      "amount": 57900,
+      "category": "기타",
+      "likes": [
+        "kjm",
+        "pjh",
+        "kyb"
+      ],
+      "comments": [
+        {
+          "username": "kyb",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 50,
+      "username": "ksw",
+      "title": "KSW flex #24",
+      "media": "/media/expenses/demo/ksw-24.png",
+      "media_type": "image",
+      "amount": 59600,
+      "category": "식비",
+      "likes": [
+        "pjh",
+        "kyb",
+        "pjh2",
+        "lbm"
+      ],
+      "comments": [
+        {
+          "username": "pjh2",
+          "content": "Good spending note."
+        },
+        {
+          "username": "lbm",
+          "content": "Saved for later."
+        }
+      ]
+    },
+    {
+      "id": 51,
+      "username": "ksw",
+      "title": "KSW flex #25",
+      "media": "/media/expenses/demo/ksw-25.png",
+      "media_type": "image",
+      "amount": 61300,
+      "category": "카페",
+      "likes": [
+        "kyb",
+        "pjh2"
+      ],
+      "comments": [
+        {
+          "username": "lbm",
+          "content": "Saved for later."
+        }
+      ]
+    },
+    {
+      "id": 52,
+      "username": "ksw",
+      "title": "KSW flex #26",
+      "media": "/media/expenses/demo/ksw-26.png",
+      "media_type": "image",
+      "amount": 63000,
+      "category": "교통비",
+      "likes": [
+        "pjh2",
+        "lbm",
+        "kyj"
+      ],
+      "comments": [
+        {
+          "username": "kyj",
+          "content": "Nice record!"
+        },
+        {
+          "username": "ljj",
+          "content": "Great flex log."
+        }
+      ]
+    },
+    {
+      "id": 53,
+      "username": "ksw",
+      "title": "KSW flex #27",
+      "media": "/media/expenses/demo/ksw-27.png",
+      "media_type": "image",
+      "amount": 64700,
+      "category": "쇼핑",
+      "likes": [
+        "lbm",
+        "kyj",
+        "ljj",
+        "kwb"
+      ],
+      "comments": [
+        {
+          "username": "ljj",
+          "content": "Great flex log."
+        }
+      ]
+    },
+    {
+      "id": 54,
+      "username": "ksw",
+      "title": "KSW flex #28",
+      "media": "/media/expenses/demo/ksw-28.png",
+      "media_type": "image",
+      "amount": 66400,
+      "category": "문화생활",
+      "likes": [
+        "kyj",
+        "ljj"
+      ],
+      "comments": [
+        {
+          "username": "kwb",
+          "content": "This looks useful."
+        },
+        {
+          "username": "syj",
+          "content": "Good spending note."
+        }
+      ]
+    },
+    {
+      "id": 55,
+      "username": "ksw",
+      "title": "KSW flex #29",
+      "media": "/media/expenses/demo/ksw-29.mp4",
+      "media_type": "video",
+      "amount": 68100,
+      "category": "구독",
+      "likes": [
+        "ljj",
+        "kwb",
+        "syj"
+      ],
+      "comments": [
+        {
+          "username": "syj",
+          "content": "Good spending note."
+        }
+      ]
+    },
+    {
+      "id": 56,
+      "username": "ksw",
+      "title": "KSW flex #30",
+      "media": "/media/expenses/demo/ksw-30.png",
+      "media_type": "image",
+      "amount": 69800,
+      "category": "기타",
+      "likes": [
+        "kwb",
+        "syj",
+        "kjm",
+        "pjh"
+      ],
+      "comments": [
+        {
+          "username": "kjm",
+          "content": "Saved for later."
+        },
+        {
+          "username": "pjh",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 57,
+      "username": "kyj",
+      "title": "KYJ flex #1",
+      "media": "/media/expenses/demo/kyj-01.mp4",
+      "media_type": "video",
+      "amount": 22800,
+      "category": "기타",
+      "likes": [
+        "ljj",
+        "kwb"
+      ],
+      "comments": [
+        {
+          "username": "syj",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 58,
+      "username": "kyj",
+      "title": "KYJ flex #2",
+      "media": "/media/expenses/demo/kyj-02.png",
+      "media_type": "image",
+      "amount": 24500,
+      "category": "식비",
+      "likes": [
+        "kwb",
+        "syj",
+        "kjm"
+      ],
+      "comments": [
+        {
+          "username": "kjm",
+          "content": "Great flex log."
+        },
+        {
+          "username": "pjh",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 59,
+      "username": "ljj",
+      "title": "LJJ flex #1",
+      "media": "/media/expenses/demo/ljj-01.mp4",
+      "media_type": "video",
+      "amount": 25100,
+      "category": "식비",
+      "likes": [
+        "kwb",
+        "syj"
+      ],
+      "comments": [
+        {
+          "username": "kjm",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 60,
+      "username": "ljj",
+      "title": "LJJ flex #2",
+      "media": "/media/expenses/demo/ljj-02.png",
+      "media_type": "image",
+      "amount": 26800,
+      "category": "카페",
+      "likes": [
+        "syj",
+        "kjm",
+        "pjh"
+      ],
+      "comments": [
+        {
+          "username": "pjh",
+          "content": "Great flex log."
+        },
+        {
+          "username": "kyb",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 61,
+      "username": "ljj",
+      "title": "LJJ flex #3",
+      "media": "/media/expenses/demo/ljj-03.png",
+      "media_type": "image",
+      "amount": 28500,
+      "category": "교통비",
+      "likes": [
+        "kjm",
+        "pjh",
+        "kyb",
+        "pjh2"
+      ],
+      "comments": [
+        {
+          "username": "kyb",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 62,
+      "username": "kwb",
+      "title": "KWB flex #1",
+      "media": "/media/expenses/demo/kwb-01.mp4",
+      "media_type": "video",
+      "amount": 27400,
+      "category": "카페",
+      "likes": [
+        "syj",
+        "kjm"
+      ],
+      "comments": [
+        {
+          "username": "pjh",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 63,
+      "username": "kwb",
+      "title": "KWB flex #2",
+      "media": "/media/expenses/demo/kwb-02.png",
+      "media_type": "image",
+      "amount": 29100,
+      "category": "교통비",
+      "likes": [
+        "kjm",
+        "pjh",
+        "kyb"
+      ],
+      "comments": [
+        {
+          "username": "kyb",
+          "content": "Great flex log."
+        },
+        {
+          "username": "pjh2",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 64,
+      "username": "syj",
+      "title": "SYJ flex #1",
+      "media": "/media/expenses/demo/syj-01.mp4",
+      "media_type": "video",
+      "amount": 29700,
+      "category": "교통비",
+      "likes": [
+        "kjm",
+        "pjh"
+      ],
+      "comments": [
+        {
+          "username": "kyb",
+          "content": "Nice record!"
+        }
+      ]
+    },
+    {
+      "id": 65,
+      "username": "syj",
+      "title": "SYJ flex #2",
+      "media": "/media/expenses/demo/syj-02.png",
+      "media_type": "image",
+      "amount": 31400,
+      "category": "쇼핑",
+      "likes": [
+        "pjh",
+        "kyb",
+        "pjh2"
+      ],
+      "comments": [
+        {
+          "username": "pjh2",
+          "content": "Great flex log."
+        },
+        {
+          "username": "lbm",
+          "content": "This looks useful."
+        }
+      ]
+    },
+    {
+      "id": 66,
+      "username": "syj",
+      "title": "SYJ flex #3",
+      "media": "/media/expenses/demo/syj-03.png",
+      "media_type": "image",
+      "amount": 33100,
+      "category": "문화생활",
+      "likes": [
+        "kyb",
+        "pjh2",
+        "lbm",
+        "ksw"
+      ],
+      "comments": [
+        {
+          "username": "lbm",
+          "content": "This looks useful."
+        }
+      ]
+    }
+  ],
+  "joined_products": [
+    {
+      "id": 5,
+      "username": "kjm",
+      "bank": "경남은행",
+      "product": "BNK더조은정기예금",
+      "term_months": 3,
+      "rate": "2.0000",
+      "max_rate": "2.5000",
+      "status": "active"
+    },
+    {
+      "id": 6,
+      "username": "pjh",
+      "bank": "경남은행",
+      "product": "BNK더조은정기예금",
+      "term_months": 12,
+      "rate": "2.0500",
+      "max_rate": "2.5500",
+      "status": "active"
+    },
+    {
+      "id": 7,
+      "username": "pjh",
+      "bank": "경남은행",
+      "product": "BNK더조은정기예금",
+      "term_months": 24,
+      "rate": "2.0500",
+      "max_rate": "2.5500",
+      "status": "active"
+    },
+    {
+      "id": 8,
+      "username": "kyb",
+      "bank": "경남은행",
+      "product": "The든든예금(시즌2)",
+      "term_months": 3,
+      "rate": "2.0500",
+      "max_rate": "2.7500",
+      "status": "active"
+    },
+    {
+      "id": 9,
+      "username": "pjh2",
+      "bank": "경남은행",
+      "product": "The든든예금(시즌2)",
+      "term_months": 12,
+      "rate": "2.0000",
+      "max_rate": "3.3000",
+      "status": "active"
+    },
+    {
+      "id": 10,
+      "username": "pjh2",
+      "bank": "경남은행",
+      "product": "The파트너예금",
+      "term_months": 3,
+      "rate": "2.3500",
+      "max_rate": "2.7500",
+      "status": "active"
+    },
+    {
+      "id": 11,
+      "username": "lbm",
+      "bank": "경남은행",
+      "product": "The파트너예금",
+      "term_months": 6,
+      "rate": "2.5000",
+      "max_rate": "2.9000",
+      "status": "active"
+    },
+    {
+      "id": 12,
+      "username": "ksw",
+      "bank": "경남은행",
+      "product": "The파트너예금",
+      "term_months": 24,
+      "rate": "2.1500",
+      "max_rate": "2.5500",
+      "status": "active"
+    },
+    {
+      "id": 13,
+      "username": "ksw",
+      "bank": "광주은행",
+      "product": "The플러스예금",
+      "term_months": 3,
+      "rate": "2.4500",
+      "max_rate": "2.4500",
+      "status": "active"
+    },
+    {
+      "id": 14,
+      "username": "kyj",
+      "bank": "광주은행",
+      "product": "The플러스예금",
+      "term_months": 6,
+      "rate": "2.6800",
+      "max_rate": "2.6800",
+      "status": "active"
+    },
+    {
+      "id": 15,
+      "username": "ljj",
+      "bank": "광주은행",
+      "product": "굿스타트예금",
+      "term_months": 12,
+      "rate": "3.1400",
+      "max_rate": "3.6400",
+      "status": "active"
+    },
+    {
+      "id": 16,
+      "username": "ljj",
+      "bank": "광주은행",
+      "product": "미즈월복리정기예금",
+      "term_months": 12,
+      "rate": "3.3400",
+      "max_rate": "3.5400",
+      "status": "active"
+    },
+    {
+      "id": 17,
+      "username": "kwb",
+      "bank": "광주은행",
+      "product": "미즈월복리정기예금",
+      "term_months": 24,
+      "rate": "3.2800",
+      "max_rate": "3.4800",
+      "status": "active"
+    },
+    {
+      "id": 18,
+      "username": "syj",
+      "bank": "광주은행",
+      "product": "스마트모아Dream정기예금",
+      "term_months": 1,
+      "rate": "2.2100",
+      "max_rate": "2.3100",
+      "status": "active"
+    },
+    {
+      "id": 19,
+      "username": "syj",
+      "bank": "광주은행",
+      "product": "스마트모아Dream정기예금",
+      "term_months": 3,
+      "rate": "2.5400",
+      "max_rate": "2.6400",
+      "status": "active"
+    }
+  ],
+  "stock_holdings": [
+    {
+      "id": 4,
+      "username": "kjm",
+      "symbol": "AAPL",
+      "name": "Apple",
+      "quantity": "4.0000",
+      "average_price": "182.30",
+      "current_price": "196.50"
+    },
+    {
+      "id": 5,
+      "username": "kjm",
+      "symbol": "TSLA",
+      "name": "Tesla",
+      "quantity": "5.0000",
+      "average_price": "178.60",
+      "current_price": "205.15"
+    },
+    {
+      "id": 6,
+      "username": "pjh",
+      "symbol": "NVDA",
+      "name": "NVIDIA",
+      "quantity": "2.0000",
+      "average_price": "118.40",
+      "current_price": "142.10"
+    },
+    {
+      "id": 7,
+      "username": "pjh",
+      "symbol": "GOOGL",
+      "name": "Alphabet",
+      "quantity": "2.0000",
+      "average_price": "162.20",
+      "current_price": "181.35"
+    },
+    {
+      "id": 8,
+      "username": "pjh",
+      "symbol": "000660",
+      "name": "SK hynix",
+      "quantity": "5.0000",
+      "average_price": "182000.00",
+      "current_price": "221500.00"
+    },
+    {
+      "id": 9,
+      "username": "kyb",
+      "symbol": "MSFT",
+      "name": "Microsoft",
+      "quantity": "3.0000",
+      "average_price": "408.25",
+      "current_price": "451.70"
+    },
+    {
+      "id": 10,
+      "username": "kyb",
+      "symbol": "AMZN",
+      "name": "Amazon",
+      "quantity": "3.0000",
+      "average_price": "183.10",
+      "current_price": "201.45"
+    },
+    {
+      "id": 11,
+      "username": "pjh2",
+      "symbol": "TSLA",
+      "name": "Tesla",
+      "quantity": "5.0000",
+      "average_price": "178.60",
+      "current_price": "205.15"
+    },
+    {
+      "id": 12,
+      "username": "pjh2",
+      "symbol": "005930",
+      "name": "Samsung Electronics",
+      "quantity": "12.0000",
+      "average_price": "73400.00",
+      "current_price": "81200.00"
+    },
+    {
+      "id": 13,
+      "username": "pjh2",
+      "symbol": "051910",
+      "name": "LG Chem",
+      "quantity": "2.0000",
+      "average_price": "342000.00",
+      "current_price": "371500.00"
+    },
+    {
+      "id": 14,
+      "username": "lbm",
+      "symbol": "GOOGL",
+      "name": "Alphabet",
+      "quantity": "2.0000",
+      "average_price": "162.20",
+      "current_price": "181.35"
+    },
+    {
+      "id": 15,
+      "username": "lbm",
+      "symbol": "000660",
+      "name": "SK hynix",
+      "quantity": "5.0000",
+      "average_price": "182000.00",
+      "current_price": "221500.00"
+    },
+    {
+      "id": 16,
+      "username": "ksw",
+      "symbol": "AMZN",
+      "name": "Amazon",
+      "quantity": "3.0000",
+      "average_price": "183.10",
+      "current_price": "201.45"
+    },
+    {
+      "id": 17,
+      "username": "ksw",
+      "symbol": "035420",
+      "name": "NAVER",
+      "quantity": "6.0000",
+      "average_price": "189000.00",
+      "current_price": "206000.00"
+    },
+    {
+      "id": 18,
+      "username": "ksw",
+      "symbol": "NVDA",
+      "name": "NVIDIA",
+      "quantity": "2.0000",
+      "average_price": "118.40",
+      "current_price": "142.10"
+    },
+    {
+      "id": 19,
+      "username": "kyj",
+      "symbol": "005930",
+      "name": "Samsung Electronics",
+      "quantity": "12.0000",
+      "average_price": "73400.00",
+      "current_price": "81200.00"
+    },
+    {
+      "id": 20,
+      "username": "kyj",
+      "symbol": "051910",
+      "name": "LG Chem",
+      "quantity": "2.0000",
+      "average_price": "342000.00",
+      "current_price": "371500.00"
+    },
+    {
+      "id": 21,
+      "username": "ljj",
+      "symbol": "000660",
+      "name": "SK hynix",
+      "quantity": "5.0000",
+      "average_price": "182000.00",
+      "current_price": "221500.00"
+    },
+    {
+      "id": 22,
+      "username": "ljj",
+      "symbol": "AAPL",
+      "name": "Apple",
+      "quantity": "4.0000",
+      "average_price": "182.30",
+      "current_price": "196.50"
+    },
+    {
+      "id": 23,
+      "username": "ljj",
+      "symbol": "TSLA",
+      "name": "Tesla",
+      "quantity": "5.0000",
+      "average_price": "178.60",
+      "current_price": "205.15"
+    },
+    {
+      "id": 24,
+      "username": "kwb",
+      "symbol": "035420",
+      "name": "NAVER",
+      "quantity": "6.0000",
+      "average_price": "189000.00",
+      "current_price": "206000.00"
+    },
+    {
+      "id": 25,
+      "username": "kwb",
+      "symbol": "NVDA",
+      "name": "NVIDIA",
+      "quantity": "2.0000",
+      "average_price": "118.40",
+      "current_price": "142.10"
+    },
+    {
+      "id": 26,
+      "username": "syj",
+      "symbol": "051910",
+      "name": "LG Chem",
+      "quantity": "2.0000",
+      "average_price": "342000.00",
+      "current_price": "371500.00"
+    },
+    {
+      "id": 27,
+      "username": "syj",
+      "symbol": "MSFT",
+      "name": "Microsoft",
+      "quantity": "3.0000",
+      "average_price": "408.25",
+      "current_price": "451.70"
+    },
+    {
+      "id": 28,
+      "username": "syj",
+      "symbol": "AMZN",
+      "name": "Amazon",
+      "quantity": "3.0000",
+      "average_price": "183.10",
+      "current_price": "201.45"
+    }
+  ]
+}

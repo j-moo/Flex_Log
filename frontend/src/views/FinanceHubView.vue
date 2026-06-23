@@ -3,7 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import api from '../api/client'
-import { getStocks } from '../api/finance'
+import { getStockHoldings } from '../api/financial'
 import { getExpenses } from '../api/expenses'
 import { getMyProfile } from '../api/profile'
 import FinanceSummary from '../components/finance/FinanceSummary.vue'
@@ -13,6 +13,7 @@ import FinanceProductsView from './FinanceProductsView.vue'
 import NearbyBanksView from './NearbyBanksView.vue'
 import StockHoldingView from './StockHoldingView.vue'
 import YoutubeSearchView from './YoutubeSearchView.vue'
+import { getMonthlyIncome, setMonthlyIncome } from '../utils/monthlyIncome'
 
 const route = useRoute()
 const router = useRouter()
@@ -38,10 +39,14 @@ const monthly = ref(null)
 const stocks = ref([])
 const logs = ref([])
 const isLoading = ref(true)
+const incomeModalOpen = ref(false)
+const monthlyIncome = ref(getMonthlyIncome())
+const incomeForm = ref('')
 
 const today = new Date()
-const year = today.getFullYear()
-const month = today.getMonth()
+const selectedYear = ref(today.getFullYear())
+const selectedMonth = ref(today.getMonth())
+const monthOptions = Array.from({ length: 12 }, (_, index) => ({ value: index, label: `${index + 1}월` }))
 
 const activeComponent = computed(() => tabs.find((item) => item.id === activeTab.value)?.component)
 const realProducts = computed(() =>
@@ -57,22 +62,36 @@ const realProducts = computed(() =>
 )
 const displayedProducts = computed(() => (realProducts.value.length ? realProducts.value : MOCK_PRODUCTS))
 const assetValue = computed(() => stocks.value.reduce((sum, item) => sum + Number(item.valuation_amount || 0), 0))
-const monthlySpend = computed(() => Number(monthly.value?.total_amount || 0))
+
+const setStocks = (items = []) => {
+  stocks.value = Array.isArray(items) ? items : []
+}
+
+const loadStocks = async () => {
+  try {
+    setStocks((await getStockHoldings()).data)
+  } catch {
+    setStocks([])
+  }
+}
 
 const monthlyLogs = computed(() =>
   logs.value.filter((log) => {
     const date = new Date(log.created_at)
-    return date.getFullYear() === year && date.getMonth() === month
+    return date.getFullYear() === selectedYear.value && date.getMonth() === selectedMonth.value
   }),
 )
+const monthlySpend = computed(() => monthlyLogs.value.reduce((sum, log) => sum + Number(log.amount || 0), 0))
+const maxDailySpend = computed(() => Math.max(0, ...calendarDays.value.filter((item) => !item.blank).map((item) => item.amount)))
 
 const calendarDays = computed(() => {
-  const first = new Date(year, month, 1)
-  const lastDate = new Date(year, month + 1, 0).getDate()
-  const blanks = Array.from({ length: first.getDay() }, (_, index) => ({ key: `blank-${index}`, blank: true }))
+  const first = new Date(selectedYear.value, selectedMonth.value, 1)
+  const lastDate = new Date(selectedYear.value, selectedMonth.value + 1, 0).getDate()
+  const monthKey = `${selectedYear.value}-${String(selectedMonth.value + 1).padStart(2, '0')}`
+  const blanks = Array.from({ length: first.getDay() }, (_, index) => ({ key: `${monthKey}-blank-${index}`, blank: true }))
   const days = Array.from({ length: lastDate }, (_, index) => {
     const day = index + 1
-    const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    const dateKey = `${monthKey}-${String(day).padStart(2, '0')}`
     const dayLogs = monthlyLogs.value.filter((log) => log.created_at?.slice(0, 10) === dateKey)
     const amount = dayLogs.reduce((sum, log) => sum + Number(log.amount || 0), 0)
     return {
@@ -86,9 +105,51 @@ const calendarDays = computed(() => {
   return [...blanks, ...days]
 })
 
+const changeCalendarMonth = (offset) => {
+  const next = new Date(selectedYear.value, selectedMonth.value + offset, 1)
+  selectedYear.value = next.getFullYear()
+  selectedMonth.value = next.getMonth()
+}
+
+const goCurrentMonth = () => {
+  selectedYear.value = today.getFullYear()
+  selectedMonth.value = today.getMonth()
+}
+
+const calendarDayStyle = (item) => {
+  if (!item.amount || !maxDailySpend.value) return {}
+  const ratio = Math.min(1, item.amount / Math.max(maxDailySpend.value, 100000))
+  const lightness = Math.round(94 - ratio * 44)
+  const saturation = Math.round(44 + ratio * 46)
+  const alpha = 0.24 + ratio * 0.58
+  const darkText = ratio >= 0.62
+  return {
+    backgroundColor: `hsla(6, ${saturation}%, ${lightness}%, ${alpha})`,
+    borderColor: `hsla(6, ${Math.min(95, saturation + 8)}%, ${Math.max(34, lightness - 18)}%, 0.72)`,
+    '--day-text': darkText ? 'var(--color-paper)' : 'var(--color-ink)',
+    '--day-subtext': darkText ? 'rgba(255, 248, 231, 0.82)' : 'var(--color-muted)',
+    '--day-amount': darkText ? 'var(--color-paper)' : 'var(--color-dark-gold)',
+  }
+}
+
 const chooseTab = (id) => {
   activeTab.value = id
   router.replace({ name: 'finance-hub', query: { ...route.query, tab: id } })
+}
+
+const openIncomeModal = () => {
+  incomeForm.value = monthlyIncome.value ? String(monthlyIncome.value) : ''
+  incomeModalOpen.value = true
+}
+
+const closeIncomeModal = () => {
+  incomeModalOpen.value = false
+  incomeForm.value = ''
+}
+
+const saveIncome = () => {
+  monthlyIncome.value = setMonthlyIncome(incomeForm.value)
+  closeIncomeModal()
 }
 
 watch(
@@ -98,16 +159,20 @@ watch(
   },
 )
 
+watch(activeTab, (value) => {
+  if (value === 'my') loadStocks()
+})
+
 onMounted(async () => {
   const results = await Promise.allSettled([
     getMyProfile(),
     api.get('/api/v1/analysis/monthly/'),
-    getStocks(),
+    getStockHoldings(),
     getExpenses(),
   ])
   if (results[0].status === 'fulfilled') profile.value = results[0].value.data
   if (results[1].status === 'fulfilled') monthly.value = results[1].value.data
-  if (results[2].status === 'fulfilled') stocks.value = results[2].value
+  if (results[2].status === 'fulfilled') setStocks(results[2].value.data)
   if (results[3].status === 'fulfilled') logs.value = results[3].value.data
   isLoading.value = false
 })
@@ -134,15 +199,26 @@ onMounted(async () => {
           :monthly-spend="monthlySpend"
           :product-count="displayedProducts.length"
           :stock-count="stocks.length"
+          :monthly-income="monthlyIncome"
+          @edit-income="openIncomeModal"
         />
 
         <section class="calendar-panel vintage-card">
           <div class="calendar-head">
             <div>
               <span>MONTHLY FLEX</span>
-              <h1>{{ year }}년 {{ month + 1 }}월 소비 달력</h1>
+              <h1>{{ selectedYear }}년 {{ selectedMonth + 1 }}월 소비 달력</h1>
             </div>
-            <RouterLink class="vintage-button" :to="{ name: 'analysis' }">소비 AI 분석</RouterLink>
+            <div class="calendar-tools">
+              <button type="button" aria-label="이전 달" @click="changeCalendarMonth(-1)">‹</button>
+              <input v-model.number="selectedYear" type="number" min="2000" max="2100" aria-label="연도 선택">
+              <select v-model.number="selectedMonth" aria-label="월 선택">
+                <option v-for="item in monthOptions" :key="item.value" :value="item.value">{{ item.label }}</option>
+              </select>
+              <button type="button" aria-label="다음 달" @click="changeCalendarMonth(1)">›</button>
+              <button type="button" @click="goCurrentMonth">이번 달</button>
+              <RouterLink class="vintage-button" :to="{ name: 'analysis' }">소비 AI 분석</RouterLink>
+            </div>
           </div>
 
           <div class="calendar-weekdays">
@@ -156,6 +232,7 @@ onMounted(async () => {
                 v-else
                 class="day-cell"
                 :class="{ active: item.amount > 0 }"
+                :style="calendarDayStyle(item)"
                 :to="{ name: 'finance-day', params: { date: item.dateKey } }"
               >
                 <strong>{{ item.day }}</strong>
@@ -191,10 +268,41 @@ onMounted(async () => {
 
       <section v-else :key="activeTab" class="tab-panel">
         <KeepAlive>
-          <component :is="activeComponent" />
+          <component :is="activeComponent" @holdings-changed="setStocks" />
         </KeepAlive>
       </section>
     </Transition>
+
+    <Teleport to="body">
+      <div v-if="incomeModalOpen" class="income-backdrop" @click.self="closeIncomeModal">
+        <form class="income-modal vintage-card" @submit.prevent="saveIncome">
+          <header>
+            <div>
+              <span>MONTHLY INCOME</span>
+              <h2>월 수입 입력</h2>
+              <p>이번 달 소비 분석과 위험도 평가에 반영됩니다.</p>
+            </div>
+            <button type="button" aria-label="닫기" @click="closeIncomeModal">×</button>
+          </header>
+          <label>
+            월 수입
+            <input
+              v-model="incomeForm"
+              class="form-control"
+              type="number"
+              min="0"
+              step="1000"
+              placeholder="예: 3000000"
+              autofocus
+            >
+          </label>
+          <div class="income-actions">
+            <button type="button" class="ghost-button" @click="closeIncomeModal">취소</button>
+            <button class="vintage-button">저장</button>
+          </div>
+        </form>
+      </div>
+    </Teleport>
   </section>
 </template>
 
@@ -255,6 +363,33 @@ onMounted(async () => {
   gap: 12px;
 }
 
+.calendar-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.calendar-tools button,
+.calendar-tools input,
+.calendar-tools select {
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  padding: 8px 11px;
+  font-weight: 900;
+}
+
+.calendar-tools input {
+  width: 96px;
+}
+
+.calendar-tools button {
+  min-width: 38px;
+}
+
 .calendar-head span,
 .strip-head span {
   color: var(--color-dark-gold);
@@ -311,17 +446,18 @@ onMounted(async () => {
 }
 
 .day-cell strong {
+  color: var(--day-text, var(--color-ink));
   font-size: 18px;
 }
 
 .day-cell span {
-  color: var(--color-dark-gold);
+  color: var(--day-amount, var(--color-dark-gold));
   font-size: 13px;
   font-weight: 900;
 }
 
 .day-cell small {
-  color: var(--color-muted);
+  color: var(--day-subtext, var(--color-muted));
 }
 
 .joined-strip {
@@ -404,6 +540,77 @@ onMounted(async () => {
   margin: 0;
 }
 
+.income-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  display: grid;
+  place-items: center;
+  background: rgba(23, 19, 13, 0.34);
+  padding: 18px;
+  backdrop-filter: blur(10px);
+}
+
+.income-modal {
+  display: grid;
+  gap: 16px;
+  width: min(100%, 440px);
+  padding: 20px;
+}
+
+.income-modal header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.income-modal header span {
+  color: var(--color-dark-gold);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.income-modal h2,
+.income-modal p {
+  margin: 0;
+}
+
+.income-modal p,
+.income-modal label {
+  color: var(--color-muted);
+}
+
+.income-modal label {
+  display: grid;
+  gap: 6px;
+  font-weight: 900;
+}
+
+.income-modal header > button,
+.ghost-button {
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-weight: 900;
+}
+
+.income-modal header > button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.income-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 @media (max-width: 760px) {
   .calendar-weekdays,
   .calendar-grid {
@@ -413,6 +620,11 @@ onMounted(async () => {
   .calendar-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .calendar-tools {
+    justify-content: flex-start;
+    width: 100%;
   }
 }
 </style>

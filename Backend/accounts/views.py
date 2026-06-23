@@ -25,7 +25,7 @@ def signup(request):
     return Response(
         {
             'message': '회원가입이 완료되었습니다.',
-            'user': UserSerializer(user).data,
+            'user': UserSerializer(user, context={'request': request}).data,
             'access': str(refresh.access_token),
             'refresh': str(refresh),
         },
@@ -36,7 +36,7 @@ def signup(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def me(request):
-    return Response(UserSerializer(request.user).data)
+    return Response(UserSerializer(request.user, context={'request': request}).data)
 
 
 @api_view(['POST'])
