@@ -6,6 +6,7 @@ import { getUserExpenses } from '../api/expenses'
 import { cancelProduct } from '../api/financial'
 import { deleteFriend, getFriends, sendFriendRequest } from '../api/friends'
 import { getMyProfile, getProfile, updateMyProfile } from '../api/profile'
+import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import WalletAlertBanner from '../components/common/WalletAlertBanner.vue'
 import FriendModal from '../components/profile/FriendModal.vue'
 import ProfileGrid from '../components/profile/ProfileGrid.vue'
@@ -29,7 +30,9 @@ const imagePreview = ref('')
 const showFriends = ref(false)
 const activeTab = ref('posts')
 const cancellingId = ref(null)
+const cancelTarget = ref(null)
 const friendActionPending = ref(false)
+const friendRemoveTarget = ref(null)
 const walletAlertDismissed = ref(false)
 const walletAlertMessage = ref(pickRandomMessage(WALLET_ALERT_MESSAGES))
 const form = reactive({ name: '', nickname: '', bio: '' })
@@ -56,6 +59,12 @@ const friendActionLabel = computed(() => {
   return '요청 삭제'
 })
 const friendActionTone = computed(() => (targetRelation.value ? 'danger' : 'primary'))
+const friendRemovePerson = computed(() => {
+  const item = friendRemoveTarget.value
+  if (!item) return null
+  return item.counterpart || (item.user.id === account.user?.id ? item.friend : item.user)
+})
+const friendRemoveIsAccepted = computed(() => friendRemoveTarget.value?.status === 'accepted')
 const todaySpend = computed(() => {
   const today = new Date().toDateString()
   return logs.value
@@ -137,17 +146,16 @@ const submit = async () => {
 
 const handleFriendAction = async () => {
   if (isOwnProfile.value || !requestedUserId.value) return
+  if (targetRelation.value) {
+    friendRemoveTarget.value = targetRelation.value
+    return
+  }
   friendActionPending.value = true
   errorMessage.value = ''
   successMessage.value = ''
   try {
-    if (targetRelation.value) {
-      await deleteFriend(targetRelation.value.id)
-      successMessage.value = '친구 관계를 삭제했습니다.'
-    } else {
-      await sendFriendRequest(requestedUserId.value)
-      successMessage.value = '친구 요청을 보냈습니다.'
-    }
+    await sendFriendRequest(requestedUserId.value)
+    successMessage.value = '친구 요청을 보냈습니다.'
     await Promise.all([loadFriendships(), loadProfileData()])
   } catch (error) {
     errorMessage.value = error.response?.data?.friend?.[0] || error.response?.data?.detail || '친구 관계 처리에 실패했습니다.'
@@ -156,11 +164,46 @@ const handleFriendAction = async () => {
   }
 }
 
-const cancelSubscription = async (item) => {
-  if (!window.confirm(`${item.product.fin_prdt_nm} 가입을 해지할까요?`)) return
-  cancellingId.value = item.id
+const closeFriendRemoveConfirm = () => {
+  if (friendActionPending.value) return
+  friendRemoveTarget.value = null
+}
+
+const confirmFriendRemove = async () => {
+  if (!friendRemoveTarget.value) return
+  friendActionPending.value = true
+  errorMessage.value = ''
+  successMessage.value = ''
   try {
-    await cancelProduct(item.id)
+    await deleteFriend(friendRemoveTarget.value.id)
+    successMessage.value = friendRemoveIsAccepted.value ? '친구를 삭제했습니다.' : '친구 요청을 삭제했습니다.'
+    friendRemoveTarget.value = null
+    await Promise.all([loadFriendships(), loadProfileData()])
+  } catch (error) {
+    errorMessage.value = error.response?.data?.detail || '친구 관계를 삭제하지 못했습니다.'
+  } finally {
+    friendActionPending.value = false
+  }
+}
+
+const cancelSubscription = (item) => {
+  cancelTarget.value = item
+}
+
+const closeCancelConfirm = () => {
+  if (cancellingId.value) return
+  cancelTarget.value = null
+}
+
+const confirmCancelSubscription = async () => {
+  if (!cancelTarget.value) return
+  cancellingId.value = cancelTarget.value.id
+  errorMessage.value = ''
+  successMessage.value = ''
+  try {
+    await cancelProduct(cancelTarget.value.id)
+    successMessage.value = '가입상품을 해지했습니다.'
+    cancelTarget.value = null
     await loadProfileData()
   } catch (error) {
     errorMessage.value = error.response?.data?.detail || '가입상품 해지에 실패했습니다.'
@@ -205,7 +248,7 @@ onMounted(loadProfile)
       <form v-if="isOwnProfile && isEditing" class="edit-card glass-panel" @submit.prevent="submit">
         <div class="edit-photo">
           <img v-if="imagePreview" :src="imagePreview" alt="프로필 이미지">
-          <span v-else>{{ (profile.nickname || profile.username || 'F').slice(0, 1) }}</span>
+          <span v-else aria-hidden="true"></span>
           <label>
             사진 변경
             <input type="file" accept="image/*" @change="selectImage">
@@ -296,7 +339,29 @@ onMounted(loadProfile)
         </section>
       </Transition>
 
-      <FriendModal v-if="showFriends" @close="showFriends = false" />
+      <FriendModal v-if="showFriends" @close="showFriends = false" @changed="loadProfile" />
+
+      <ConfirmDialog
+        :open="Boolean(friendRemoveTarget)"
+        :title="friendRemoveIsAccepted ? '친구 삭제' : '친구 요청 삭제'"
+        :message="`${friendRemovePerson?.display_name || '선택한 사용자'}님을 ${friendRemoveIsAccepted ? '친구 목록에서 삭제할까요?' : '요청 목록에서 삭제할까요?'}`"
+        detail="확인하면 현재 친구 관계 또는 요청 상태가 삭제됩니다."
+        :confirm-text="friendRemoveIsAccepted ? '삭제' : '요청 삭제'"
+        :loading="friendActionPending"
+        @close="closeFriendRemoveConfirm"
+        @confirm="confirmFriendRemove"
+      />
+
+      <ConfirmDialog
+        :open="Boolean(cancelTarget)"
+        title="가입상품 해지"
+        :message="`${cancelTarget?.product.fin_prdt_nm || '선택한 상품'} 가입을 해지할까요?`"
+        detail="해지 후에는 내 가입 금융상품 목록에서 제외됩니다."
+        confirm-text="해지"
+        :loading="Boolean(cancellingId)"
+        @close="closeCancelConfirm"
+        @confirm="confirmCancelSubscription"
+      />
     </template>
   </section>
 </template>

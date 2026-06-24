@@ -231,6 +231,7 @@ class FinancialProductRecommendationSerializer(serializers.ModelSerializer):
 
 
 class StockHoldingSerializer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField(min_value=1)
     invested_amount = serializers.SerializerMethodField()
     valuation_amount = serializers.SerializerMethodField()
     profit_loss = serializers.SerializerMethodField()

@@ -3,8 +3,9 @@ import { computed, onMounted, ref } from 'vue'
 
 import { deleteFriend, getFriends, searchUsers, sendFriendRequest, updateFriendStatus } from '../../api/friends'
 import { useAccountStore } from '../../stores/account'
+import ConfirmDialog from '../common/ConfirmDialog.vue'
 
-defineEmits(['close', 'changed'])
+const emit = defineEmits(['close', 'changed'])
 
 const account = useAccountStore()
 const friends = ref([])
@@ -15,6 +16,8 @@ const query = ref('')
 const friendQuery = ref('')
 const users = ref([])
 const searchMessage = ref('')
+const removeTarget = ref(null)
+const isRemoving = ref(false)
 
 const pending = computed(() => friends.value.filter((item) => item.status === 'pending'))
 const accepted = computed(() => friends.value.filter((item) => item.status === 'accepted'))
@@ -31,6 +34,8 @@ const filteredAccepted = computed(() => {
   })
 })
 const visible = computed(() => (tab.value === 'requests' ? pending.value : filteredAccepted.value))
+const removeTargetPerson = computed(() => (removeTarget.value ? person(removeTarget.value) : null))
+const removeTargetIsAccepted = computed(() => removeTarget.value?.status === 'accepted')
 
 const findRelation = (userId) =>
   friends.value.find((item) => {
@@ -51,12 +56,34 @@ const load = async () => {
 const change = async (item, status) => {
   const updated = (await updateFriendStatus(item.id, status)).data
   friends.value = friends.value.map((value) => (value.id === item.id ? updated : value))
+  emit('changed')
 }
 
-const remove = async (item) => {
-  if (!window.confirm(item.status === 'accepted' ? '친구를 삭제할까요?' : '친구 요청을 취소할까요?')) return
-  await deleteFriend(item.id)
-  friends.value = friends.value.filter((value) => value.id !== item.id)
+const remove = (item) => {
+  removeTarget.value = item
+}
+
+const closeRemoveConfirm = () => {
+  if (isRemoving.value) return
+  removeTarget.value = null
+}
+
+const confirmRemove = async () => {
+  if (!removeTarget.value) return
+  isRemoving.value = true
+  errorMessage.value = ''
+  searchMessage.value = ''
+  try {
+    await deleteFriend(removeTarget.value.id)
+    friends.value = friends.value.filter((value) => value.id !== removeTarget.value.id)
+    searchMessage.value = removeTargetIsAccepted.value ? '친구를 삭제했습니다.' : '친구 요청을 취소했습니다.'
+    removeTarget.value = null
+    emit('changed')
+  } catch {
+    errorMessage.value = '친구 관계를 삭제하지 못했습니다.'
+  } finally {
+    isRemoving.value = false
+  }
 }
 
 const findUsers = async () => {
@@ -74,6 +101,7 @@ const request = async (user) => {
   try {
     friends.value.unshift((await sendFriendRequest(user.id)).data)
     searchMessage.value = '친구 요청을 보냈습니다.'
+    emit('changed')
   } catch (error) {
     searchMessage.value = Object.values(error.response?.data || {}).flat().join(' ') || '친구 요청에 실패했습니다.'
   }
@@ -114,7 +142,7 @@ onMounted(load)
                   alt="profile image"
                   @error="user.imageLoadFailed = true"
                 >
-                <span v-else class="friend-avatar">{{ user.display_name.slice(0, 1) }}</span>
+                <span v-else class="friend-avatar" aria-hidden="true"></span>
                 <div>
                   <strong>{{ user.display_name }}</strong>
                   <small>@{{ user.username }}</small>
@@ -155,7 +183,7 @@ onMounted(load)
                   alt="profile image"
                   @error="person(item).imageLoadFailed = true"
                 >
-                <span v-else class="friend-avatar">{{ person(item).display_name.slice(0, 1) }}</span>
+                <span v-else class="friend-avatar" aria-hidden="true"></span>
                 <div>
                   <strong>{{ person(item).display_name }}</strong>
                   <small>
@@ -176,6 +204,17 @@ onMounted(load)
           </div>
         </template>
       </section>
+
+      <ConfirmDialog
+        :open="Boolean(removeTarget)"
+        :title="removeTargetIsAccepted ? '친구 삭제' : '친구 요청 취소'"
+        :message="`${removeTargetPerson?.display_name || '선택한 사용자'}님을 ${removeTargetIsAccepted ? '친구 목록에서 삭제할까요?' : '요청 목록에서 취소할까요?'}`"
+        detail="확인하면 현재 친구 관계 또는 요청 상태가 삭제됩니다."
+        :confirm-text="removeTargetIsAccepted ? '삭제' : '요청 취소'"
+        :loading="isRemoving"
+        @close="closeRemoveConfirm"
+        @confirm="confirmRemove"
+      />
     </div>
   </Teleport>
 </template>

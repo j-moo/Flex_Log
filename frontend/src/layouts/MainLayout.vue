@@ -10,7 +10,11 @@ defineEmits(['logout'])
 const route = useRoute()
 const router = useRouter()
 
-const composeId = computed(() => route.query.composeEdit || route.params.id || null)
+const composeId = computed(() => {
+  if (route.query.composeEdit) return route.query.composeEdit
+  if (route.name === 'log-edit') return route.params.id
+  return null
+})
 const isComposeRoute = computed(() => ['log-create', 'log-edit'].includes(route.name))
 const showComposer = computed(() => route.query.compose === '1' || isComposeRoute.value)
 
@@ -28,6 +32,11 @@ const closeComposer = () => {
   delete nextQuery.composeEdit
   router.push({ query: nextQuery })
 }
+
+const handleComposerSaved = () => {
+  window.dispatchEvent(new CustomEvent('flexlog:feed-saved'))
+  closeComposer()
+}
 </script>
 
 <template>
@@ -40,7 +49,7 @@ const closeComposer = () => {
       v-if="showComposer"
       :edit-id="composeId"
       @close="closeComposer"
-      @saved="closeComposer"
+      @saved="handleComposerSaved"
     />
   </div>
 </template>

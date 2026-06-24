@@ -10,6 +10,9 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
+from notifications.helpers import create_notification
+from notifications.models import Notification
+
 from .models import (
     Commodity,
     CommodityPrice,
@@ -43,6 +46,16 @@ MONEY_QUANT = Decimal('0.01')
 
 def quantize_money(value):
     return value.quantize(MONEY_QUANT, rounding=ROUND_HALF_UP)
+
+
+def to_decimal(value):
+    return Decimal(str(value))
+
+
+def stock_change_rate(previous_price, current_price):
+    if not previous_price:
+        return Decimal('0')
+    return ((current_price - previous_price) / previous_price) * Decimal('100')
 
 
 def kiwoom_error_status(exc):
@@ -391,6 +404,15 @@ def bank_route(request):
 @permission_classes([IsAuthenticated])
 def recommend_products(request):
     recommendations = create_financial_product_recommendations(request.user)
+    if recommendations:
+        create_notification(
+            user=request.user,
+            notification_type=Notification.Type.PRODUCT_RECOMMENDATION,
+            title='상품 추천 갱신',
+            message='소비 패턴 기반 예적금 추천이 갱신되었습니다.',
+            target_route='finance-recommend',
+            dedupe_key=f'product-recommendation:{recommendations[0].id}',
+        )
     return Response(
         FinancialProductRecommendationSerializer(recommendations, many=True).data,
         status=status.HTTP_201_CREATED,
@@ -473,6 +495,43 @@ class StockHoldingListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return StockHolding.objects.filter(user=self.request.user)
 
+    def list(self, request, *args, **kwargs):
+        holdings = list(self.get_queryset())
+        self.refresh_current_prices(holdings)
+        serializer = self.get_serializer(holdings, many=True)
+        return Response(serializer.data)
+
+    def refresh_current_prices(self, holdings):
+        today = timezone.localdate().isoformat()
+        for holding in holdings:
+            previous_price = holding.current_price
+            try:
+                quote = get_quote(holding.symbol)
+                current_price = quantize_money(to_decimal(quote['current_price']))
+            except (KiwoomAPIError, InvalidOperation, KeyError, TypeError, ValueError):
+                continue
+
+            if current_price == previous_price:
+                continue
+
+            change_rate = stock_change_rate(previous_price, current_price)
+            holding.current_price = current_price
+            holding.save(update_fields=('current_price', 'updated_at'))
+
+            direction = '상승' if change_rate > 0 else '하락'
+            create_notification(
+                user=holding.user,
+                notification_type=Notification.Type.STOCK_MOVEMENT,
+                title='주가 변동',
+                message=(
+                    f'{holding.name}({holding.symbol}) 현재가가 '
+                    f'{abs(change_rate).quantize(Decimal("0.01"))}% {direction}했습니다.'
+                ),
+                target_route='finance-hub',
+                target_query={'tab': 'stocks'},
+                dedupe_key=f'stock-movement:{holding.id}:{today}:{current_price}',
+            )
+
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -543,6 +602,11 @@ class StockHoldingDetailView(generics.RetrieveUpdateDestroyAPIView):
         if quantity <= 0:
             return Response(
                 {'detail': '\uc0ad\uc81c \uc218\ub7c9\uc740 0\ubcf4\ub2e4 \ucee4\uc57c \ud569\ub2c8\ub2e4.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if quantity != quantity.to_integral_value():
+            return Response(
+                {'detail': '삭제 수량은 정수여야 합니다.'},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if quantity > holding.quantity:

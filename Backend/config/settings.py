@@ -8,6 +8,17 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
+
+def env_float(name, default):
+    raw_value = os.getenv(name)
+    if raw_value in (None, ''):
+        return default
+    try:
+        return float(raw_value)
+    except (TypeError, ValueError):
+        return default
+
+
 SECRET_KEY = os.getenv(
     'SECRET_KEY',
     'django-insecure-flex-log-development-key-change-me-2026',
@@ -35,6 +46,7 @@ INSTALLED_APPS = [
     'expenses',
     'analysis',
     'finance',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -165,6 +177,6 @@ KAKAO_MOBILITY_API_BASE_URL = os.getenv(
     'KAKAO_MOBILITY_API_BASE_URL',
     'https://apis-navi.kakaomobility.com',
 )
-KAKAO_ROUTE_ORIGIN_X = float(os.getenv('KAKAO_ROUTE_ORIGIN_X', '127.039585'))
-KAKAO_ROUTE_ORIGIN_Y = float(os.getenv('KAKAO_ROUTE_ORIGIN_Y', '37.5012743'))
+KAKAO_ROUTE_ORIGIN_X = env_float('KAKAO_ROUTE_ORIGIN_X', 127.039585)
+KAKAO_ROUTE_ORIGIN_Y = env_float('KAKAO_ROUTE_ORIGIN_Y', 37.5012743)
 KAKAO_ROUTE_ORIGIN_NAME = os.getenv('KAKAO_ROUTE_ORIGIN_NAME', '\uba40\ud2f0\ucea0\ud37c\uc2a4 \uc5ed\uc0bc')

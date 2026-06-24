@@ -3,6 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from rest_framework import serializers
 
+from profiles.utils import get_profile_image_url
+
 
 User = get_user_model()
 
@@ -63,14 +65,4 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_profile_image(self, obj):
         profile = getattr(obj, 'profile', None)
-        image = getattr(profile, 'image', None)
-        if not image:
-            return None
-        try:
-            if image.name and not image.storage.exists(image.name):
-                return None
-            url = image.url
-        except (OSError, ValueError):
-            return None
-        request = self.context.get('request')
-        return request.build_absolute_uri(url) if request else url
+        return get_profile_image_url(profile, self.context.get('request'))

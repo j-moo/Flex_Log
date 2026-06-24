@@ -165,6 +165,26 @@ class ExpenseAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(ExpenseLog.objects.filter(pk=expense.id).exists())
 
+    def test_delete_confirmation_allows_line_breaks_and_outer_spaces(self):
+        expense = ExpenseLog.objects.create(
+            user=self.user, category=self.category, amount=10000
+        )
+
+        response = self.client.delete(
+            f'{self.list_url}{expense.id}/',
+            {
+                'confirmation_code': '4827',
+                'confirmation_text': (
+                    f'  {DELETE_CONFIRM_TEXT}\n\n'
+                    '확인코드: 4827  '
+                ),
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(ExpenseLog.objects.filter(pk=expense.id).exists())
+
     def test_cannot_delete_other_users_expense(self):
         expense = ExpenseLog.objects.create(
             user=self.other_user, category=self.category, amount=20000

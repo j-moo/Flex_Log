@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 
 import { createComment, deleteComment, getComments, updateComment } from '../../api/expenses'
+import ConfirmDialog from '../common/ConfirmDialog.vue'
 
 const props = defineProps({
   logId: {
@@ -25,6 +26,8 @@ const editingId = ref(null)
 const editContent = ref('')
 const editingError = ref('')
 const editingPending = ref(false)
+const deleteTarget = ref(null)
+const isDeleting = ref(false)
 
 const toggle = async () => {
   isOpen.value = !isOpen.value
@@ -87,47 +90,63 @@ const saveEdit = async (comment) => {
   }
 }
 
-const remove = async (comment) => {
-  if (!window.confirm('댓글을 삭제할까요?')) return
-  await deleteComment(props.logId, comment.id)
-  comments.value = comments.value.filter((item) => item.id !== comment.id)
-  emit('count-change', Math.max(0, props.count - 1))
+const openDeleteConfirm = (comment) => {
+  deleteTarget.value = comment
+}
+
+const closeDeleteConfirm = () => {
+  if (isDeleting.value) return
+  deleteTarget.value = null
+}
+
+const remove = async () => {
+  if (!deleteTarget.value) return
+  isDeleting.value = true
+  errorMessage.value = ''
+  try {
+    await deleteComment(props.logId, deleteTarget.value.id)
+    comments.value = comments.value.filter((item) => item.id !== deleteTarget.value.id)
+    emit('count-change', Math.max(0, props.count - 1))
+    deleteTarget.value = null
+  } catch {
+    errorMessage.value = '댓글을 삭제하지 못했습니다.'
+  } finally {
+    isDeleting.value = false
+  }
 }
 </script>
 
 <template>
   <div class="comment-section">
-    <button class="comment-toggle" type="button" @click="toggle">
-      댓글 {{ count }}개 {{ isOpen ? '숨기기' : '모두 보기' }}
-    </button>
-
     <Transition name="fade-slide">
       <div v-if="isOpen" class="comment-panel">
         <p v-if="isLoading" class="comment-status">댓글을 불러오는 중...</p>
         <p v-else-if="!comments.length" class="comment-status">첫 댓글을 남겨보세요.</p>
 
-        <div v-for="comment in comments" :key="comment.id" class="comment-row">
-          <div class="comment-content">
-            <form v-if="editingId === comment.id" class="comment-edit-form" @submit.prevent="saveEdit(comment)">
-              <strong>{{ comment.display_name }}</strong>
-              <input
-                v-model="editContent"
-                maxlength="500"
-                aria-label="댓글 수정 내용"
-                :disabled="editingPending"
-                autofocus
-              >
-              <div class="comment-edit-actions">
-                <button type="submit" :disabled="editingPending || !editContent.trim()">저장</button>
-                <button type="button" :disabled="editingPending" @click="cancelEdit">취소</button>
-              </div>
-              <small v-if="editingError">{{ editingError }}</small>
-            </form>
-            <p v-else><strong>{{ comment.display_name }}</strong> {{ comment.content }}</p>
-          </div>
-          <div v-if="comment.can_edit" class="comment-menu">
-            <button type="button" :disabled="editingId === comment.id" @click="startEdit(comment)">수정</button>
-            <button type="button" @click="remove(comment)">삭제</button>
+        <div v-if="comments.length" class="comment-list">
+          <div v-for="comment in comments" :key="comment.id" class="comment-row">
+            <div class="comment-content">
+              <form v-if="editingId === comment.id" class="comment-edit-form" @submit.prevent="saveEdit(comment)">
+                <strong>{{ comment.display_name }}</strong>
+                <input
+                  v-model="editContent"
+                  maxlength="500"
+                  aria-label="댓글 수정 내용"
+                  :disabled="editingPending"
+                  autofocus
+                >
+                <div class="comment-edit-actions">
+                  <button type="submit" :disabled="editingPending || !editContent.trim()">저장</button>
+                  <button type="button" :disabled="editingPending" @click="cancelEdit">취소</button>
+                </div>
+                <small v-if="editingError">{{ editingError }}</small>
+              </form>
+              <p v-else><strong>{{ comment.display_name }}</strong> {{ comment.content }}</p>
+            </div>
+            <div v-if="comment.can_edit" class="comment-menu">
+              <button type="button" :disabled="editingId === comment.id" @click="startEdit(comment)">수정</button>
+              <button type="button" @click="openDeleteConfirm(comment)">삭제</button>
+            </div>
           </div>
         </div>
 
@@ -139,6 +158,17 @@ const remove = async (comment) => {
         </form>
       </div>
     </Transition>
+
+    <ConfirmDialog
+      :open="Boolean(deleteTarget)"
+      title="댓글 삭제"
+      message="이 댓글을 삭제할까요?"
+      detail="삭제한 댓글은 다시 복구할 수 없습니다."
+      confirm-text="삭제"
+      :loading="isDeleting"
+      @close="closeDeleteConfirm"
+      @confirm="remove"
+    />
   </div>
 </template>
 
@@ -147,20 +177,19 @@ const remove = async (comment) => {
   display: grid;
 }
 
-.comment-toggle {
-  justify-self: start;
-  border: 0;
-  background: transparent;
-  color: var(--color-muted);
-  padding: 5px 0;
-  font-size: 13px;
-  font-weight: 900;
-}
-
 .comment-panel {
   display: grid;
   gap: 10px;
   margin-top: 8px;
+}
+
+.comment-list {
+  display: grid;
+  gap: 10px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 5px;
+  overscroll-behavior: contain;
 }
 
 .comment-status,

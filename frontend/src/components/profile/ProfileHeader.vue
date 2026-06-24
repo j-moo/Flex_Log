@@ -29,7 +29,6 @@ const props = defineProps({
 defineEmits(['friends', 'edit', 'friend-action'])
 
 const imageLoadFailed = ref(false)
-const initial = computed(() => (props.profile.nickname || props.profile.username || 'F').slice(0, 1).toUpperCase())
 const hasProfileImage = computed(() => Boolean(props.profile.image) && !imageLoadFailed.value)
 
 watch(
@@ -60,7 +59,7 @@ watch(
 
     <div class="profile-main">
       <img v-if="hasProfileImage" :src="profile.image" alt="프로필 이미지" @error="imageLoadFailed = true">
-      <span v-else class="profile-avatar">{{ initial }}</span>
+      <span v-else class="profile-avatar" aria-hidden="true"></span>
 
       <div class="profile-copy">
         <div class="name-row">
@@ -113,6 +112,18 @@ watch(
   font-size: 12px;
   font-weight: 900;
   box-shadow: 3px 3px 0 var(--color-ink);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.profile-action-button:hover {
+  background: #e5b842;
+  box-shadow: 1px 1px 0 var(--color-ink);
+  transform: translate(2px, 2px);
+}
+
+.profile-action-button:active {
+  box-shadow: 0 0 0 var(--color-ink);
+  transform: translate(3px, 3px);
 }
 
 .profile-action-button.danger {

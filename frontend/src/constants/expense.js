@@ -24,5 +24,8 @@ export const WALLET_ALERT_MESSAGES = [
 export const buildExpenseDeleteConfirmText = (code) =>
   `${EXPENSE_DELETE_CONFIRM_TEXT} 확인코드: ${code}`
 
+export const normalizeExpenseDeleteConfirmText = (value) =>
+  String(value ?? '').normalize('NFC').replace(/\s+/g, ' ').trim()
+
 export const pickRandomMessage = (messages) =>
   messages[Math.floor(Math.random() * messages.length)] || ''

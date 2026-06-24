@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 import { getBankRoute, searchNearbyBanks } from '../api/financial'
 
@@ -34,6 +34,8 @@ const routeSummary = computed(() => {
   const { distance, duration } = routeInfo.value.summary || {}
   return `${formatDistance(distance)} \u00b7 ${formatDuration(duration)}`
 })
+
+const radiusLabel = computed(() => formatDistance(radius.value))
 
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
   '&': '&amp;',
@@ -218,6 +220,10 @@ const selectBank = (bank, shouldLoadRoute = false) => {
 }
 
 onMounted(search)
+
+watch(radius, () => {
+  if (result.value && query.value.trim()) search()
+})
 </script>
 
 <template>
@@ -241,6 +247,7 @@ onMounted(search)
 
     <p v-if="errorMessage" class="state-card error">{{ errorMessage }}</p>
     <p v-if="routeMessage" class="route-message">{{ routeMessage }}</p>
+    <p v-if="result" class="radius-message">검색 반경 {{ radiusLabel }} 안의 은행을 표시합니다.</p>
 
     <div class="bank-layout">
       <div class="map-card vintage-card">
@@ -317,7 +324,7 @@ onMounted(search)
 
 .bank-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.9fr);
   gap: 18px;
 }
 
@@ -347,23 +354,39 @@ onMounted(search)
   border-radius: 16px;
 }
 
+.radius-message {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
 .bank-list {
   display: grid;
   align-content: start;
-  gap: 10px;
+  gap: 12px;
   max-height: 480px;
   overflow: auto;
+  padding-right: 4px;
 }
 
 .bank-item {
   display: grid;
-  grid-template-columns: 44px 1fr;
-  gap: 11px;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
   width: 100%;
-  border: 2px solid transparent;
+  min-height: 96px;
+  border: 2px solid rgba(23, 19, 13, 0.14);
+  border-radius: 20px;
   color: var(--color-ink);
-  padding: 12px;
+  padding: 14px 16px;
   text-align: left;
+}
+
+.bank-item:hover {
+  border-color: rgba(23, 19, 13, 0.34);
+  background: rgba(255, 248, 231, 0.86);
 }
 
 .bank-item.active {
@@ -375,16 +398,28 @@ onMounted(search)
   display: grid;
   gap: 3px;
   min-width: 0;
+  max-width: 100%;
 }
 
 .bank-item small {
-  overflow: hidden;
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   color: var(--color-muted);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.bank-item strong {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
 }
 
 .bank-item em {
+  display: block;
+  max-width: 100%;
   color: var(--color-dark-gold);
   font-size: 12px;
   font-style: normal;
@@ -401,6 +436,7 @@ onMounted(search)
   background: var(--color-money);
   color: var(--color-paper);
   font-weight: 900;
+  flex: 0 0 auto;
 }
 
 .selected-card {
@@ -415,6 +451,13 @@ onMounted(search)
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+}
+
+.selected-card strong,
+.selected-card p,
+.selected-card small {
+  overflow-wrap: anywhere;
 }
 
 .selected-card p {
@@ -448,13 +491,26 @@ onMounted(search)
   border: 2px solid var(--color-ink);
   border-radius: 999px;
   background: var(--color-gold);
+  box-shadow: 3px 3px 0 var(--color-ink);
   color: var(--color-ink);
   padding: 9px 13px;
   font-weight: 900;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.selected-card button:hover:not(:disabled) {
+  box-shadow: 1px 1px 0 var(--color-ink);
+  transform: translate(2px, 2px);
+}
+
+.selected-card button:active:not(:disabled) {
+  box-shadow: 0 0 0 var(--color-ink);
+  transform: translate(3px, 3px);
 }
 
 .selected-card button:disabled {
   opacity: 0.56;
+  box-shadow: none;
   cursor: wait;
 }
 
@@ -463,7 +519,7 @@ onMounted(search)
   font-weight: 900;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 980px) {
   .bank-layout,
   .bank-search {
     grid-template-columns: 1fr;

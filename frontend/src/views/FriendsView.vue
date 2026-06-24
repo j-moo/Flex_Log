@@ -8,6 +8,7 @@ import {
   sendFriendRequest,
   updateFriendStatus,
 } from '../api/friends'
+import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import { useAccountStore } from '../stores/account'
 import { formatDate } from '../utils/format'
 
@@ -18,6 +19,8 @@ const search = ref('')
 const isLoading = ref(true)
 const message = ref('')
 const errorMessage = ref('')
+const removeTarget = ref(null)
+const isRemoving = ref(false)
 
 const receivedPending = computed(() =>
   friends.value.filter((item) => item.status === 'pending' && item.friend.id === account.user?.id),
@@ -26,6 +29,12 @@ const sentPending = computed(() =>
   friends.value.filter((item) => item.status === 'pending' && item.user.id === account.user?.id),
 )
 const acceptedFriends = computed(() => friends.value.filter((item) => item.status === 'accepted'))
+const removeTargetPerson = computed(() => {
+  const item = removeTarget.value
+  if (!item) return null
+  return item.counterpart || (item.user.id === account.user?.id ? item.friend : item.user)
+})
+const removeTargetIsPending = computed(() => removeTarget.value?.status === 'pending')
 
 const loadFriends = async () => {
   isLoading.value = true
@@ -65,9 +74,30 @@ const updateStatus = async (friend, status) => {
   friends.value = friends.value.map((item) => (item.id === friend.id ? response.data : item))
 }
 
-const removeFriend = async (friend) => {
-  await deleteFriend(friend.id)
-  friends.value = friends.value.filter((item) => item.id !== friend.id)
+const removeFriend = (friend) => {
+  removeTarget.value = friend
+}
+
+const closeRemoveConfirm = () => {
+  if (isRemoving.value) return
+  removeTarget.value = null
+}
+
+const confirmRemoveFriend = async () => {
+  if (!removeTarget.value) return
+  isRemoving.value = true
+  message.value = ''
+  errorMessage.value = ''
+  try {
+    await deleteFriend(removeTarget.value.id)
+    friends.value = friends.value.filter((item) => item.id !== removeTarget.value.id)
+    message.value = removeTargetIsPending.value ? '친구 요청을 취소했습니다.' : '친구를 삭제했습니다.'
+    removeTarget.value = null
+  } catch {
+    errorMessage.value = '친구 관계를 삭제하지 못했습니다.'
+  } finally {
+    isRemoving.value = false
+  }
 }
 
 onMounted(loadFriends)
@@ -89,7 +119,7 @@ onMounted(loadFriends)
       <h2>사용자 찾기</h2>
       <form @submit.prevent="searchUsers">
         <input v-model.trim="search" class="form-control" placeholder="아이디, 이름, 이메일, 닉네임">
-        <button class="vintage-button">검색</button>
+        <button class="search-button">검색</button>
       </form>
       <div v-if="users.length" class="user-results">
         <article v-for="user in users" :key="user.id">
@@ -142,6 +172,17 @@ onMounted(loadFriends)
         </article>
       </section>
     </div>
+
+    <ConfirmDialog
+      :open="Boolean(removeTarget)"
+      :title="removeTargetIsPending ? '친구 요청 취소' : '친구 삭제'"
+      :message="`${removeTargetPerson?.display_name || '선택한 사용자'}님을 ${removeTargetIsPending ? '보낸 요청에서 취소할까요?' : '친구 목록에서 삭제할까요?'}`"
+      detail="확인하면 현재 친구 관계 또는 요청 상태가 삭제됩니다."
+      :confirm-text="removeTargetIsPending ? '요청 취소' : '삭제'"
+      :loading="isRemoving"
+      @close="closeRemoveConfirm"
+      @confirm="confirmRemoveFriend"
+    />
   </section>
 </template>
 
@@ -176,6 +217,19 @@ onMounted(loadFriends)
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 10px;
+}
+
+.search-button {
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  padding: 8px 14px;
+  font-weight: 900;
+}
+
+.search-button:hover {
+  background: var(--color-money-light);
 }
 
 .user-results,
@@ -215,6 +269,20 @@ small,
   padding: 7px 11px;
   font-size: 12px;
   font-weight: 900;
+  box-shadow: 3px 3px 0 var(--color-ink);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.user-results button:hover,
+.friend-panel button:hover {
+  box-shadow: 1px 1px 0 var(--color-ink);
+  transform: translate(2px, 2px);
+}
+
+.user-results button:active,
+.friend-panel button:active {
+  box-shadow: 0 0 0 var(--color-ink);
+  transform: translate(3px, 3px);
 }
 
 .friend-columns {

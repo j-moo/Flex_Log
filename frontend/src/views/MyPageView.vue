@@ -126,6 +126,11 @@ onMounted(loadDashboard)
   gap: 8px;
 }
 
+.quick-links a,
+.ai-panel .vintage-button {
+  min-width: 104px;
+}
+
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
