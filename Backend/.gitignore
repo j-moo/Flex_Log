@@ -3,14 +3,3 @@
 __pycache__/
 *.py[cod]
 db.sqlite3
-media/*
-!media/profiles/
-media/profiles/*
-!media/profiles/default.svg
-!media/profiles/demo/
-!media/profiles/demo/**
-!media/expenses/
-media/expenses/*
-!media/expenses/demo/
-!media/expenses/demo/**
-
