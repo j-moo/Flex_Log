@@ -27,6 +27,7 @@ class ProfileAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['nickname'], 'profileuser')
+        self.assertEqual(response.data['email'], 'profile@example.com')
         self.assertTrue(Profile.objects.filter(user=self.user).exists())
 
     def test_update_profile_and_user_name(self):
@@ -109,6 +110,7 @@ class ProfileAPITests(APITestCase):
         response = self.client.get(f'/api/v1/profiles/{other.id}/')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn('email', response.data)
         self.assertFalse(response.data['can_view_joined_products'])
         self.assertEqual(response.data['joined_products'], [])
 
@@ -141,6 +143,7 @@ class ProfileAPITests(APITestCase):
         response = self.client.get(f'/api/v1/profiles/{other.id}/')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn('email', response.data)
         self.assertTrue(response.data['can_view_joined_products'])
         self.assertEqual(len(response.data['joined_products']), 1)
         self.assertEqual(response.data['joined_products'][0]['option']['id'], option.id)

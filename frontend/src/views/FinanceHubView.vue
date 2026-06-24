@@ -6,17 +6,20 @@ import api from '../api/client'
 import { getStockHoldings } from '../api/financial'
 import { getExpenses } from '../api/expenses'
 import { getMyProfile } from '../api/profile'
+import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import FinanceSummary from '../components/finance/FinanceSummary.vue'
+import { useAccountStore } from '../stores/account'
 import { formatAmount } from '../utils/format'
 import CommodityPricesView from './CommodityPricesView.vue'
 import FinanceProductsView from './FinanceProductsView.vue'
 import NearbyBanksView from './NearbyBanksView.vue'
 import StockHoldingView from './StockHoldingView.vue'
 import YoutubeSearchView from './YoutubeSearchView.vue'
-import { getMonthlyIncome, setMonthlyIncome } from '../utils/monthlyIncome'
+import { getMonthlyIncome, MONTHLY_INCOME_MAX, setMonthlyIncome, validateMonthlyIncome } from '../utils/monthlyIncome'
 
 const route = useRoute()
 const router = useRouter()
+const account = useAccountStore()
 
 const tabs = [
   {
@@ -64,13 +67,20 @@ const MOCK_PRODUCTS = [
 
 const activeTab = ref(tabs.some((item) => item.id === route.query.tab) ? route.query.tab : 'my')
 const profile = ref(null)
+const currentUserId = computed(() => account.user?.id || profile.value?.user_id || null)
 const monthly = ref(null)
 const stocks = ref([])
 const logs = ref([])
 const isLoading = ref(true)
 const incomeModalOpen = ref(false)
-const monthlyIncome = ref(getMonthlyIncome())
+const monthlyIncome = ref(getMonthlyIncome(currentUserId.value))
 const incomeForm = ref('')
+const incomeErrorDialog = ref({
+  open: false,
+  message: '',
+})
+const joinedProductPage = ref(1)
+const JOINED_PRODUCT_PAGE_SIZE = 3
 
 const today = new Date()
 const selectedYear = ref(today.getFullYear())
@@ -90,6 +100,13 @@ const realProducts = computed(() =>
   })),
 )
 const displayedProducts = computed(() => (realProducts.value.length ? realProducts.value : MOCK_PRODUCTS))
+const joinedProductPageCount = computed(() =>
+  Math.max(1, Math.ceil(displayedProducts.value.length / JOINED_PRODUCT_PAGE_SIZE)),
+)
+const pagedDisplayedProducts = computed(() => {
+  const start = (joinedProductPage.value - 1) * JOINED_PRODUCT_PAGE_SIZE
+  return displayedProducts.value.slice(start, start + JOINED_PRODUCT_PAGE_SIZE)
+})
 const assetValue = computed(() => stocks.value.reduce((sum, item) => sum + Number(item.valuation_amount || 0), 0))
 
 const setStocks = (items = []) => {
@@ -176,8 +193,23 @@ const closeIncomeModal = () => {
 }
 
 const saveIncome = () => {
-  monthlyIncome.value = setMonthlyIncome(incomeForm.value)
+  const result = validateMonthlyIncome(incomeForm.value)
+  if (!result.valid) {
+    incomeErrorDialog.value = {
+      open: true,
+      message: result.message,
+    }
+    return
+  }
+  monthlyIncome.value = setMonthlyIncome(result.amount, currentUserId.value)
   closeIncomeModal()
+}
+
+const closeIncomeError = () => {
+  incomeErrorDialog.value = {
+    open: false,
+    message: '',
+  }
 }
 
 watch(
@@ -189,6 +221,18 @@ watch(
 
 watch(activeTab, (value) => {
   if (value === 'my') loadStocks()
+})
+
+watch(currentUserId, (userId) => {
+  monthlyIncome.value = getMonthlyIncome(userId)
+})
+
+watch(displayedProducts, () => {
+  joinedProductPage.value = 1
+})
+
+watch(joinedProductPageCount, (pageCount) => {
+  if (joinedProductPage.value > pageCount) joinedProductPage.value = pageCount
 })
 
 onMounted(async () => {
@@ -283,8 +327,28 @@ onMounted(async () => {
             <small v-if="!realProducts.length">예시 데이터</small>
           </div>
 
+          <div class="product-pager">
+            <button
+              type="button"
+              :disabled="joinedProductPage <= 1"
+              aria-label="이전 가입상품"
+              @click="joinedProductPage -= 1"
+            >
+              ‹
+            </button>
+            <span>{{ joinedProductPage }} / {{ joinedProductPageCount }}</span>
+            <button
+              type="button"
+              :disabled="joinedProductPage >= joinedProductPageCount"
+              aria-label="다음 가입상품"
+              @click="joinedProductPage += 1"
+            >
+              ›
+            </button>
+          </div>
+
           <div class="product-scroll">
-            <article v-for="item in displayedProducts" :key="item.id">
+            <article v-for="item in pagedDisplayedProducts" :key="item.id">
               <span class="bank-icon">{{ item.bank.slice(0, 1) }}</span>
               <div>
                 <small>{{ item.bank }}</small>
@@ -322,6 +386,7 @@ onMounted(async () => {
               class="form-control"
               type="number"
               min="0"
+              :max="MONTHLY_INCOME_MAX"
               step="1000"
               placeholder="예: 3000000"
               autofocus
@@ -333,6 +398,18 @@ onMounted(async () => {
           </div>
         </form>
       </div>
+
+      <ConfirmDialog
+        :open="incomeErrorDialog.open"
+        title="월 수입 확인"
+        :message="incomeErrorDialog.message"
+        detail="상한을 넘는 큰 숫자는 분석 결과를 왜곡할 수 있어 저장하지 않습니다."
+        confirm-text="확인"
+        cancel-text="닫기"
+        tone="notice"
+        @close="closeIncomeError"
+        @confirm="closeIncomeError"
+      />
     </Teleport>
   </section>
 </template>
@@ -550,6 +627,40 @@ onMounted(async () => {
   border-radius: 999px;
   background: var(--color-money-light);
   padding: 4px 9px;
+  font-weight: 900;
+}
+
+.product-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.product-pager button {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 2px solid var(--color-ink);
+  border-radius: 50%;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  padding: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.product-pager button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.product-pager span {
+  color: var(--color-muted);
+  font-size: 12px;
   font-weight: 900;
 }
 

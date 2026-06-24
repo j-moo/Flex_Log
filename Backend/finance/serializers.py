@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from rest_framework import serializers
 
 from .models import (
@@ -232,6 +234,17 @@ class FinancialProductRecommendationSerializer(serializers.ModelSerializer):
 
 class StockHoldingSerializer(serializers.ModelSerializer):
     quantity = serializers.IntegerField(min_value=1)
+    average_price = serializers.DecimalField(
+        max_digits=18,
+        decimal_places=2,
+        min_value=Decimal('0'),
+    )
+    current_price = serializers.DecimalField(
+        max_digits=18,
+        decimal_places=2,
+        min_value=Decimal('0'),
+        required=False,
+    )
     invested_amount = serializers.SerializerMethodField()
     valuation_amount = serializers.SerializerMethodField()
     profit_loss = serializers.SerializerMethodField()
@@ -277,7 +290,10 @@ class StockHoldingSerializer(serializers.ModelSerializer):
         return float(round(obj.profit_rate, 2))
 
     def validate_symbol(self, value):
-        return value.strip().upper()
+        symbol = value.strip().upper()
+        if not symbol:
+            raise serializers.ValidationError('종목 코드를 입력해 주세요.')
+        return symbol
 
     def validate(self, attrs):
         request = self.context.get('request')

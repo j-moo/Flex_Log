@@ -1,10 +1,15 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import Category, ExpenseLog, Like
+from friends.models import Friend
+
+from .models import Category, Comment, ExpenseLog, Like
 
 
 User = get_user_model()
@@ -57,6 +62,16 @@ class ExpenseModelTests(TestCase):
 
         self.assertTrue(expense.is_feed_visible)
 
+    def test_expense_is_not_feed_visible_after_expiration(self):
+        expense = ExpenseLog.objects.create(
+            user=self.user,
+            category=self.category,
+            amount=12000,
+            expires_at=timezone.now() - timedelta(seconds=1),
+        )
+
+        self.assertFalse(expense.is_feed_visible)
+
 
 class ExpenseAPITests(APITestCase):
     list_url = '/api/v1/expenses/'
@@ -96,6 +111,34 @@ class ExpenseAPITests(APITestCase):
         self.assertEqual(expense.user, self.user)
         self.assertEqual(response.data['category_name'], '테스트 카테고리')
 
+    def test_create_expense_rejects_too_large_amount(self):
+        response = self.client.post(
+            self.list_url,
+            {
+                'category': self.category.id,
+                'amount': 1000000001,
+                'content': 'too much',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('amount', response.data)
+
+    def test_create_expense_rejects_too_long_content(self):
+        response = self.client.post(
+            self.list_url,
+            {
+                'category': self.category.id,
+                'amount': 10000,
+                'content': 'x' * 501,
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('content', response.data)
+
     def test_list_contains_only_own_expenses(self):
         own_expense = ExpenseLog.objects.create(
             user=self.user, category=self.category, amount=10000
@@ -108,6 +151,36 @@ class ExpenseAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual([item['id'] for item in response.data], [own_expense.id])
+
+    def test_feed_excludes_expired_logs(self):
+        Friend.objects.create(
+            user=self.user,
+            friend=self.other_user,
+            status=Friend.Status.ACCEPTED,
+        )
+        visible_expense = ExpenseLog.objects.create(
+            user=self.other_user,
+            category=self.category,
+            amount=10000,
+            visibility=ExpenseLog.Visibility.PUBLIC,
+            is_visible=True,
+            expires_at=timezone.now() + timedelta(hours=1),
+        )
+        expired_expense = ExpenseLog.objects.create(
+            user=self.other_user,
+            category=self.category,
+            amount=20000,
+            visibility=ExpenseLog.Visibility.PUBLIC,
+            is_visible=True,
+            expires_at=timezone.now() - timedelta(seconds=1),
+        )
+
+        response = self.client.get('/api/v1/expenses/feed/')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        ids = [item['id'] for item in response.data]
+        self.assertIn(visible_expense.id, ids)
+        self.assertNotIn(expired_expense.id, ids)
 
     def test_update_own_expense(self):
         expense = ExpenseLog.objects.create(
@@ -198,6 +271,23 @@ class ExpenseAPITests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(ExpenseLog.objects.filter(pk=expense.id).exists())
+
+    def test_owner_can_comment_on_own_expense(self):
+        expense = ExpenseLog.objects.create(
+            user=self.user,
+            category=self.category,
+            amount=10000,
+            visibility=ExpenseLog.Visibility.PRIVATE,
+        )
+
+        response = self.client.post(
+            f'{self.list_url}{expense.id}/comments/',
+            {'content': '내 게시글 댓글'},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Comment.objects.filter(user=self.user, log=expense).exists())
 
     def test_expenses_require_authentication(self):
         self.client.force_authenticate(user=None)
