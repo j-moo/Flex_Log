@@ -7,6 +7,7 @@ from finance.models import UserFinancialProduct
 from finance.serializers import UserFinancialProductSerializer
 
 from .models import Profile
+from .utils import get_profile_image_url
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -92,12 +93,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        if instance.image:
-            try:
-                if not instance.image.storage.exists(instance.image.name):
-                    data['image'] = None
-            except OSError:
-                data['image'] = None
+        data['image'] = get_profile_image_url(instance, self.context.get('request'))
         return data
 
     @transaction.atomic

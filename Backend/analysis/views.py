@@ -12,6 +12,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from expenses.models import ExpenseLog
+from notifications.helpers import create_notification
+from notifications.models import Notification
 
 from .models import MonthlyAIAnalysis, MonthlyAnalysis
 from .serializers import (
@@ -281,6 +283,14 @@ def monthly_analysis(request):
     if data['monthly_income'] > 0:
         ai_result['risk_level'] = calculate_risk_level(data)
     analysis = create_monthly_ai_analysis(request.user, data, ai_result)
+    create_notification(
+        user=request.user,
+        notification_type=Notification.Type.AI_ANALYSIS,
+        title='AI 분석 완료',
+        message=f'{year}년 {month}월 소비 AI 분석 결과가 준비되었습니다.',
+        target_route='analysis',
+        dedupe_key=f'ai-analysis:{analysis.id}',
+    )
 
     return Response(
         MonthlyAIAnalysisSerializer(analysis).data,

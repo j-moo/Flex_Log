@@ -253,7 +253,7 @@ class StockHoldingAPITests(APITestCase):
             {
                 'symbol': '005930',
                 'name': '삼성전자',
-                'quantity': '2.0000',
+                'quantity': 2,
                 'average_price': '60000.00',
                 'current_price': '65000.00',
             },
@@ -266,7 +266,7 @@ class StockHoldingAPITests(APITestCase):
             {
                 'symbol': '005930',
                 'name': '삼성전자',
-                'quantity': '3.0000',
+                'quantity': 3,
                 'average_price': '70000.00',
                 'current_price': '72000.00',
             },
@@ -292,7 +292,7 @@ class StockHoldingAPITests(APITestCase):
 
         response = self.client.delete(
             f'{self.url}{holding.id}/',
-            {'quantity': '2.0000'},
+            {'quantity': 2},
             format='json',
         )
 
@@ -313,12 +313,32 @@ class StockHoldingAPITests(APITestCase):
 
         response = self.client.delete(
             f'{self.url}{holding.id}/',
-            {'quantity': '2.0000'},
+            {'quantity': 2},
             format='json',
         )
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertTrue(StockHolding.objects.filter(pk=holding.id).exists())
+
+    def test_delete_stock_holding_rejects_decimal_quantity(self):
+        holding = StockHolding.objects.create(
+            user=self.user,
+            symbol='NVDA',
+            name='NVIDIA',
+            quantity='3.0000',
+            average_price='100.00',
+            current_price='120.00',
+        )
+
+        response = self.client.delete(
+            f'{self.url}{holding.id}/',
+            {'quantity': '1.5'},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        holding.refresh_from_db()
+        self.assertEqual(str(holding.quantity), '3.0000')
 
 
 class ExternalDiscoveryAPITests(APITestCase):

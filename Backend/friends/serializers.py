@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from profiles.utils import get_profile_image_url
+
 from .models import Friend
 
 
@@ -10,10 +12,11 @@ User = get_user_model()
 class FriendUserSerializer(serializers.ModelSerializer):
     display_name = serializers.SerializerMethodField()
     profile_image = serializers.SerializerMethodField()
+    mutual_friend_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'name', 'display_name', 'profile_image')
+        fields = ('id', 'username', 'name', 'display_name', 'profile_image', 'mutual_friend_count')
         read_only_fields = fields
 
     def get_display_name(self, obj):
@@ -24,17 +27,10 @@ class FriendUserSerializer(serializers.ModelSerializer):
 
     def get_profile_image(self, obj):
         profile = getattr(obj, 'profile', None)
-        image = getattr(profile, 'image', None)
-        if not image:
-            return None
-        try:
-            if image.name and not image.storage.exists(image.name):
-                return None
-            url = image.url
-        except (OSError, ValueError):
-            return None
-        request = self.context.get('request')
-        return request.build_absolute_uri(url) if request else url
+        return get_profile_image_url(profile, self.context.get('request'))
+
+    def get_mutual_friend_count(self, obj):
+        return getattr(obj, 'mutual_friend_count', 0)
 
 
 class FriendSerializer(serializers.ModelSerializer):

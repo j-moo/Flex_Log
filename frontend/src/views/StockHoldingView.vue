@@ -57,9 +57,19 @@ const sellPreviewAmount = computed(() =>
 )
 
 const formatCurrency = (value) => `${Math.round(Number(value || 0)).toLocaleString('ko-KR')}원`
-const formatQuantity = (value) => Number(value || 0).toLocaleString('ko-KR')
+const formatQuantity = (value) => Math.trunc(Number(value || 0)).toLocaleString('ko-KR')
 const formatRate = (value) => `${Number(value || 0).toFixed(2)}%`
 const toChartTime = (isoTime) => Math.floor(new Date(isoTime).getTime() / 1000)
+const chartTheme = () => {
+  const isDark = document.documentElement.dataset.theme === 'dark'
+  return {
+    background: isDark ? '#22302d' : '#fff8e7',
+    text: isDark ? '#d1c5ad' : '#6f644f',
+    grid: isDark ? 'rgba(251, 242, 220, 0.1)' : 'rgba(23, 19, 13, 0.08)',
+    border: isDark ? 'rgba(251, 242, 220, 0.22)' : 'rgba(23, 19, 13, 0.25)',
+    line: isDark ? '#a8c48c' : '#7f936b',
+  }
+}
 
 const normalizeHolding = (stock) => {
   const quantity = Number(stock.quantity || 0)
@@ -70,7 +80,7 @@ const normalizeHolding = (stock) => {
   const profit = Number(stock.profit_loss ?? valuation - invested)
   return {
     ...stock,
-    quantity,
+    quantity: Math.trunc(quantity),
     average_price: averagePrice,
     current_price: currentPrice,
     invested_amount: invested,
@@ -95,28 +105,29 @@ const recalculateStock = (stock, nextPrice) => {
 
 const setupChart = () => {
   if (!chartContainer.value || chart) return
+  const colors = chartTheme()
   chart = createChart(chartContainer.value, {
     height: 440,
     layout: {
-      background: { color: '#fff8e7' },
-      textColor: '#6f644f',
+      background: { color: colors.background },
+      textColor: colors.text,
       fontFamily: 'Noto Sans KR, system-ui, sans-serif',
       attributionLogo: false,
     },
     grid: {
-      vertLines: { color: 'rgba(23, 19, 13, 0.08)' },
-      horzLines: { color: 'rgba(23, 19, 13, 0.08)' },
+      vertLines: { color: colors.grid },
+      horzLines: { color: colors.grid },
     },
-    rightPriceScale: { borderColor: 'rgba(23, 19, 13, 0.25)' },
+    rightPriceScale: { borderColor: colors.border },
     timeScale: {
-      borderColor: 'rgba(23, 19, 13, 0.25)',
+      borderColor: colors.border,
       timeVisible: true,
       secondsVisible: false,
     },
   })
 
   lineSeries = chart.addSeries(LineSeries, {
-    color: '#7f936b',
+    color: colors.line,
     lineWidth: 3,
     priceFormat: { type: 'price', precision: 0, minMove: 1 },
   })
@@ -209,6 +220,11 @@ const submitHolding = async () => {
     errorMessage.value = '종목명 또는 종목코드를 후보 목록에서 선택해주세요.'
     return
   }
+  const requestedQuantity = Number(form.quantity)
+  if (!Number.isInteger(requestedQuantity) || requestedQuantity <= 0) {
+    errorMessage.value = '수량은 1주 이상 정수로 입력해주세요.'
+    return
+  }
 
   let currentPrice = Number(candidate.price || form.average_price || 0)
   try {
@@ -241,6 +257,10 @@ const validateSellQuantity = (stock) => {
     sellError.value = '판매할 수량을 올바르게 입력해주세요.'
     return null
   }
+  if (!Number.isInteger(quantity)) {
+    sellError.value = '판매 수량은 정수로 입력해주세요.'
+    return null
+  }
   if (quantity > Number(stock.quantity)) {
     sellError.value = '보유 수량보다 많이 판매할 수 없습니다.'
     return null
@@ -266,7 +286,7 @@ const removeMockHolding = (stock, quantity) => {
 
 const openSellModal = (stock) => {
   sellTarget.value = stock
-  sellForm.quantity = String(stock.quantity)
+  sellForm.quantity = String(Math.trunc(stock.quantity))
   sellError.value = ''
 }
 
@@ -333,7 +353,7 @@ onBeforeUnmount(() => {
       </label>
       <label>
         수량
-        <input v-model="form.quantity" class="form-control" type="number" min="0.0001" step="0.0001" required>
+        <input v-model="form.quantity" class="form-control" type="number" min="1" step="1" required>
       </label>
       <label>
         평균 매수가
@@ -461,9 +481,9 @@ onBeforeUnmount(() => {
               v-model="sellForm.quantity"
               class="form-control"
               type="number"
-              min="0.0001"
+              min="1"
               :max="sellTarget.quantity"
-              step="0.0001"
+              step="1"
               required
             >
           </label>
@@ -471,9 +491,9 @@ onBeforeUnmount(() => {
             v-model="sellForm.quantity"
             class="sell-range"
             type="range"
-            min="0.0001"
+            min="1"
             :max="sellTarget.quantity"
-            step="0.0001"
+            step="1"
           >
 
           <p v-if="sellError" class="sell-error">{{ sellError }}</p>

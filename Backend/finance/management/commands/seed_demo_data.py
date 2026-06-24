@@ -33,6 +33,7 @@ DEMO_USERS = [
     {"name": "\uc774\uc7ac\uc900", "username": "ljj", "email": "ljj@example.com", "color": (176, 104, 52)},
     {"name": "\uacfd\uc6b0\ube48", "username": "kwb", "email": "kwb@example.com", "color": (84, 86, 92)},
     {"name": "\uc11c\uc720\uc815", "username": "syj", "email": "syj@example.com", "color": (196, 94, 112)},
+    {"name": "\uc774\uc11c\ud604", "username": "lsh", "email": "lsh@example.com", "color": (98, 118, 184)},
 ]
 
 FRIEND_PAIRS = [
@@ -45,6 +46,8 @@ FRIEND_PAIRS = [
     ("kyj", "kwb"),
     ("ljj", "syj"),
     ("kwb", "syj"),
+    ("syj", "lsh"),
+    ("lsh", "kjm"),
 ]
 
 CATEGORIES = ["\uc2dd\ube44", "\uad50\ud1b5\ube44", "\uc1fc\ud551", "\ubb38\ud654\uc0dd\ud65c", "\uad6c\ub3c5", "\uae30\ud0c0"]
@@ -58,16 +61,16 @@ COMMENTS = [
     "Saved for later.",
 ]
 STOCKS = [
-    ("AAPL", "Apple", "4.0000", "182.30", "196.50"),
-    ("NVDA", "NVIDIA", "2.0000", "118.40", "142.10"),
-    ("MSFT", "Microsoft", "3.0000", "408.25", "451.70"),
-    ("TSLA", "Tesla", "5.0000", "178.60", "205.15"),
-    ("GOOGL", "Alphabet", "2.0000", "162.20", "181.35"),
-    ("AMZN", "Amazon", "3.0000", "183.10", "201.45"),
-    ("005930", "Samsung Electronics", "12.0000", "73400.00", "81200.00"),
-    ("000660", "SK hynix", "5.0000", "182000.00", "221500.00"),
-    ("035420", "NAVER", "6.0000", "189000.00", "206000.00"),
-    ("051910", "LG Chem", "2.0000", "342000.00", "371500.00"),
+    ("AAPL", "Apple", "4", "182.30", "196.50"),
+    ("NVDA", "NVIDIA", "2", "118.40", "142.10"),
+    ("MSFT", "Microsoft", "3", "408.25", "451.70"),
+    ("TSLA", "Tesla", "5", "178.60", "205.15"),
+    ("GOOGL", "Alphabet", "2", "162.20", "181.35"),
+    ("AMZN", "Amazon", "3", "183.10", "201.45"),
+    ("005930", "Samsung Electronics", "12", "73400.00", "81200.00"),
+    ("000660", "SK hynix", "5", "182000.00", "221500.00"),
+    ("035420", "NAVER", "6", "189000.00", "206000.00"),
+    ("051910", "LG Chem", "2", "342000.00", "371500.00"),
 ]
 
 
@@ -325,10 +328,6 @@ class Command(BaseCommand):
         draw.ellipse((252, 210, 300, 252), fill=paper, outline=ink, width=5)
         draw.line((124, 282, 110, 304), fill=ink, width=8)
         draw.line((196, 282, 210, 304), fill=ink, width=8)
-        font = self._font(40)
-        initials = item["username"].upper()
-        bbox = draw.textbbox((0, 0), initials, font=font)
-        draw.text(((320 - (bbox[2] - bbox[0])) / 2, 232), initials, fill=paper, font=font)
         image.save(path, "PNG")
 
     def _write_feed_image(self, path, item, feed_index, category_name):

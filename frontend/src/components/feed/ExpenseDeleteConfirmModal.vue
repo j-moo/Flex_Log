@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue'
 import {
   DELETE_NAG_MESSAGES,
   buildExpenseDeleteConfirmText,
+  normalizeExpenseDeleteConfirmText,
   pickRandomMessage,
 } from '../../constants/expense'
 
@@ -27,7 +28,10 @@ const confirmInput = ref('')
 const nagMessage = ref('')
 
 const fullConfirmText = computed(() => buildExpenseDeleteConfirmText(confirmCode.value))
-const isMatched = computed(() => confirmInput.value === fullConfirmText.value)
+const isMatched = computed(() => (
+  normalizeExpenseDeleteConfirmText(confirmInput.value)
+  === normalizeExpenseDeleteConfirmText(fullConfirmText.value)
+))
 
 const generateConfirmCode = () => String(Math.floor(1000 + Math.random() * 9000))
 
@@ -117,7 +121,7 @@ watch(confirmInput, (value) => {
         </section>
 
         <label>
-          위 문구를 정확히 입력해야 삭제할 수 있습니다.
+          위 문구를 정확히 입력해야 삭제할 수 있습니다. 줄바꿈과 앞뒤 공백은 허용됩니다.
           <textarea
             v-model="confirmInput"
             rows="5"

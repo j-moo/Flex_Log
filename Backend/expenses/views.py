@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from friends.models import Friend
+from notifications.helpers import upsert_grouped_notification
+from notifications.models import Notification
 
 from .models import Category, Comment, ExpenseLog, Like
 from .serializers import CategorySerializer, CommentSerializer, ExpenseLogSerializer
@@ -21,11 +23,29 @@ EXPENSE_DELETE_CONFIRM_TEXT = (
 DELETE_CONFIRM_CODE_PATTERN = re.compile(r'^\d{4}$')
 
 
+def normalize_delete_confirmation_text(value):
+    return re.sub(r'\s+', ' ', str(value or '')).strip()
+
+
 def validate_delete_confirmation(data):
     code = str(data.get('confirmation_code', ''))
-    text = str(data.get('confirmation_text', ''))
+    text = normalize_delete_confirmation_text(data.get('confirmation_text', ''))
     expected = f'{EXPENSE_DELETE_CONFIRM_TEXT} 확인코드: {code}'
-    return bool(DELETE_CONFIRM_CODE_PATTERN.fullmatch(code) and text == expected)
+    return bool(
+        DELETE_CONFIRM_CODE_PATTERN.fullmatch(code)
+        and text == normalize_delete_confirmation_text(expected)
+    )
+
+
+def username_label(user):
+    return f'@{user.username}'
+
+
+def grouped_reaction_message(first_user, count, action):
+    label = username_label(first_user)
+    if count <= 1:
+        return f'{label}님이 내 피드에 {action}.'
+    return f'{label}님 외 {count - 1}명이 내 피드에 {action}.'
 
 
 def accepted_friend_ids(user):
@@ -107,10 +127,41 @@ class FriendFeedListView(generics.ListAPIView):
     def get_queryset(self):
         friend_ids = accepted_friend_ids(self.request.user)
         return base_log_queryset().filter(
-            user_id__in=friend_ids,
-            is_visible=True,
-            visibility__in=[ExpenseLog.Visibility.PUBLIC, ExpenseLog.Visibility.FRIENDS],
+            Q(user=self.request.user, is_visible=True)
+            | Q(
+                user_id__in=friend_ids,
+                is_visible=True,
+                visibility__in=[ExpenseLog.Visibility.PUBLIC, ExpenseLog.Visibility.FRIENDS],
+            )
         )
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        raw_limit = request.query_params.get('limit')
+        raw_offset = request.query_params.get('offset')
+        if raw_limit is None and raw_offset is None:
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+
+        try:
+            limit = int(raw_limit or 10)
+            offset = int(raw_offset or 0)
+        except (TypeError, ValueError):
+            return Response(
+                {'detail': 'limit과 offset은 숫자여야 합니다.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        limit = min(max(limit, 1), 30)
+        offset = max(offset, 0)
+        count = queryset.count()
+        serializer = self.get_serializer(queryset[offset:offset + limit], many=True)
+        next_offset = offset + limit if offset + limit < count else None
+        return Response({
+            'count': count,
+            'next_offset': next_offset,
+            'results': serializer.data,
+        })
 
 
 class UserExpenseLogListView(generics.ListAPIView):
@@ -132,6 +183,21 @@ class LikeToggleView(APIView):
         like, created = Like.objects.get_or_create(user=request.user, log=log)
         if not created:
             like.delete()
+        else:
+            likers = log.likes.exclude(user=log.user).select_related('user').order_by('created_at')
+            first_like = likers.first()
+            if first_like:
+                liker_count = likers.count()
+                upsert_grouped_notification(
+                    user=log.user,
+                    actor=first_like.user,
+                    notification_type=Notification.Type.LIKE,
+                    title=f'좋아요 {liker_count}명',
+                    message=grouped_reaction_message(first_like.user, liker_count, '좋아요를 눌렀습니다'),
+                    target_route='log-detail',
+                    target_params={'id': log.id},
+                    dedupe_key=f'like:{log.id}',
+                )
 
         log.refresh_from_db()
         return Response(
@@ -157,7 +223,22 @@ class CommentListCreateView(generics.ListCreateAPIView):
         return Comment.objects.filter(log=self.get_log()).select_related('user', 'user__profile', 'log')
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, log=self.get_log())
+        log = self.get_log()
+        serializer.save(user=self.request.user, log=log)
+        comments = log.comments.exclude(user=log.user).select_related('user').order_by('created_at')
+        first_comment = comments.first()
+        if first_comment:
+            commenter_count = comments.values('user_id').distinct().count()
+            upsert_grouped_notification(
+                user=log.user,
+                actor=first_comment.user,
+                notification_type=Notification.Type.COMMENT,
+                title=f'댓글 {commenter_count}명',
+                message=grouped_reaction_message(first_comment.user, commenter_count, '댓글을 남겼습니다'),
+                target_route='log-detail',
+                target_params={'id': log.id},
+                dedupe_key=f'comment:{log.id}',
+            )
 
 
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):

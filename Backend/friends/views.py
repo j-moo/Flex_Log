@@ -5,6 +5,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from notifications.helpers import create_notification, get_display_name
+from notifications.models import Notification
+
 from .models import Friend
 from .serializers import (
     FriendCreateSerializer,
@@ -22,6 +25,9 @@ class UserSearchView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
+        if self.request.query_params.get('recommend') in {'1', 'true', 'True'}:
+            return self.get_recommendations()
+
         queryset = (
             User.objects.exclude(pk=self.request.user.pk)
             .select_related('profile')
@@ -36,6 +42,59 @@ class UserSearchView(generics.ListAPIView):
                 | Q(profile__nickname__icontains=search)
             )
         return queryset[:20]
+
+    def get_recommendations(self):
+        user = self.request.user
+        accepted_relations = Friend.objects.filter(
+            Q(user=user) | Q(friend=user),
+            status=Friend.Status.ACCEPTED,
+        )
+        friend_ids = {
+            relation.friend_id if relation.user_id == user.id else relation.user_id
+            for relation in accepted_relations
+        }
+        if not friend_ids:
+            return []
+
+        existing_relation_ids = set(friend_ids)
+        all_relations = Friend.objects.filter(Q(user=user) | Q(friend=user))
+        for relation in all_relations:
+            existing_relation_ids.add(
+                relation.friend_id if relation.user_id == user.id else relation.user_id
+            )
+
+        mutuals_by_user = {}
+        friend_network = (
+            Friend.objects.filter(
+                Q(user_id__in=friend_ids) | Q(friend_id__in=friend_ids),
+                status=Friend.Status.ACCEPTED,
+            )
+            .exclude(Q(user=user) | Q(friend=user))
+        )
+        for relation in friend_network:
+            if relation.user_id in friend_ids:
+                candidate_id = relation.friend_id
+                mutual_id = relation.user_id
+            else:
+                candidate_id = relation.user_id
+                mutual_id = relation.friend_id
+
+            if candidate_id == user.id or candidate_id in existing_relation_ids:
+                continue
+            mutuals_by_user.setdefault(candidate_id, set()).add(mutual_id)
+
+        if not mutuals_by_user:
+            return []
+
+        users = list(
+            User.objects.filter(id__in=mutuals_by_user.keys())
+            .select_related('profile')
+        )
+        for candidate in users:
+            candidate.mutual_friend_count = len(mutuals_by_user.get(candidate.id, ()))
+
+        users.sort(key=lambda item: (-item.mutual_friend_count, item.username))
+        return users[:20]
 
 
 class FriendListCreateView(generics.ListCreateAPIView):
@@ -57,6 +116,15 @@ class FriendListCreateView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         friend = serializer.save()
+        create_notification(
+            user=friend.friend,
+            actor=friend.user,
+            notification_type=Notification.Type.FRIEND_REQUEST,
+            title='친구 요청',
+            message=f'{get_display_name(friend.user)}님이 친구 요청을 보냈습니다.',
+            target_route='friends',
+            dedupe_key=f'friend-request:{friend.id}',
+        )
         output = FriendSerializer(friend, context={'request': request})
         return Response(output.data, status=status.HTTP_201_CREATED)
 

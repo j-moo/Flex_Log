@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useAccountStore } from '../../stores/account'
+import { useNotificationStore } from '../../stores/notifications'
 import BrandLogo from './BrandLogo.vue'
 
 const emit = defineEmits(['logout', 'compose'])
@@ -10,11 +11,13 @@ const emit = defineEmits(['logout', 'compose'])
 const route = useRoute()
 const router = useRouter()
 const account = useAccountStore()
+const notificationStore = useNotificationStore()
 const imageLoadFailed = ref(false)
 const brandClickCount = ref(0)
 const isDarkMode = ref(false)
 const THEME_KEY = 'flexlog.theme'
 let brandClickResetTimer = null
+let notificationTimer = null
 
 const navItems = [
   {
@@ -26,7 +29,7 @@ const navItems = [
   {
     name: 'finance-hub',
     label: '금융',
-    icon: 'M4 20V10m5 10V4m6 16v-7m5 7V7',
+    icon: 'M12 2v20M17 5.5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6',
     matches: [
       'finance-hub',
       'finance-products',
@@ -84,6 +87,18 @@ const toggleTheme = () => {
   applyTheme(!isDarkMode.value)
 }
 
+const refreshUnreadNotifications = () => {
+  if (!account.isAuthenticated) {
+    notificationStore.clear()
+    return
+  }
+  notificationStore.fetchUnreadCount().catch(() => {})
+}
+
+const handleVisibilityChange = () => {
+  if (!document.hidden) refreshUnreadNotifications()
+}
+
 onMounted(() => {
   const savedTheme = window.localStorage.getItem(THEME_KEY)
   const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
@@ -92,11 +107,19 @@ onMounted(() => {
   if (account.isAuthenticated && !account.user?.profile_image) {
     account.fetchMe().catch(() => {})
   }
+
+  refreshUnreadNotifications()
+  notificationTimer = window.setInterval(refreshUnreadNotifications, 30000)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onBeforeUnmount(() => {
   if (brandClickResetTimer) window.clearTimeout(brandClickResetTimer)
+  if (notificationTimer) window.clearInterval(notificationTimer)
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
+
+watch(() => account.isAuthenticated, refreshUnreadNotifications)
 
 const isActive = (item) => item.matches.includes(route.name)
 
@@ -143,7 +166,11 @@ const handleBrandClick = () => {
           v-for="item in navItems"
           :key="item.name"
           class="icon-nav__item"
-          :class="{ active: isActive(item), compose: item.action === 'compose' }"
+          :class="{
+            active: isActive(item),
+            compose: item.action === 'compose',
+            'has-unread': item.name === 'notifications' && notificationStore.hasUnread,
+          }"
           type="button"
           :aria-label="item.label"
           @click="handleNav(item)"
@@ -164,7 +191,7 @@ const handleBrandClick = () => {
             alt="profile image"
             @error="imageLoadFailed = true"
           >
-          <span v-else>{{ userName.slice(0, 1).toUpperCase() }}</span>
+          <span v-else aria-hidden="true"></span>
           <strong>{{ userName }}</strong>
         </RouterLink>
         <button class="logout-button" type="button" @click="$emit('logout')">로그아웃</button>
@@ -244,6 +271,19 @@ const handleBrandClick = () => {
   color: var(--color-ink);
   padding: 7px 10px;
   transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.icon-nav__item.has-unread::after {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--color-paper);
+  border-radius: 50%;
+  background: var(--color-red);
+  box-shadow: 0 0 0 2px rgba(182, 74, 53, 0.18);
+  content: '';
 }
 
 .icon-nav__item svg {

@@ -4,6 +4,8 @@ from pathlib import Path
 
 from rest_framework import serializers
 
+from profiles.utils import get_profile_image_url
+
 from .models import Category, Comment, ExpenseLog
 
 
@@ -82,17 +84,7 @@ class ExpenseLogSerializer(serializers.ModelSerializer):
 
     def get_profile_image(self, obj):
         profile = getattr(obj.user, 'profile', None)
-        image = getattr(profile, 'image', None)
-        if not image:
-            return None
-        try:
-            if image.name and not image.storage.exists(image.name):
-                return None
-            url = image.url
-        except (OSError, ValueError):
-            return None
-        request = self.context.get('request')
-        return request.build_absolute_uri(url) if request else url
+        return get_profile_image_url(profile, self.context.get('request'))
 
     def get_is_liked(self, obj):
         request = self.context.get('request')

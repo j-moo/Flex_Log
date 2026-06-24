@@ -19,12 +19,41 @@ const route = useRoute()
 const router = useRouter()
 
 const tabs = [
-  { id: 'my', label: 'My' },
-  { id: 'products', label: '예적금 비교', component: FinanceProductsView },
-  { id: 'commodity', label: '현물상품', component: CommodityPricesView },
-  { id: 'stocks', label: '주식 보유 현황', component: StockHoldingView },
-  { id: 'stock-search', label: '주식정보검색', component: YoutubeSearchView },
-  { id: 'map', label: '은행지도', component: NearbyBanksView },
+  {
+    id: 'my',
+    label: 'My',
+    icon: 'M20 12V8H4v4m16 0v8H4v-8m16 0H4m13-6V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2',
+  },
+  {
+    id: 'products',
+    label: '예적금 비교',
+    component: FinanceProductsView,
+    icon: 'M4 20V10m5 10V4m6 16v-7m5 7V7',
+  },
+  {
+    id: 'commodity',
+    label: '현물상품',
+    component: CommodityPricesView,
+    icon: 'M6 3h12l4 6-10 12L2 9zM6 3l6 18M18 3l-6 18M2 9h20',
+  },
+  {
+    id: 'stocks',
+    label: '주식 보유',
+    component: StockHoldingView,
+    icon: 'M4 19V5m0 14h16M8 15l3-4 3 2 5-7',
+  },
+  {
+    id: 'stock-search',
+    label: '주식 검색',
+    component: YoutubeSearchView,
+    icon: 'M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15',
+  },
+  {
+    id: 'map',
+    label: '은행지도',
+    component: NearbyBanksView,
+    icon: 'M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11Zm0-8a3 3 0 1 0 0-6 3 3 0 0 0 0 6',
+  },
 ]
 
 const MOCK_PRODUCTS = [
@@ -119,16 +148,15 @@ const goCurrentMonth = () => {
 const calendarDayStyle = (item) => {
   if (!item.amount || !maxDailySpend.value) return {}
   const ratio = Math.min(1, item.amount / Math.max(maxDailySpend.value, 100000))
-  const lightness = Math.round(94 - ratio * 44)
-  const saturation = Math.round(44 + ratio * 46)
-  const alpha = 0.24 + ratio * 0.58
-  const darkText = ratio >= 0.62
+  const lightness = Math.round(96 - ratio * 22)
+  const saturation = Math.round(42 + ratio * 28)
+  const alpha = 0.24 + ratio * 0.42
   return {
     backgroundColor: `hsla(6, ${saturation}%, ${lightness}%, ${alpha})`,
     borderColor: `hsla(6, ${Math.min(95, saturation + 8)}%, ${Math.max(34, lightness - 18)}%, 0.72)`,
-    '--day-text': darkText ? 'var(--color-paper)' : 'var(--color-ink)',
-    '--day-subtext': darkText ? 'rgba(255, 248, 231, 0.82)' : 'var(--color-muted)',
-    '--day-amount': darkText ? 'var(--color-paper)' : 'var(--color-dark-gold)',
+    '--day-text': 'var(--color-ink)',
+    '--day-subtext': 'var(--color-muted)',
+    '--day-amount': 'var(--color-dark-gold)',
   }
 }
 
@@ -188,7 +216,10 @@ onMounted(async () => {
         :class="{ active: activeTab === tab.id }"
         @click="chooseTab(tab.id)"
       >
-        {{ tab.label }}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path :d="tab.icon" />
+        </svg>
+        <span>{{ tab.label }}</span>
       </button>
     </nav>
 
@@ -317,31 +348,76 @@ onMounted(async () => {
   top: 88px;
   z-index: 50;
   display: flex;
-  gap: 8px;
+  gap: 10px;
   overflow-x: auto;
   border: 2px solid var(--color-ink);
   border-radius: 999px;
   background: rgba(255, 248, 231, 0.72);
-  padding: 7px;
+  padding: 8px;
   box-shadow: var(--shadow-soft);
   backdrop-filter: blur(16px);
 }
 
 .finance-tabs button {
+  position: relative;
+  display: grid;
+  width: 84px;
+  min-height: 72px;
+  place-items: center;
   flex: 0 0 auto;
-  border: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
   border-radius: 999px;
   background: transparent;
   color: var(--color-muted);
-  padding: 11px 18px;
+  padding: 10px;
   font-weight: 900;
-  transition: transform 0.16s ease, background 0.16s ease;
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-.finance-tabs button.active {
-  background: var(--color-gold);
+.finance-tabs svg {
+  width: 29px;
+  height: 29px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  transition: transform 0.18s ease;
+}
+
+.finance-tabs span {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  left: 8px;
+  opacity: 0;
   color: var(--color-ink);
-  box-shadow: inset 0 0 0 2px var(--color-ink);
+  font-size: 11.5px;
+  line-height: 1.05;
+  text-align: center;
+  transform: translateY(10px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.finance-tabs button:hover,
+.finance-tabs button.active {
+  border-color: var(--color-ink);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: 3px 3px 0 var(--color-ink);
+  transform: translateY(-2px);
+}
+
+.finance-tabs button:hover svg,
+.finance-tabs button.active svg {
+  transform: translateY(-8px);
+}
+
+.finance-tabs button:hover span,
+.finance-tabs button.active span {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .my-finance {

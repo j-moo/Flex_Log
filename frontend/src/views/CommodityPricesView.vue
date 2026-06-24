@@ -146,12 +146,28 @@ onBeforeUnmount(() => {
 
 .asset-tabs button {
   display: grid;
+  width: 92px;
+  min-height: 104px;
   justify-items: center;
   gap: 7px;
   border: 0;
+  border-radius: 0;
   background: transparent;
+  box-shadow: none;
   color: var(--color-muted);
+  padding: 0;
   font-weight: 900;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: color 0.16s ease;
+}
+
+.asset-tabs button:hover,
+.asset-tabs button:active {
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-ink);
+  transform: none;
 }
 
 .asset-tabs span {
@@ -165,6 +181,12 @@ onBeforeUnmount(() => {
   box-shadow: 4px 4px 0 var(--color-ink);
   color: var(--color-ink);
   font-size: 23px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.asset-tabs button:hover span {
+  box-shadow: 2px 2px 0 var(--color-ink);
+  transform: translate(2px, 2px);
 }
 
 .asset-tabs button.active span {

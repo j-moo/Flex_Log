@@ -87,7 +87,7 @@ def search_nearby_banks(query, radius=2000):
                 'y': float(item['y']),
             }
         )
-    return {'center': center, 'banks': banks}
+    return {'center': center, 'radius': int(radius), 'banks': banks}
 
 
 def search_driving_route(destination_x, destination_y, destination_name=''):

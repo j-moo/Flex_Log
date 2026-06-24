@@ -36,8 +36,8 @@ export const deleteExpense = (id, confirmation = {}) => {
 }
 
 
-export const getFriendFeed = () => {
-  return api.get('/api/v1/expenses/feed/')
+export const getFriendFeed = (params = {}) => {
+  return api.get('/api/v1/expenses/feed/', { params })
 }
 
 

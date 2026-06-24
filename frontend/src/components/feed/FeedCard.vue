@@ -17,10 +17,6 @@ const isLiking = ref(false)
 const avatarImageFailed = ref(false)
 const commentSection = ref(null)
 
-const avatarLetter = computed(() =>
-  (props.log.display_name || props.log.username || 'F').slice(0, 1).toUpperCase(),
-)
-
 const hasAvatarImage = computed(() => (
   Boolean(props.log.profile_image) && !avatarImageFailed.value
 ))
@@ -78,7 +74,7 @@ const toggleLike = async () => {
           alt="profile image"
           @error="avatarImageFailed = true"
         >
-        <span v-else class="avatar">{{ avatarLetter }}</span>
+        <span v-else class="avatar" aria-hidden="true"></span>
         <span>
           <strong>{{ log.display_name || log.username }}</strong>
           <small>{{ formatDate(log.created_at) }}</small>

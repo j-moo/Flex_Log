@@ -1,10 +1,11 @@
 import api from './client'
 
 
-export const searchUsers = (query) => {
+export const searchUsers = (query, params = {}) => {
   return api.get('/api/v1/friends/users/', {
     params: {
       search: query,
+      ...params,
     },
   })
 }

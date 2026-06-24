@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 import { getFriendFeed } from '../api/expenses'
 import { getFriends, searchUsers, sendFriendRequest } from '../api/friends'
@@ -12,17 +12,22 @@ const logs = ref([])
 const suggestions = ref([])
 const friendships = ref([])
 const isLoading = ref(true)
+const isLoadingMore = ref(false)
 const errorMessage = ref('')
 const actionMessage = ref('')
 const requestingUserId = ref(null)
+const feedOffset = ref(0)
+const hasMoreFeed = ref(true)
+
+const FEED_PAGE_SIZE = 8
+const FEED_REFRESH_EVENT = 'flexlog:feed-saved'
 
 const suggestedFriends = computed(() =>
   suggestions.value
-    .filter((user) => user.id !== account.user?.id)
+    .filter((user) => user.id !== account.user?.id && !relationForUser(user.id))
     .sort((a, b) => {
-      const aRelation = relationForUser(a.id)
-      const bRelation = relationForUser(b.id)
-      return Number(Boolean(aRelation)) - Number(Boolean(bRelation))
+      const countDiff = Number(b.mutual_friend_count || 0) - Number(a.mutual_friend_count || 0)
+      return countDiff || String(a.username).localeCompare(String(b.username))
     })
     .slice(0, 6),
 )
@@ -56,22 +61,72 @@ const requestFriend = async (user) => {
   }
 }
 
-const loadFeed = async () => {
-  isLoading.value = true
+const normalizeFeedResponse = (data) => {
+  if (Array.isArray(data)) {
+    return {
+      results: data,
+      nextOffset: null,
+    }
+  }
+  return {
+    results: data.results || [],
+    nextOffset: data.next_offset ?? null,
+  }
+}
+
+const mergeLogs = (current, incoming) => {
+  const byId = new Map(current.map((item) => [item.id, item]))
+  incoming.forEach((item) => byId.set(item.id, item))
+  return Array.from(byId.values())
+}
+
+const loadFeed = async ({ reset = false } = {}) => {
+  if (!reset && (isLoading.value || isLoadingMore.value || !hasMoreFeed.value)) return
+  if (reset) {
+    isLoading.value = true
+    feedOffset.value = 0
+    hasMoreFeed.value = true
+  } else {
+    isLoadingMore.value = true
+  }
   errorMessage.value = ''
   try {
-    logs.value = (await getFriendFeed()).data
+    const response = await getFriendFeed({
+      limit: FEED_PAGE_SIZE,
+      offset: reset ? 0 : feedOffset.value,
+    })
+    const { results, nextOffset } = normalizeFeedResponse(response.data)
+    logs.value = reset ? results : mergeLogs(logs.value, results)
+    feedOffset.value = nextOffset ?? logs.value.length
+    hasMoreFeed.value = nextOffset !== null
   } catch {
     errorMessage.value = '친구 피드를 불러오지 못했습니다.'
   } finally {
     isLoading.value = false
+    isLoadingMore.value = false
+    await nextTick()
+    handleWindowScroll()
   }
+}
+
+const handleWindowScroll = () => {
+  if (!hasMoreFeed.value || isLoading.value || isLoadingMore.value) return
+  const scrollTop = window.scrollY || document.documentElement.scrollTop
+  const viewportBottom = scrollTop + window.innerHeight
+  const pageBottom = document.documentElement.scrollHeight
+  if (viewportBottom >= pageBottom - 520) {
+    loadFeed()
+  }
+}
+
+const refreshFeedAfterSave = () => {
+  loadFeed({ reset: true })
 }
 
 const loadSuggestions = async () => {
   try {
     const [usersResponse, friendsResponse] = await Promise.all([
-      searchUsers(''),
+      searchUsers('', { recommend: 1 }),
       getFriends(),
     ])
     suggestions.value = usersResponse.data
@@ -82,8 +137,15 @@ const loadSuggestions = async () => {
 }
 
 onMounted(() => {
-  loadFeed()
+  loadFeed({ reset: true })
   loadSuggestions()
+  window.addEventListener('scroll', handleWindowScroll, { passive: true })
+  window.addEventListener(FEED_REFRESH_EVENT, refreshFeedAfterSave)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleWindowScroll)
+  window.removeEventListener(FEED_REFRESH_EVENT, refreshFeedAfterSave)
 })
 </script>
 
@@ -126,10 +188,11 @@ onMounted(() => {
                 alt="profile image"
                 @error="friend.imageLoadFailed = true"
               >
-              <span v-else class="suggest-avatar">{{ (friend.display_name || friend.username).slice(0, 1).toUpperCase() }}</span>
+              <span v-else class="suggest-avatar" aria-hidden="true"></span>
               <div>
                 <strong>{{ friend.display_name || friend.username }}</strong>
                 <small>@{{ friend.username }}</small>
+                <small class="mutual-count">함께 아는 친구 {{ friend.mutual_friend_count || 0 }}명</small>
               </div>
             </RouterLink>
             <button
@@ -147,6 +210,9 @@ onMounted(() => {
         </div>
       </section>
     </aside>
+
+    <p v-if="isLoadingMore" class="feed-more">다음 피드를 불러오는 중입니다.</p>
+    <p v-else-if="logs.length && !hasMoreFeed" class="feed-more">마지막 피드입니다.</p>
   </section>
 </template>
 
@@ -184,7 +250,7 @@ onMounted(() => {
   position: sticky;
   top: 112px;
   align-self: start;
-  width: min(100%, 310px);
+  width: min(100%, 350px);
   margin-left: 18px;
 }
 
@@ -221,8 +287,8 @@ onMounted(() => {
 
 .suggest-item {
   display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
   gap: 10px;
   border: 2px solid rgba(23, 19, 13, 0.12);
   border-radius: 18px;
@@ -233,7 +299,7 @@ onMounted(() => {
 .suggest-profile {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr);
-  align-items: center;
+  align-items: start;
   gap: 10px;
   min-width: 0;
 }
@@ -261,9 +327,8 @@ img.suggest-avatar {
 
 .suggest-profile strong,
 .suggest-profile small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .suggest-profile small,
@@ -272,7 +337,13 @@ img.suggest-avatar {
   font-size: 12px;
 }
 
+.suggest-profile .mutual-count {
+  color: var(--color-dark-gold);
+  font-weight: 900;
+}
+
 .suggest-item button {
+  justify-self: start;
   border: 2px solid var(--color-ink);
   border-radius: 999px;
   background: var(--color-gold);
@@ -280,18 +351,40 @@ img.suggest-avatar {
   padding: 8px 10px;
   font-size: 12px;
   font-weight: 900;
+  box-shadow: 3px 3px 0 var(--color-ink);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
   white-space: nowrap;
+}
+
+.suggest-item button:hover:not(:disabled) {
+  box-shadow: 1px 1px 0 var(--color-ink);
+  transform: translate(2px, 2px);
+}
+
+.suggest-item button:active:not(:disabled) {
+  box-shadow: 0 0 0 var(--color-ink);
+  transform: translate(3px, 3px);
 }
 
 .suggest-item button:disabled {
   border-color: rgba(23, 19, 13, 0.22);
   background: rgba(200, 210, 170, 0.52);
   color: var(--color-muted);
+  box-shadow: none;
   cursor: default;
 }
 
 .suggest-empty p {
   margin: 0;
+}
+
+.feed-more {
+  grid-column: 2;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
 }
 
 .feed-list-enter-active,
@@ -311,7 +404,8 @@ img.suggest-avatar {
   }
 
   .feed-stream,
-  .feed-sidebar {
+  .feed-sidebar,
+  .feed-more {
     grid-column: 1;
   }
 

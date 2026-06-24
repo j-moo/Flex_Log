@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 
 import api from '../api/client'
+import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import { formatAmount, formatNumber } from '../utils/format'
 
 
@@ -9,6 +10,8 @@ const holdings = ref([])
 const selectedId = ref(null)
 const isLoading = ref(false)
 const errorMessage = ref('')
+const removeTarget = ref(null)
+const isRemoving = ref(false)
 const form = reactive({
   symbol: '',
   name: '',
@@ -89,11 +92,29 @@ const submit = async () => {
   }
 }
 
-const removeHolding = async (holding) => {
-  if (!window.confirm(`${holding.symbol} 보유 정보를 삭제할까요?`)) return
-  await api.delete(`/api/v1/finance/stocks/${holding.id}/`)
-  if (selectedId.value === holding.id) resetForm()
-  await loadHoldings()
+const removeHolding = (holding) => {
+  removeTarget.value = holding
+}
+
+const closeRemoveConfirm = () => {
+  if (isRemoving.value) return
+  removeTarget.value = null
+}
+
+const confirmRemoveHolding = async () => {
+  if (!removeTarget.value) return
+  isRemoving.value = true
+  errorMessage.value = ''
+  try {
+    await api.delete(`/api/v1/finance/stocks/${removeTarget.value.id}/`)
+    if (selectedId.value === removeTarget.value.id) resetForm()
+    removeTarget.value = null
+    await loadHoldings()
+  } catch {
+    errorMessage.value = '보유 주식 삭제에 실패했습니다.'
+  } finally {
+    isRemoving.value = false
+  }
 }
 
 onMounted(loadHoldings)
@@ -126,7 +147,7 @@ onMounted(loadHoldings)
             </div>
             <div>
               <label for="quantity" class="form-label">보유 수량</label>
-              <input id="quantity" v-model="form.quantity" class="form-control" type="number" min="0.0001" step="0.0001" required>
+              <input id="quantity" v-model="form.quantity" class="form-control" type="number" min="1" step="1" required>
             </div>
             <div>
               <label for="average-price" class="form-label">평균 매입가</label>
@@ -231,7 +252,7 @@ onMounted(loadHoldings)
 
               <dl class="row mb-3">
                 <dt class="col-5">보유 수량</dt>
-                <dd class="col-7">{{ formatNumber(selectedHolding.quantity, 4) }}</dd>
+                <dd class="col-7">{{ formatNumber(selectedHolding.quantity, 0) }}</dd>
                 <dt class="col-5">평균 단가</dt>
                 <dd class="col-7">{{ formatAmount(selectedHolding.average_price) }}</dd>
                 <dt class="col-5">현재가</dt>
@@ -248,6 +269,17 @@ onMounted(loadHoldings)
         </div>
       </div>
     </div>
+
+    <ConfirmDialog
+      :open="Boolean(removeTarget)"
+      title="보유 주식 삭제"
+      :message="`${removeTarget?.symbol || '선택한 종목'} 보유 정보를 삭제할까요?`"
+      detail="전체 보유 수량이 삭제됩니다."
+      confirm-text="삭제"
+      :loading="isRemoving"
+      @close="closeRemoveConfirm"
+      @confirm="confirmRemoveHolding"
+    />
   </section>
 </template>
 
