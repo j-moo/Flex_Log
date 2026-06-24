@@ -15,6 +15,8 @@ const isRecommending = ref(false)
 const errorMessage = ref('')
 const actionMessage = ref('')
 const joiningOptionId = ref(null)
+const productPage = ref(1)
+const PRODUCT_PAGE_SIZE = 6
 
 const filters = reactive({
   type: '',
@@ -30,6 +32,11 @@ const hasFilters = computed(() => Object.values(filters).some((value) => String(
 const activeOptionIds = computed(() =>
   new Set(subscriptions.value.filter((item) => item.status === 'active').map((item) => item.option.id)),
 )
+const productPageCount = computed(() => Math.max(1, Math.ceil(products.value.length / PRODUCT_PAGE_SIZE)))
+const pagedProducts = computed(() => {
+  const start = (productPage.value - 1) * PRODUCT_PAGE_SIZE
+  return products.value.slice(start, start + PRODUCT_PAGE_SIZE)
+})
 const requestParams = computed(() => {
   const params = {}
   Object.entries(filters).forEach(([key, value]) => {
@@ -44,7 +51,8 @@ const fetchProducts = async () => {
   try {
     const response = await api.get('/api/v1/finance/products/', { params: requestParams.value })
     products.value = response.data
-    selectedProduct.value = products.value[0] || null
+    productPage.value = 1
+    selectedProduct.value = pagedProducts.value[0] || null
   } catch {
     errorMessage.value = '금융상품 목록을 불러오지 못했습니다.'
   } finally {
@@ -58,6 +66,11 @@ const clearFilters = () => {
   filters.term = ''
   filters.min_rate = ''
   fetchProducts()
+}
+
+const setProductPage = (page) => {
+  productPage.value = Math.min(Math.max(1, page), productPageCount.value)
+  selectedProduct.value = pagedProducts.value[0] || null
 }
 
 const fetchSubscriptions = async () => {
@@ -126,7 +139,7 @@ onMounted(() => Promise.all([fetchProducts(), fetchSubscriptions()]))
     <div v-else class="product-layout">
       <div class="product-list">
         <article
-          v-for="product in products"
+          v-for="product in pagedProducts"
           :key="product.id"
           class="product-row vintage-card"
           :class="{ active: selectedProduct?.id === product.id }"
@@ -144,6 +157,20 @@ onMounted(() => Promise.all([fetchProducts(), fetchSubscriptions()]))
             <span>최고 {{ formatRate(bestOption(product)?.intr_rate2) }}</span>
           </div>
         </article>
+
+        <nav v-if="productPageCount > 1" class="product-pagination" aria-label="상품 페이지">
+          <button type="button" :disabled="productPage <= 1" @click="setProductPage(productPage - 1)">이전</button>
+          <button
+            v-for="page in productPageCount"
+            :key="page"
+            type="button"
+            :class="{ active: productPage === page }"
+            @click="setProductPage(page)"
+          >
+            {{ page }}
+          </button>
+          <button type="button" :disabled="productPage >= productPageCount" @click="setProductPage(productPage + 1)">다음</button>
+        </nav>
       </div>
 
       <aside class="product-detail glass-panel">
@@ -233,6 +260,36 @@ onMounted(() => Promise.all([fetchProducts(), fetchSubscriptions()]))
 .product-list {
   display: grid;
   gap: 14px;
+}
+
+.product-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.product-pagination button {
+  min-width: 36px;
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  padding: 7px 11px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.product-pagination button.active {
+  background: var(--color-gold);
+  box-shadow: 3px 3px 0 var(--color-ink);
+}
+
+.product-pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .product-row {

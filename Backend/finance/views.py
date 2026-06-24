@@ -83,7 +83,19 @@ def apply_product_filters(request, product_type=None):
 
     term = request.query_params.get('term')
     if term:
-        queryset = queryset.filter(options__save_trm=str(term).strip())
+        try:
+            term_value = int(str(term).strip())
+        except (TypeError, ValueError):
+            return None, Response(
+                {'detail': 'term은 숫자여야 합니다.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if term_value <= 0:
+            return None, Response(
+                {'detail': 'term은 1개월 이상이어야 합니다.'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        queryset = queryset.filter(options__save_trm=term_value)
 
     min_rate = request.query_params.get('min_rate')
     if min_rate:
@@ -497,7 +509,8 @@ class StockHoldingListCreateView(generics.ListCreateAPIView):
 
     def list(self, request, *args, **kwargs):
         holdings = list(self.get_queryset())
-        self.refresh_current_prices(holdings)
+        if request.query_params.get('refresh') in {'1', 'true', 'True'}:
+            self.refresh_current_prices(holdings)
         serializer = self.get_serializer(holdings, many=True)
         return Response(serializer.data)
 

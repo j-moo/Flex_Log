@@ -92,6 +92,16 @@ class MonthlyAIAnalysisAPITests(APITestCase):
         self.assertEqual(response.data['risk_level'], 'high')
         self.assertIn('월 수입', response.data['summary'])
 
+    def test_monthly_income_has_upper_limit(self):
+        response = self.client.post(
+            '/api/v1/analysis/monthly/',
+            {'year': 2026, 'month': 6, 'monthly_income': 100000001},
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('monthly_income', response.data)
+
     def test_get_monthly_analysis_validates_query_params(self):
         response = self.client.get('/api/v1/analysis/monthly/?year=abc&month=13')
 

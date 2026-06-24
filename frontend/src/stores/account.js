@@ -10,6 +10,17 @@ import {
 } from '@/api/accounts'
 
 
+const sessionStorageProvider = {
+  getItem: (key) => (typeof window === 'undefined' ? null : window.sessionStorage.getItem(key)),
+  setItem: (key, value) => {
+    if (typeof window !== 'undefined') window.sessionStorage.setItem(key, value)
+  },
+  removeItem: (key) => {
+    if (typeof window !== 'undefined') window.sessionStorage.removeItem(key)
+  },
+}
+
+
 export const useAccountStore = defineStore(
   'account',
   () => {
@@ -49,6 +60,7 @@ export const useAccountStore = defineStore(
     const refreshAccessTokenAction = async () => {
       const response = await refreshAccessToken(refreshToken.value)
       accessToken.value = response.data.access
+      if (response.data.refresh) refreshToken.value = response.data.refresh
       return response.data.access
     }
 
@@ -81,6 +93,8 @@ export const useAccountStore = defineStore(
     }
   },
   {
-    persist: true,
+    persist: {
+      storage: sessionStorageProvider,
+    },
   },
 )

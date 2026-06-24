@@ -128,6 +128,11 @@ class UserFinancialProductAPITests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
+    def test_product_term_filter_rejects_non_numeric_value(self):
+        response = self.client.get('/api/v1/finance/products/?term=abc')
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 
 class CommodityPriceAPITests(APITestCase):
     import_url = '/api/v1/finance/commodities/prices/import/'
@@ -279,6 +284,57 @@ class StockHoldingAPITests(APITestCase):
         self.assertEqual(str(holding.quantity), '5.0000')
         self.assertEqual(str(holding.average_price), '66000.00')
         self.assertEqual(float(second.data['valuation_amount']), 360000.0)
+
+    def test_create_stock_holding_rejects_negative_prices(self):
+        response = self.client.post(
+            self.url,
+            {
+                'symbol': '005930',
+                'name': 'Samsung',
+                'quantity': 1,
+                'average_price': '-1.00',
+                'current_price': '0.00',
+            },
+            format='json',
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(StockHolding.objects.filter(user=self.user, symbol='005930').exists())
+
+    @patch('finance.views.get_quote')
+    def test_stock_list_does_not_refresh_prices_by_default(self, quote_mock):
+        StockHolding.objects.create(
+            user=self.user,
+            symbol='AAPL',
+            name='Apple',
+            quantity='1.0000',
+            average_price='100.00',
+            current_price='120.00',
+        )
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        quote_mock.assert_not_called()
+
+    @patch('finance.views.get_quote')
+    def test_stock_list_refreshes_prices_when_requested(self, quote_mock):
+        holding = StockHolding.objects.create(
+            user=self.user,
+            symbol='AAPL',
+            name='Apple',
+            quantity='1.0000',
+            average_price='100.00',
+            current_price='120.00',
+        )
+        quote_mock.return_value = {'current_price': 130}
+
+        response = self.client.get(f'{self.url}?refresh=1')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        quote_mock.assert_called_once_with('AAPL')
+        holding.refresh_from_db()
+        self.assertEqual(str(holding.current_price), '130.00')
 
     def test_delete_stock_holding_can_subtract_quantity(self):
         holding = StockHolding.objects.create(

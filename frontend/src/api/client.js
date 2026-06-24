@@ -23,17 +23,20 @@ api.interceptors.response.use(
   async (error) => {
     const account = useAccountStore()
     const request = error.config
+    const isRefreshRequest = request?.url?.includes('/api/v1/accounts/token/refresh/')
 
     if (
       error.response?.status === 401 &&
       account.refreshToken &&
       request &&
+      !isRefreshRequest &&
       !request._retry
     ) {
       request._retry = true
 
       try {
         await account.refreshAccessToken()
+        request.headers = request.headers || {}
         request.headers.Authorization = `Bearer ${account.accessToken}`
         return api(request)
       } catch {

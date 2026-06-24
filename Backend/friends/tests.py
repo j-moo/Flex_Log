@@ -71,3 +71,9 @@ class FriendRecommendationAPITests(APITestCase):
         self.assertNotIn('already', usernames)
         self.assertEqual(response.data[0]['mutual_friend_count'], 2)
         self.assertEqual(response.data[1]['mutual_friend_count'], 1)
+
+    def test_user_search_does_not_match_private_email(self):
+        response = self.client.get('/api/v1/friends/users/?search=candidate-a@example.com')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [])

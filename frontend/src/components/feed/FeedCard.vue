@@ -11,11 +11,15 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  commentsDefaultOpen: Boolean,
 })
 
 const isLiking = ref(false)
 const avatarImageFailed = ref(false)
 const commentSection = ref(null)
+const isContentExpanded = ref(false)
+
+const POST_PREVIEW_LIMIT = 10
 
 const hasAvatarImage = computed(() => (
   Boolean(props.log.profile_image) && !avatarImageFailed.value
@@ -40,7 +44,17 @@ const overlayBoxes = computed(() => {
 })
 
 const amountLabel = computed(() => formatAmount(props.log.amount))
-const displayText = computed(() => props.log.content || props.log.title || '')
+const rawContent = computed(() => String(props.log.content || props.log.title || '').trim())
+const showTitle = computed(() => {
+  const title = String(props.log.title || '').trim()
+  return Boolean(title && title !== rawContent.value)
+})
+const shouldCollapseContent = computed(() => rawContent.value.length > POST_PREVIEW_LIMIT)
+const displayText = computed(() => {
+  if (!rawContent.value) return ''
+  if (!shouldCollapseContent.value || isContentExpanded.value) return rawContent.value
+  return `${rawContent.value.slice(0, POST_PREVIEW_LIMIT).trimEnd()}...`
+})
 
 const boxStyle = (box) => ({
   left: `${Number(box.x ?? 50)}%`,
@@ -118,10 +132,18 @@ const toggleLike = async () => {
         <span class="amount">{{ amountLabel }}</span>
       </div>
 
-      <p class="caption">
-        <strong>{{ log.display_name || log.username }}</strong>
-        <span v-if="displayText"> {{ displayText }}</span>
-      </p>
+      <section v-if="rawContent || showTitle" class="post-copy">
+        <h3 v-if="showTitle">{{ log.title }}</h3>
+        <p v-if="displayText">{{ displayText }}</p>
+        <button
+          v-if="shouldCollapseContent"
+          type="button"
+          class="read-more-button"
+          @click="isContentExpanded = !isContentExpanded"
+        >
+          {{ isContentExpanded ? '접기' : '더보기' }}
+        </button>
+      </section>
 
       <p v-if="log.product_name || log.merchant" class="purchase-meta">
         {{ [log.product_name, log.merchant].filter(Boolean).join(' · ') }}
@@ -131,6 +153,7 @@ const toggleLike = async () => {
         ref="commentSection"
         :log-id="log.id"
         :count="log.comment_count"
+        :default-open="commentsDefaultOpen"
         @count-change="log.comment_count = $event"
       />
     </div>
@@ -292,16 +315,37 @@ const toggleLike = async () => {
   font-weight: 900;
 }
 
-.caption {
-  margin: 2px 0 0;
-  font-size: 14px;
-  line-height: 1.6;
-  white-space: pre-wrap;
+.post-copy {
+  display: grid;
+  gap: 6px;
+  border-top: 1px solid rgba(23, 19, 13, 0.1);
+  margin-top: 2px;
+  padding-top: 10px;
 }
 
-.caption strong,
-.caption b {
-  margin-right: 5px;
+.post-copy h3 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.post-copy p {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.read-more-button {
+  justify-self: start;
+  border: 0;
+  background: transparent;
+  color: var(--color-dark-gold);
+  padding: 0;
+  font-size: 13px;
+  font-weight: 900;
 }
 
 .purchase-meta {

@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
 import { createExpense, getCategories, getExpense, updateExpense } from '../../api/expenses'
+import ConfirmDialog from '../common/ConfirmDialog.vue'
 import { isVideo } from '../../utils/format'
 
 const props = defineProps({
@@ -12,6 +13,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'saved'])
+
+const EXPENSE_AMOUNT_MAX = 1000000000
+const POST_CONTENT_MAX_LENGTH = 500
 
 const categories = ref([])
 const mediaFile = ref(null)
@@ -25,6 +29,12 @@ const errorMessage = ref('')
 const step = ref('upload')
 const activeOverlayId = ref(1)
 const dragOverlayId = ref(null)
+const alertDialog = reactive({
+  open: false,
+  title: '',
+  message: '',
+  detail: '',
+})
 
 const form = reactive({
   category: '',
@@ -46,6 +56,7 @@ const activeOverlay = computed(() =>
 const hasMedia = computed(() => Boolean(previewUrl.value || currentMedia.value))
 const previewMedia = computed(() => previewUrl.value || currentMedia.value)
 const previewIsVideo = computed(() => mediaFile.value?.type?.startsWith('video/') || isVideo(previewMedia.value))
+const remainingContentLength = computed(() => POST_CONTENT_MAX_LENGTH - form.content.length)
 
 const normalizedOverlayText = computed(() =>
   overlayBoxes.value
@@ -136,6 +147,17 @@ const stopOverlayDrag = () => {
   dragOverlayId.value = null
 }
 
+const showAlert = ({ title = '입력값을 확인해 주세요', message, detail = '' }) => {
+  alertDialog.title = title
+  alertDialog.message = message
+  alertDialog.detail = detail
+  alertDialog.open = true
+}
+
+const closeAlert = () => {
+  alertDialog.open = false
+}
+
 const loadData = async () => {
   isLoading.value = true
   errorMessage.value = ''
@@ -195,11 +217,36 @@ const loadData = async () => {
 }
 
 const submit = async () => {
-  isSubmitting.value = true
   errorMessage.value = ''
 
   const selectedCategory = categories.value.find((item) => String(item.id) === String(form.category))
   const content = form.content.trim()
+  const amount = Number(form.amount)
+
+  if (!Number.isFinite(amount) || amount < 1) {
+    showAlert({
+      message: '금액은 1원 이상의 숫자로 입력해 주세요.',
+    })
+    return
+  }
+
+  if (amount > EXPENSE_AMOUNT_MAX) {
+    showAlert({
+      message: `소비 금액은 최대 ${EXPENSE_AMOUNT_MAX.toLocaleString('ko-KR')}원까지 입력할 수 있습니다.`,
+      detail: '너무 큰 숫자는 월별 분석과 그래프를 왜곡할 수 있어 저장하지 않습니다.',
+    })
+    return
+  }
+
+  if (content.length > POST_CONTENT_MAX_LENGTH) {
+    showAlert({
+      message: `게시글 내용은 최대 ${POST_CONTENT_MAX_LENGTH.toLocaleString('ko-KR')}자까지 입력할 수 있습니다.`,
+      detail: '긴 내용은 핵심만 줄여 작성해 주세요.',
+    })
+    return
+  }
+
+  isSubmitting.value = true
   const payload = new FormData()
   payload.append('title', buildTitle(content, selectedCategory))
   payload.append('category', form.category)
@@ -313,8 +360,16 @@ onBeforeUnmount(() => {
                 </label>
 
                 <label>
-                  금액
-                  <input v-model="form.amount" class="form-control" type="number" min="1" step="1" required>
+                금액
+                  <input
+                    v-model="form.amount"
+                    class="form-control"
+                    type="number"
+                    min="1"
+                    :max="EXPENSE_AMOUNT_MAX"
+                    step="1"
+                    required
+                  >
                 </label>
               </div>
 
@@ -324,9 +379,12 @@ onBeforeUnmount(() => {
                   v-model="form.content"
                   class="form-control"
                   rows="5"
-                  maxlength="2000"
+                  :maxlength="POST_CONTENT_MAX_LENGTH"
                   placeholder="오늘의 소비를 기록해보세요."
                 ></textarea>
+                <small class="field-hint" :class="{ warn: remainingContentLength < 0 }">
+                  {{ form.content.length.toLocaleString('ko-KR') }} / {{ POST_CONTENT_MAX_LENGTH.toLocaleString('ko-KR') }}자
+                </small>
               </label>
 
               <div class="field-grid">
@@ -421,6 +479,18 @@ onBeforeUnmount(() => {
           </Transition>
         </form>
       </section>
+
+      <ConfirmDialog
+        :open="alertDialog.open"
+        :title="alertDialog.title"
+        :message="alertDialog.message"
+        :detail="alertDialog.detail"
+        confirm-text="확인"
+        cancel-text="닫기"
+        tone="notice"
+        @close="closeAlert"
+        @confirm="closeAlert"
+      />
     </div>
   </Teleport>
 </template>
@@ -579,6 +649,17 @@ label {
   gap: 6px;
   color: var(--color-muted);
   font-weight: 900;
+}
+
+.field-hint {
+  justify-self: end;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.field-hint.warn {
+  color: var(--color-red);
 }
 
 .field-grid,

@@ -1,28 +1,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import AnalysisView from '../views/AnalysisView.vue'
-import EasterEggView from '../views/EasterEggView.vue'
-import ExpenseFeedView from '../views/ExpenseFeedView.vue'
-import ExpenseDetailView from '../views/ExpenseDetailView.vue'
-import ExpenseFormView from '../views/ExpenseFormView.vue'
-import ExpenseListView from '../views/ExpenseListView.vue'
-import FinancialRecommendationView from '../views/FinancialRecommendationView.vue'
-import FinanceDayView from '../views/FinanceDayView.vue'
-import FinanceHubView from '../views/FinanceHubView.vue'
-import FinanceProductsView from '../views/FinanceProductsView.vue'
-import FriendsView from '../views/FriendsView.vue'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '../views/LogInView.vue'
-import MyPageView from '../views/MyPageView.vue'
-import NotificationView from '../views/NotificationView.vue'
-import ProfileView from '../views/ProfileView.vue'
-import SignUpView from '../views/SignUpView.vue'
-import StockHoldingView from '../views/StockHoldingView.vue'
-import CommodityPricesView from '../views/CommodityPricesView.vue'
-import NearbyBanksView from '../views/NearbyBanksView.vue'
-import YoutubeDetailView from '../views/YoutubeDetailView.vue'
-import YoutubeSearchView from '../views/YoutubeSearchView.vue'
 import { useAccountStore } from '../stores/account'
+
+const AnalysisView = () => import('../views/AnalysisView.vue')
+const EasterEggView = () => import('../views/EasterEggView.vue')
+const ExpenseFeedView = () => import('../views/ExpenseFeedView.vue')
+const ExpenseDetailView = () => import('../views/ExpenseDetailView.vue')
+const ExpenseFormView = () => import('../views/ExpenseFormView.vue')
+const ExpenseListView = () => import('../views/ExpenseListView.vue')
+const FinancialRecommendationView = () => import('../views/FinancialRecommendationView.vue')
+const FinanceDayView = () => import('../views/FinanceDayView.vue')
+const FinanceHubView = () => import('../views/FinanceHubView.vue')
+const FinanceProductsView = () => import('../views/FinanceProductsView.vue')
+const FriendsView = () => import('../views/FriendsView.vue')
+const HomeView = () => import('../views/HomeView.vue')
+const LoginView = () => import('../views/LogInView.vue')
+const MyPageView = () => import('../views/MyPageView.vue')
+const NotificationView = () => import('../views/NotificationView.vue')
+const ProfileView = () => import('../views/ProfileView.vue')
+const SignUpView = () => import('../views/SignUpView.vue')
+const StockHoldingView = () => import('../views/StockHoldingView.vue')
+const CommodityPricesView = () => import('../views/CommodityPricesView.vue')
+const NearbyBanksView = () => import('../views/NearbyBanksView.vue')
+const YoutubeDetailView = () => import('../views/YoutubeDetailView.vue')
+const YoutubeSearchView = () => import('../views/YoutubeSearchView.vue')
 
 
 const router = createRouter({

@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1450" viewBox="0 0 1900 1450" role="img" aria-labelledby="title desc">
+<title id="title">Flex Log ERD</title>
+<desc id="desc">Current Django model structure for Flex Log.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker><style>.title{font:700 32px Arial,sans-serif;fill:#0f172a}.subtitle{font:15px Arial,sans-serif;fill:#64748b}.group-title{font:700 22px Arial,sans-serif;fill:#0f172a}.entity-title{font:700 18px Arial,sans-serif;fill:#0f172a}.field{font:14px Arial,sans-serif;fill:#334155}.small{font:13px Arial,sans-serif;fill:#64748b}.line{stroke:#475569;stroke-width:2;fill:none;marker-end:url(#arrow)}.dashed{stroke:#94a3b8;stroke-width:2;fill:none;stroke-dasharray:8 6;marker-end:url(#arrow)}</style></defs>
+<rect x="0" y="0" width="1900" height="1450" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="40" y="60" class="title">Flex Log ERD</text>
+<text x="40" y="92" class="subtitle">Current Django model structure. Exact model names and constraints are documented in docs/02_ERD.md.</text>
+<rect x="40" y="180" width="510" height="630" rx="18" fill="#eef6ff" stroke="#bfdbfe" stroke-width="2"/>
+<text x="64" y="228" class="group-title">Identity / Social</text>
+<rect x="590" y="180" width="570" height="930" rx="18" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+<text x="614" y="228" class="group-title">Expense / Analysis</text>
+<rect x="1200" y="180" width="650" height="930" rx="18" fill="#f2fbf5" stroke="#bbf7d0" stroke-width="2"/>
+<text x="1224" y="228" class="group-title">Finance / Market</text>
+<line x1="295.0" y1="365.0" x2="180.0" y2="430.0" class="line"/>
+<rect x="232.5" y="381.5" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="237.5" y="397.5" class="small">1:1</text>
+<line x1="295.0" y1="365.0" x2="415.0" y2="430.0" class="line"/>
+<rect x="350.0" y="381.5" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="355.0" y="397.5" class="small">1:N</text>
+<line x1="295.0" y1="365.0" x2="295.0" y2="635.0" class="line"/>
+<rect x="290.0" y="484.0" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="295.0" y="500.0" class="small">1:N</text>
+<line x1="840.0" y1="302.5" x2="890.0" y2="325.0" class="line"/>
+<rect x="860.0" y="297.75" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="865.0" y="313.75" class="small">1:N</text>
+<line x1="1005.0" y1="420.0" x2="735.0" y2="475.0" class="line"/>
+<rect x="865.0" y="431.5" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="870.0" y="447.5" class="small">1:N</text>
+<line x1="1005.0" y1="420.0" x2="1005.0" y2="475.0" class="line"/>
+<rect x="1000.0" y="431.5" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1005.0" y="447.5" class="small">1:N</text>
+<line x1="1005.0" y1="420.0" x2="745.0" y2="725.0" class="dashed"/>
+<rect x="870.0" y="556.5" width="63" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="875.0" y="572.5" class="small">aggregate</text>
+<line x1="1005.0" y1="420.0" x2="1005.0" y2="700.0" class="dashed"/>
+<rect x="1000.0" y="544.0" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1005.0" y="560.0" class="small">AI input</text>
+<line x1="1495.0" y1="327.5" x2="1550.0" y2="330.0" class="line"/>
+<rect x="1517.5" y="312.75" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1522.5" y="328.75" class="small">1:N</text>
+<line x1="1677.5" y1="415.0" x2="1677.5" y2="485.0" class="line"/>
+<rect x="1672.5" y="434.0" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1677.5" y="450.0" class="small">1:N</text>
+<line x1="1120.0" y1="805.0" x2="1240.0" y2="802.5" class="dashed"/>
+<rect x="1175.0" y="787.75" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1180.0" y="803.75" class="small">basis</text>
+<line x1="1367.5" y1="410.0" x2="1382.5" y2="705.0" class="dashed"/>
+<rect x="1370.0" y="541.5" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1375.0" y="557.5" class="small">snapshot</text>
+<line x1="1677.5" y1="415.0" x2="1382.5" y2="705.0" class="dashed"/>
+<rect x="1525.0" y="544.0" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1530.0" y="560.0" class="small">snapshot</text>
+<line x1="1495.0" y1="1035.0" x2="1550.0" y2="1032.5" class="line"/>
+<rect x="1517.5" y="1017.75" width="62" height="22" rx="0" fill="#f8fafc" stroke="#f8fafc" stroke-width="0"/>
+<text x="1522.5" y="1033.75" class="small">1:N</text>
+<rect x="170" y="245" width="250" height="120" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="188" y="285" class="entity-title">User</text>
+<text x="188" y="317" class="field">accounts.User</text>
+<text x="188" y="339" class="field">email unique</text>
+<text x="188" y="361" class="field">root owner</text>
+<rect x="80" y="430" width="200" height="125" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="98" y="470" class="entity-title">Profile</text>
+<text x="98" y="502" class="field">profiles.Profile</text>
+<text x="98" y="524" class="field">OneToOne user</text>
+<text x="98" y="546" class="field">nickname, image, bio</text>
+<rect x="310" y="430" width="210" height="135" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="328" y="470" class="entity-title">Friend</text>
+<text x="328" y="502" class="field">friends.Friend</text>
+<text x="328" y="524" class="field">user + friend</text>
+<text x="328" y="546" class="field">pending/accepted/rejected</text>
+<text x="328" y="568" class="field">no duplicate pair</text>
+<rect x="150" y="635" width="290" height="145" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="168" y="675" class="entity-title">Notification</text>
+<text x="168" y="707" class="field">notifications.Notification</text>
+<text x="168" y="729" class="field">receiver user + actor</text>
+<text x="168" y="751" class="field">type/title/message</text>
+<text x="168" y="773" class="field">target route data</text>
+<rect x="630" y="245" width="210" height="115" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="648" y="285" class="entity-title">Category</text>
+<text x="648" y="317" class="field">expenses.Category</text>
+<text x="648" y="339" class="field">name unique</text>
+<text x="648" y="361" class="field">used by logs</text>
+<rect x="890" y="230" width="230" height="190" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="908" y="270" class="entity-title">ExpenseLog</text>
+<text x="908" y="302" class="field">expenses.ExpenseLog</text>
+<text x="908" y="324" class="field">FK user, FK category</text>
+<text x="908" y="346" class="field">amount, media, content</text>
+<text x="908" y="368" class="field">visibility, hide_amount</text>
+<text x="908" y="390" class="field">expires_at, is_visible</text>
+<rect x="630" y="475" width="210" height="120" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="648" y="515" class="entity-title">Like</text>
+<text x="648" y="547" class="field">expenses.Like</text>
+<text x="648" y="569" class="field">FK user, FK log</text>
+<text x="648" y="591" class="field">unique(user, log)</text>
+<rect x="890" y="475" width="230" height="125" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="908" y="515" class="entity-title">Comment</text>
+<text x="908" y="547" class="field">expenses.Comment</text>
+<text x="908" y="569" class="field">FK user, FK log</text>
+<text x="908" y="591" class="field">content, timestamps</text>
+<rect x="630" y="725" width="230" height="165" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="648" y="765" class="entity-title">MonthlyAnalysis</text>
+<text x="648" y="797" class="field">analysis.MonthlyAnalysis</text>
+<text x="648" y="819" class="field">FK user, year, month</text>
+<text x="648" y="841" class="field">total_amount</text>
+<text x="648" y="863" class="field">category_summary</text>
+<text x="648" y="885" class="field">unique user/month</text>
+<rect x="890" y="700" width="230" height="210" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="908" y="740" class="entity-title">AIAnalysis</text>
+<text x="908" y="772" class="field">analysis.MonthlyAIAnalysis</text>
+<text x="908" y="794" class="field">FK user, year, month</text>
+<text x="908" y="816" class="field">total/log/average</text>
+<text x="908" y="838" class="field">category_summary</text>
+<text x="908" y="860" class="field">summary/feedback</text>
+<text x="908" y="882" class="field">risk_level</text>
+<rect x="1240" y="245" width="255" height="165" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="1258" y="285" class="entity-title">FinancialProduct</text>
+<text x="1258" y="317" class="field">finance.FinancialProduct</text>
+<text x="1258" y="339" class="field">deposit or saving</text>
+<text x="1258" y="361" class="field">product code, bank</text>
+<text x="1258" y="383" class="field">product name</text>
+<text x="1258" y="405" class="field">is_active</text>
+<rect x="1550" y="245" width="255" height="170" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="1568" y="285" class="entity-title">ProductOption</text>
+<text x="1568" y="317" class="field">finance.ProductOption</text>
+<text x="1568" y="339" class="field">FK product</text>
+<text x="1568" y="361" class="field">save_trm months</text>
+<text x="1568" y="383" class="field">base/max rates</text>
+<text x="1568" y="405" class="field">unique option terms</text>
+<rect x="1550" y="485" width="255" height="155" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="1568" y="525" class="entity-title">UserProduct</text>
+<text x="1568" y="557" class="field">finance.UserFinancialProduct</text>
+<text x="1568" y="579" class="field">FK user, FK option</text>
+<text x="1568" y="601" class="field">active or cancelled</text>
+<text x="1568" y="623" class="field">joined/cancelled at</text>
+<rect x="1240" y="705" width="285" height="195" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="1258" y="745" class="entity-title">Recommendation</text>
+<text x="1258" y="777" class="field">finance.Recommendation</text>
+<text x="1258" y="799" class="field">FK user</text>
+<text x="1258" y="821" class="field">FK analysis/product/option</text>
+<text x="1258" y="843" class="field">reason + action</text>
+<text x="1258" y="865" class="field">product snapshot</text>
+<rect x="1550" y="735" width="255" height="165" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="1568" y="775" class="entity-title">StockHolding</text>
+<text x="1568" y="807" class="field">finance.StockHolding</text>
+<text x="1568" y="829" class="field">FK user</text>
+<text x="1568" y="851" class="field">symbol, quantity</text>
+<text x="1568" y="873" class="field">avg/current price</text>
+<text x="1568" y="895" class="field">unique(user, symbol)</text>
+<rect x="1240" y="975" width="255" height="120" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="1258" y="1015" class="entity-title">Commodity</text>
+<text x="1258" y="1047" class="field">finance.Commodity</text>
+<text x="1258" y="1069" class="field">GOLD or SILVER</text>
+<text x="1258" y="1091" class="field">name, unit, currency</text>
+<rect x="1550" y="955" width="255" height="155" rx="10" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+<text x="1568" y="995" class="entity-title">CommodityPrice</text>
+<text x="1568" y="1027" class="field">finance.CommodityPrice</text>
+<text x="1568" y="1049" class="field">FK commodity</text>
+<text x="1568" y="1071" class="field">price_date</text>
+<text x="1568" y="1093" class="field">OHLC prices</text>
+<text x="1568" y="1115" class="field">unique(asset, date)</text>
+<rect x="70" y="850" width="460" height="145" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="88" y="888" class="entity-title">User-scoped tables</text>
+<text x="88" y="920" class="field">ExpenseLog, Like, Comment, MonthlyAnalysis, AIAnalysis,</text>
+<text x="88" y="943" class="field">UserProduct, Recommendation, StockHolding, Notification</text>
+<text x="88" y="966" class="field">all have FK user and are filtered by request.user.</text>
+<rect x="610" y="950" width="530" height="125" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="628" y="988" class="entity-title">Visibility policy</text>
+<text x="628" y="1020" class="field">Feed = accepted friends + visibility + is_visible + expires_at.</text>
+<text x="628" y="1043" class="field">Own expense list keeps records even after expiration.</text>
+<text x="628" y="1066" class="field">Dashed lines are data-flow/derivation, not direct FK.</text>
+<rect x="1220" y="1145" width="600" height="120" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="1"/>
+<text x="1238" y="1183" class="entity-title">External API boundary</text>
+<text x="1238" y="1215" class="field">FinLife seeds products, GMS creates analysis, Kiwoom serves quote/chart.</text>
+<text x="1238" y="1238" class="field">YouTube and Kakao are read-through APIs without core persistence.</text>
+</svg>
