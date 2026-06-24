@@ -80,7 +80,11 @@ class ExpenseLog(models.Model):
 
     @property
     def is_feed_visible(self):
-        return self.is_visible and self.visibility != self.Visibility.PRIVATE
+        return (
+            self.is_visible
+            and self.visibility != self.Visibility.PRIVATE
+            and self.expires_at > timezone.now()
+        )
 
     def __str__(self):
         return f'{self.user} - {self.amount:,}원'

@@ -58,7 +58,7 @@ onMounted(async () => {
     <p v-if="errorMessage" class="state-card error">{{ errorMessage }}</p>
     <p v-else-if="!log" class="state-card">게시물을 불러오는 중입니다.</p>
     <template v-else>
-      <FeedCard :log="log" />
+      <FeedCard :log="log" comments-default-open />
       <div v-if="log.can_edit" class="owner-actions">
         <RouterLink class="vintage-button" :to="{ name: 'log-edit', params: { id: log.id } }">게시물 수정</RouterLink>
         <button class="danger-button" type="button" @click="openDeleteConfirm">삭제</button>

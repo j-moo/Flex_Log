@@ -94,6 +94,10 @@ class ProfileSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         data = super().to_representation(instance)
         data['image'] = get_profile_image_url(instance, self.context.get('request'))
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        if not user or not user.is_authenticated or instance.user_id != user.id:
+            data.pop('email', None)
         return data
 
     @transaction.atomic

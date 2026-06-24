@@ -38,7 +38,6 @@ class UserSearchView(generics.ListAPIView):
             queryset = queryset.filter(
                 Q(username__icontains=search)
                 | Q(name__icontains=search)
-                | Q(email__icontains=search)
                 | Q(profile__nickname__icontains=search)
             )
         return queryset[:20]

@@ -1,6 +1,7 @@
 import re
 
 from django.db.models import Q
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
@@ -70,13 +71,19 @@ def base_log_queryset():
 
 def accessible_log_queryset(user):
     friend_ids = accepted_friend_ids(user)
+    now = timezone.now()
     return base_log_queryset().filter(
         Q(user=user)
-        | Q(is_visible=True, visibility=ExpenseLog.Visibility.PUBLIC)
+        | Q(
+            is_visible=True,
+            visibility=ExpenseLog.Visibility.PUBLIC,
+            expires_at__gt=now,
+        )
         | Q(
             user_id__in=friend_ids,
             is_visible=True,
             visibility__in=[ExpenseLog.Visibility.PUBLIC, ExpenseLog.Visibility.FRIENDS],
+            expires_at__gt=now,
         )
     )
 
@@ -126,12 +133,19 @@ class FriendFeedListView(generics.ListAPIView):
 
     def get_queryset(self):
         friend_ids = accepted_friend_ids(self.request.user)
+        now = timezone.now()
         return base_log_queryset().filter(
-            Q(user=self.request.user, is_visible=True)
+            Q(
+                user=self.request.user,
+                is_visible=True,
+                visibility__in=[ExpenseLog.Visibility.PUBLIC, ExpenseLog.Visibility.FRIENDS],
+                expires_at__gt=now,
+            )
             | Q(
                 user_id__in=friend_ids,
                 is_visible=True,
                 visibility__in=[ExpenseLog.Visibility.PUBLIC, ExpenseLog.Visibility.FRIENDS],
+                expires_at__gt=now,
             )
         )
 

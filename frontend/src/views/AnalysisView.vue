@@ -4,11 +4,13 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { getExpenses } from '../api/expenses'
 import WalletAlertBanner from '../components/common/WalletAlertBanner.vue'
 import { WALLET_ALERT_LIMIT, WALLET_ALERT_MESSAGES, pickRandomMessage } from '../constants/expense'
+import { useAccountStore } from '../stores/account'
 import { useAnalysisStore } from '../stores/analysis'
 import { formatAmount, formatDate } from '../utils/format'
 import { getMonthlyIncome, MONTHLY_INCOME_EVENT } from '../utils/monthlyIncome'
 
 const analysisStore = useAnalysisStore()
+const account = useAccountStore()
 
 const periods = [
   { id: 'today', label: '오늘 하루', copy: '오늘의 소비 리듬을 점검합니다.' },
@@ -17,11 +19,12 @@ const periods = [
 ]
 
 const activePeriod = ref('month')
+const currentUserId = computed(() => account.user?.id || null)
 const localResult = ref(null)
 const logs = ref([])
 const typedText = ref('')
 const isLocalLoading = ref(false)
-const monthlyIncome = ref(getMonthlyIncome())
+const monthlyIncome = ref(getMonthlyIncome(currentUserId.value))
 const walletAlertDismissed = ref(false)
 const walletAlertMessage = ref(pickRandomMessage(WALLET_ALERT_MESSAGES))
 let typingTimer = null
@@ -196,13 +199,28 @@ const analyze = async () => {
 }
 
 const syncMonthlyIncome = (event) => {
-  monthlyIncome.value = event?.type === MONTHLY_INCOME_EVENT
-    ? Number(event.detail || 0)
-    : getMonthlyIncome()
+  if (event?.type === MONTHLY_INCOME_EVENT) {
+    const detail = event.detail
+    if (detail && typeof detail === 'object') {
+      if (String(detail.userId || '') !== String(currentUserId.value || '')) return
+      monthlyIncome.value = Number(detail.amount || 0)
+    } else {
+      monthlyIncome.value = Number(detail || 0)
+    }
+  } else {
+    monthlyIncome.value = getMonthlyIncome(currentUserId.value)
+  }
   if (activePeriod.value !== 'month') {
     localResult.value = buildLocalAnalysis(activePeriod.value)
   }
 }
+
+watch(currentUserId, (userId) => {
+  monthlyIncome.value = getMonthlyIncome(userId)
+  if (activePeriod.value !== 'month') {
+    localResult.value = buildLocalAnalysis(activePeriod.value)
+  }
+})
 
 watch(activePeriod, () => {
   if (activePeriod.value !== 'month') localResult.value = buildLocalAnalysis(activePeriod.value)
@@ -214,7 +232,7 @@ watch(typingSource, () => {
 })
 
 onMounted(async () => {
-  monthlyIncome.value = getMonthlyIncome()
+  monthlyIncome.value = getMonthlyIncome(currentUserId.value)
   window.addEventListener(MONTHLY_INCOME_EVENT, syncMonthlyIncome)
   window.addEventListener('storage', syncMonthlyIncome)
   const [logsResult] = await Promise.allSettled([

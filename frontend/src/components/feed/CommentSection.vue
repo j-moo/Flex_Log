@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import { createComment, deleteComment, getComments, updateComment } from '../../api/expenses'
 import ConfirmDialog from '../common/ConfirmDialog.vue'
@@ -13,6 +13,7 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  defaultOpen: Boolean,
 })
 
 const emit = defineEmits(['count-change'])
@@ -28,6 +29,19 @@ const editingError = ref('')
 const editingPending = ref(false)
 const deleteTarget = ref(null)
 const isDeleting = ref(false)
+
+const loadComments = async () => {
+  if (comments.value.length || isLoading.value) return
+  isLoading.value = true
+  errorMessage.value = ''
+  try {
+    comments.value = (await getComments(props.logId)).data
+  } catch {
+    errorMessage.value = '댓글을 불러오지 못했습니다.'
+  } finally {
+    isLoading.value = false
+  }
+}
 
 const toggle = async () => {
   isOpen.value = !isOpen.value
@@ -46,6 +60,13 @@ const toggle = async () => {
 
 defineExpose({ toggle })
 
+onMounted(() => {
+  if (props.defaultOpen) {
+    isOpen.value = true
+    loadComments()
+  }
+})
+
 const submit = async () => {
   const value = content.value.trim()
   if (!value) return
@@ -53,7 +74,7 @@ const submit = async () => {
   try {
     comments.value.push((await createComment(props.logId, value)).data)
     content.value = ''
-    emit('count-change', props.count + 1)
+    emit('count-change', comments.value.length)
   } catch {
     errorMessage.value = '댓글을 등록하지 못했습니다.'
   }
@@ -106,7 +127,7 @@ const remove = async () => {
   try {
     await deleteComment(props.logId, deleteTarget.value.id)
     comments.value = comments.value.filter((item) => item.id !== deleteTarget.value.id)
-    emit('count-change', Math.max(0, props.count - 1))
+    emit('count-change', comments.value.length)
     deleteTarget.value = null
   } catch {
     errorMessage.value = '댓글을 삭제하지 못했습니다.'
@@ -204,14 +225,13 @@ const remove = async () => {
 }
 
 .comment-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: flex-start;
-  justify-content: space-between;
   gap: 10px;
 }
 
 .comment-content {
-  flex: 1;
   min-width: 0;
 }
 
@@ -219,6 +239,7 @@ const remove = async () => {
   margin: 0;
   font-size: 13px;
   line-height: 1.55;
+  word-break: break-word;
 }
 
 .comment-row strong {
@@ -227,7 +248,10 @@ const remove = async () => {
 
 .comment-menu {
   display: flex;
+  align-items: center;
   gap: 6px;
+  margin-top: 2px;
+  white-space: nowrap;
 }
 
 .comment-menu button {

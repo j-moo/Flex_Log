@@ -3,6 +3,9 @@ from rest_framework import serializers
 from .models import MonthlyAIAnalysis, MonthlyAnalysis
 
 
+MONTHLY_INCOME_MAX = 100_000_000
+
+
 class MonthlyAnalysisSerializer(serializers.ModelSerializer):
     category_items = serializers.SerializerMethodField()
 
@@ -38,7 +41,12 @@ class MonthlyAnalysisSerializer(serializers.ModelSerializer):
 class MonthlyAIAnalysisRequestSerializer(serializers.Serializer):
     year = serializers.IntegerField(min_value=2000, max_value=2100)
     month = serializers.IntegerField(min_value=1, max_value=12)
-    monthly_income = serializers.IntegerField(min_value=0, required=False, default=0)
+    monthly_income = serializers.IntegerField(
+        min_value=0,
+        max_value=MONTHLY_INCOME_MAX,
+        required=False,
+        default=0,
+    )
 
 
 class MonthlyAIAnalysisSerializer(serializers.ModelSerializer):

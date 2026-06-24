@@ -9,6 +9,10 @@ from profiles.utils import get_profile_image_url
 from .models import Category, Comment, ExpenseLog
 
 
+EXPENSE_AMOUNT_MAX = 1_000_000_000
+EXPENSE_CONTENT_MAX_LENGTH = 500
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -18,6 +22,12 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ExpenseLogSerializer(serializers.ModelSerializer):
     title = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    amount = serializers.IntegerField(min_value=1, max_value=EXPENSE_AMOUNT_MAX)
+    content = serializers.CharField(
+        required=False,
+        allow_blank=True,
+        max_length=EXPENSE_CONTENT_MAX_LENGTH,
+    )
     user_id = serializers.IntegerField(source='user.id', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
     display_name = serializers.SerializerMethodField()

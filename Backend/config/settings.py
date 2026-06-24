@@ -1,12 +1,31 @@
-from datetime import timedelta
 import os
+import sys
+from datetime import timedelta
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
+
+
+def env_bool(name, default):
+    raw_value = os.getenv(name)
+    if raw_value in (None, ''):
+        return default
+    return raw_value.strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
+def env_int(name, default):
+    raw_value = os.getenv(name)
+    if raw_value in (None, ''):
+        return default
+    try:
+        return int(raw_value)
+    except (TypeError, ValueError):
+        return default
 
 
 def env_float(name, default):
@@ -19,11 +38,14 @@ def env_float(name, default):
         return default
 
 
-SECRET_KEY = os.getenv(
-    'SECRET_KEY',
-    'django-insecure-flex-log-development-key-change-me-2026',
-)
-DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
+DEBUG = env_bool('DEBUG', False)
+IS_TESTING = 'test' in sys.argv
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    if DEBUG or IS_TESTING:
+        SECRET_KEY = 'django-insecure-flex-log-development-key-change-me-2026'
+    else:
+        raise ImproperlyConfigured('SECRET_KEY environment variable is required when DEBUG=False.')
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
@@ -125,7 +147,16 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
 }
+
+SECURE_SSL_REDIRECT = env_bool('SECURE_SSL_REDIRECT', not DEBUG and not IS_TESTING)
+SESSION_COOKIE_SECURE = env_bool('SESSION_COOKIE_SECURE', not DEBUG and not IS_TESTING)
+CSRF_COOKIE_SECURE = env_bool('CSRF_COOKIE_SECURE', not DEBUG and not IS_TESTING)
+SECURE_HSTS_SECONDS = env_int('SECURE_HSTS_SECONDS', 0 if DEBUG or IS_TESTING else 31536000)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env_bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', not DEBUG and not IS_TESTING)
+SECURE_HSTS_PRELOAD = env_bool('SECURE_HSTS_PRELOAD', False)
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()

@@ -2,8 +2,14 @@
 import { createChart, LineSeries } from 'lightweight-charts'
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 
-import { createRealtimePrice, getChart, getStocks } from '../api/finance'
-import { createStockHolding, deleteStockHolding, getStockHoldings, getStockQuote } from '../api/financial'
+import { createRealtimePrice, getChart as getMockChart, getStocks } from '../api/finance'
+import {
+  createStockHolding,
+  deleteStockHolding,
+  getStockChart,
+  getStockHoldings,
+  getStockQuote,
+} from '../api/financial'
 import { findStockCandidate, searchStockCandidates } from '../utils/stocks'
 
 const holdings = ref([])
@@ -28,6 +34,7 @@ const sellForm = reactive({
 const emit = defineEmits(['holdings-changed'])
 
 let chart = null
+let chartHost = null
 let lineSeries = null
 let resizeObserver = null
 let pollingTimer = null
@@ -103,8 +110,20 @@ const recalculateStock = (stock, nextPrice) => {
   })
 }
 
+const disposeChart = () => {
+  resizeObserver?.disconnect()
+  resizeObserver = null
+  chart?.remove()
+  chart = null
+  chartHost = null
+  lineSeries = null
+}
+
 const setupChart = () => {
-  if (!chartContainer.value || chart) return
+  if (!chartContainer.value) return
+  if (chart && chartHost === chartContainer.value) return
+  if (chart) disposeChart()
+
   const colors = chartTheme()
   chart = createChart(chartContainer.value, {
     height: 440,
@@ -125,6 +144,7 @@ const setupChart = () => {
       secondsVisible: false,
     },
   })
+  chartHost = chartContainer.value
 
   lineSeries = chart.addSeries(LineSeries, {
     color: colors.line,
@@ -139,18 +159,56 @@ const setupChart = () => {
   resizeObserver.observe(chartContainer.value)
 }
 
-const loadChart = async () => {
-  if (!selectedStock.value || !lineSeries) return
+const normalizeChartPoints = (points = []) => {
+  const seenTimes = new Set()
+  return points
+    .map((point) => ({
+      time: toChartTime(point.time),
+      value: Number(point.price),
+    }))
+    .filter((point) => {
+      if (!Number.isFinite(point.time) || !Number.isFinite(point.value) || seenTimes.has(point.time)) {
+        return false
+      }
+      seenTimes.add(point.time)
+      return true
+    })
+    .sort((a, b) => a.time - b.time)
+}
+
+const fallbackChartPoints = async (stock) => {
   try {
-    const points = await getChart(selectedStock.value.symbol, '1m')
-    lineSeries.setData(points.map((point) => ({ time: toChartTime(point.time), value: point.price })))
+    const points = await getMockChart(stock.symbol, '1m')
+    const normalized = normalizeChartPoints(points)
+    if (normalized.length) return normalized
   } catch {
-    const base = Number(selectedStock.value.current_price || 1000)
-    lineSeries.setData(Array.from({ length: 30 }, (_, index) => ({
-      time: Math.floor((Date.now() - (29 - index) * 60000) / 1000),
-      value: Math.round(base * (0.97 + index * 0.002 + Math.sin(index / 3) * 0.01)),
-    })))
+    // The synthetic local series below is the final fallback.
   }
+
+  const base = Number(stock.current_price || 1000)
+  return Array.from({ length: 30 }, (_, index) => ({
+    time: Math.floor((Date.now() - (29 - index) * 60000) / 1000),
+    value: Math.round(base * (0.97 + index * 0.002 + Math.sin(index / 3) * 0.01)),
+  }))
+}
+
+const loadChart = async () => {
+  await nextTick()
+  setupChart()
+  const stock = selectedStock.value
+  if (!chartContainer.value || chartHost !== chartContainer.value || !stock || !lineSeries || !chart) return
+
+  let chartPoints = []
+  try {
+    const response = useMockData.value
+      ? { data: await getMockChart(stock.symbol, '1m') }
+      : await getStockChart(stock.symbol, '1m')
+    chartPoints = normalizeChartPoints(response.data)
+    if (!chartPoints.length) throw new Error('No chart points returned.')
+  } catch {
+    chartPoints = await fallbackChartPoints(stock)
+  }
+  lineSeries.setData(chartPoints)
   chart.timeScale().fitContent()
 }
 
@@ -175,6 +233,8 @@ const startRealtimeMock = () => {
 const loadHoldings = async (preferredSymbol = selectedSymbol.value) => {
   isLoading.value = true
   errorMessage.value = ''
+  window.clearInterval(pollingTimer)
+  disposeChart()
   try {
     const response = await getStockHoldings()
     const realHoldings = response.data.map(normalizeHolding)
@@ -328,8 +388,7 @@ onMounted(loadHoldings)
 
 onBeforeUnmount(() => {
   window.clearInterval(pollingTimer)
-  resizeObserver?.disconnect()
-  chart?.remove()
+  disposeChart()
 })
 </script>
 
