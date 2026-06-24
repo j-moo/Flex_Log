@@ -1,0 +1,1120 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flex-Log 발표자료</title>
+  <style>
+    :root {
+      --bg: #f7efd8;
+      --paper: #fff8e7;
+      --paper-strong: #fff3cf;
+      --ink: #17130d;
+      --muted: #6f644f;
+      --gold: #d8a526;
+      --dark-gold: #8c6414;
+      --money: #7f936b;
+      --money-light: #c8d2aa;
+      --red: #b64a35;
+      --blue: #406f9f;
+      --line: rgba(23, 19, 13, 0.22);
+      --shadow: 7px 7px 0 var(--ink);
+      --soft: 0 22px 60px rgba(23, 19, 13, 0.12);
+      color: var(--ink);
+      font-family: "Noto Sans KR", "Pretendard", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 100%;
+      background:
+        linear-gradient(rgba(23, 19, 13, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 19, 13, 0.055) 1px, transparent 1px),
+        linear-gradient(180deg, #f7efd8 0%, #f4e7c4 100%);
+      background-size: 34px 34px, 34px 34px, auto;
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .deck {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      align-content: center;
+      gap: 26px;
+      width: 100%;
+      min-height: 100vh;
+      opacity: 0;
+      overflow: auto;
+      padding: 66px clamp(22px, 5vw, 72px) 88px;
+      pointer-events: none;
+      transform: translateX(28px);
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .slide::before {
+      position: fixed;
+      top: 18px;
+      right: 24px;
+      z-index: -1;
+      color: rgba(23, 19, 13, 0.055);
+      content: "FLEX";
+      font-size: clamp(90px, 14vw, 190px);
+      font-weight: 1000;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--money-light);
+      box-shadow: 3px 3px 0 var(--ink);
+      padding: 7px 13px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 960px;
+      font-size: clamp(50px, 8vw, 106px);
+      font-weight: 1000;
+      letter-spacing: 0;
+      line-height: 0.96;
+      text-shadow: 5px 5px 0 rgba(216, 165, 38, 0.58);
+    }
+
+    h2 {
+      max-width: 1040px;
+      font-size: clamp(34px, 5.2vw, 70px);
+      font-weight: 1000;
+      letter-spacing: 0;
+      line-height: 1.04;
+    }
+
+    h3 {
+      font-size: clamp(21px, 2.4vw, 32px);
+      font-weight: 950;
+      line-height: 1.18;
+    }
+
+    .lead {
+      max-width: 920px;
+      color: var(--muted);
+      font-size: clamp(19px, 2.1vw, 28px);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .subcopy {
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.65;
+    }
+
+    .cover {
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+      align-items: center;
+      column-gap: 54px;
+    }
+
+    .cover-logo {
+      display: grid;
+      justify-self: center;
+      place-items: center;
+      width: min(58vw, 360px);
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 3px solid var(--ink);
+      border-radius: 50%;
+      background: var(--paper);
+      box-shadow: var(--shadow);
+    }
+
+    .cover-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.12);
+    }
+
+    .cover-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .cover-meta span {
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: rgba(255, 248, 231, 0.78);
+      padding: 8px 13px;
+      font-weight: 950;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card,
+    .panel {
+      border: 2px solid var(--ink);
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.36), transparent 44%),
+        var(--paper);
+      box-shadow: var(--shadow);
+      padding: clamp(18px, 2.4vw, 28px);
+    }
+
+    .panel {
+      box-shadow: var(--soft);
+    }
+
+    .flat-panel {
+      border: 2px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 248, 231, 0.62);
+      padding: clamp(16px, 2vw, 24px);
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .problem-list,
+    .feature-list,
+    .role-list,
+    .learn-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .problem-list li,
+    .feature-list li,
+    .role-list li,
+    .learn-list li {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      border: 2px solid rgba(23, 19, 13, 0.13);
+      border-radius: 18px;
+      background: rgba(255, 248, 231, 0.7);
+      padding: 14px;
+      font-size: clamp(16px, 1.6vw, 20px);
+      font-weight: 850;
+      line-height: 1.45;
+    }
+
+    .marker {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--ink);
+      font-weight: 1000;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .flow-step {
+      position: relative;
+      display: grid;
+      align-content: start;
+      gap: 9px;
+      min-height: 170px;
+      border: 2px solid var(--ink);
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: 4px 4px 0 var(--ink);
+      padding: 17px;
+    }
+
+    .flow-step::after {
+      position: absolute;
+      top: 50%;
+      right: -20px;
+      width: 25px;
+      height: 2px;
+      background: var(--ink);
+      content: "";
+    }
+
+    .flow-step:last-child::after {
+      display: none;
+    }
+
+    .flow-step b {
+      color: var(--dark-gold);
+      font-size: 13px;
+      font-weight: 1000;
+      letter-spacing: 0.09em;
+    }
+
+    .flow-step strong {
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    .flow-step span {
+      color: var(--muted);
+      font-weight: 750;
+      line-height: 1.5;
+    }
+
+    .phone {
+      justify-self: center;
+      width: min(100%, 330px);
+      border: 3px solid var(--ink);
+      border-radius: 34px;
+      background: #201b13;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .phone-screen {
+      display: grid;
+      gap: 14px;
+      min-height: 550px;
+      border-radius: 24px;
+      background:
+        linear-gradient(rgba(23, 19, 13, 0.06) 1px, transparent 1px),
+        var(--bg);
+      background-size: 22px 22px;
+      padding: 18px;
+    }
+
+    .app-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 1000;
+    }
+
+    .mini-logo {
+      width: 40px;
+      height: 40px;
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--paper);
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+
+    .mini-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.15);
+    }
+
+    .feed-mock {
+      display: grid;
+      gap: 12px;
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      background: var(--paper);
+      padding: 13px;
+    }
+
+    .mock-media {
+      display: grid;
+      min-height: 170px;
+      place-items: center;
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(216, 165, 38, 0.42), rgba(127, 147, 107, 0.52)),
+        var(--paper-strong);
+      color: var(--ink);
+      font-size: 44px;
+      font-weight: 1000;
+    }
+
+    .mock-line {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(23, 19, 13, 0.14);
+    }
+
+    .mock-line.short {
+      width: 58%;
+      background: rgba(216, 165, 38, 0.55);
+    }
+
+    .mock-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mock-actions span {
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--money-light);
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      display: grid;
+      gap: 8px;
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: 4px 4px 0 var(--ink);
+      padding: 17px;
+    }
+
+    .metric span {
+      color: var(--dark-gold);
+      font-size: 12px;
+      font-weight: 1000;
+      letter-spacing: 0.1em;
+    }
+
+    .metric strong {
+      font-size: clamp(24px, 3vw, 38px);
+      font-weight: 1000;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .tech {
+      display: grid;
+      gap: 9px;
+      min-height: 190px;
+      border: 2px solid var(--ink);
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: 4px 4px 0 var(--ink);
+      padding: 18px;
+    }
+
+    .tech b {
+      color: var(--dark-gold);
+      font-size: 13px;
+      font-weight: 1000;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+    }
+
+    .tech strong {
+      font-size: 24px;
+      font-weight: 1000;
+    }
+
+    .tech span {
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .architecture {
+      display: grid;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .arch-node {
+      display: grid;
+      gap: 10px;
+      min-height: 170px;
+      border: 2px solid var(--ink);
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: 4px 4px 0 var(--ink);
+      padding: 18px;
+    }
+
+    .arch-node strong {
+      font-size: 24px;
+      font-weight: 1000;
+    }
+
+    .arch-node span {
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .arrow {
+      color: var(--ink);
+      font-size: 30px;
+      font-weight: 1000;
+      text-align: center;
+      transform: rotate(90deg);
+    }
+
+    .erd {
+      display: grid;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .erd img {
+      width: 100%;
+      max-height: 430px;
+      object-fit: contain;
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      background: white;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .timeline-row time {
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--gold);
+      box-shadow: 3px 3px 0 var(--ink);
+      padding: 8px 12px;
+      font-weight: 1000;
+      text-align: center;
+    }
+
+    .timeline-row div {
+      border-left: 4px solid var(--ink);
+      padding: 4px 0 12px 18px;
+    }
+
+    .timeline-row strong {
+      display: block;
+      font-size: 21px;
+      font-weight: 1000;
+    }
+
+    .timeline-row span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .demo-path {
+      display: grid;
+      gap: 12px;
+    }
+
+    .demo-item {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 13px;
+      align-items: start;
+      border: 2px solid rgba(23, 19, 13, 0.14);
+      border-radius: 18px;
+      background: rgba(255, 248, 231, 0.7);
+      padding: 14px;
+    }
+
+    .demo-item strong {
+      display: block;
+      font-size: 21px;
+      font-weight: 1000;
+    }
+
+    .demo-item span {
+      color: var(--muted);
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .quote {
+      border-left: 8px solid var(--gold);
+      padding-left: 22px;
+      font-size: clamp(28px, 4vw, 54px);
+      font-weight: 1000;
+      line-height: 1.25;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .controls {
+      position: fixed;
+      right: 22px;
+      bottom: 20px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: rgba(255, 248, 231, 0.88);
+      box-shadow: var(--soft);
+      padding: 8px;
+      backdrop-filter: blur(16px);
+    }
+
+    .controls button {
+      display: grid;
+      min-width: 42px;
+      min-height: 42px;
+      place-items: center;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 20px;
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .controls button:hover {
+      background: var(--gold);
+    }
+
+    .counter {
+      min-width: 74px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 1000;
+      text-align: center;
+    }
+
+    .progress {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 11;
+      height: 6px;
+      background: rgba(23, 19, 13, 0.12);
+    }
+
+    .progress span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--gold);
+      transition: width 0.24s ease;
+    }
+
+    @media (max-width: 980px) {
+      body {
+        overflow: auto;
+      }
+
+      .deck {
+        height: auto;
+        overflow: visible;
+      }
+
+      .slide {
+        position: relative;
+        display: none;
+        min-height: 100vh;
+        padding: 72px 18px 96px;
+      }
+
+      .slide.active {
+        display: grid;
+      }
+
+      .cover,
+      .two-col,
+      .three-col,
+      .metric-grid,
+      .tech-grid,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .flow-step::after,
+      .arrow {
+        display: none;
+      }
+
+      .phone {
+        width: min(100%, 300px);
+      }
+
+      .phone-screen {
+        min-height: 500px;
+      }
+    }
+
+    @media print {
+      html,
+      body {
+        background: white;
+      }
+
+      body {
+        overflow: visible;
+      }
+
+      .deck {
+        height: auto;
+        overflow: visible;
+      }
+
+      .slide {
+        position: relative;
+        inset: auto;
+        min-height: 100vh;
+        page-break-after: always;
+        opacity: 1;
+        overflow: hidden;
+        pointer-events: auto;
+        transform: none;
+      }
+
+      .controls,
+      .progress {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck" aria-label="Flex-Log 발표 슬라이드">
+    <section class="slide cover active">
+      <div class="stack">
+        <span class="eyebrow">Finance SNS</span>
+        <h1>Flex-Log</h1>
+        <p class="lead">소비를 SNS처럼 기록하고, 기록된 데이터를 AI 소비 분석과 금융상품 추천으로 연결하는 금융 웹 애플리케이션</p>
+        <div class="cover-meta">
+          <span>소비 기록</span>
+          <span>친구 피드</span>
+          <span>AI 분석</span>
+          <span>예적금 추천</span>
+        </div>
+      </div>
+      <figure class="cover-logo" aria-label="Flex-Log 로고">
+        <img src="../frontend/src/assets/brand/logo-2.png" alt="Flex-Log 로고">
+      </figure>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">01 Problem</span>
+      <h2>가계부는 필요하지만, 꾸준히 쓰기는 어렵습니다.</h2>
+      <div class="two-col">
+        <div class="card stack">
+          <h3>문제의식</h3>
+          <ul class="problem-list">
+            <li><span class="marker">1</span><span>금액과 카테고리만 입력하는 기존 방식은 기록 동기가 약합니다.</span></li>
+            <li><span class="marker">2</span><span>숫자 중심 기록만으로는 언제, 왜 소비했는지 떠올리기 어렵습니다.</span></li>
+            <li><span class="marker">3</span><span>SNS와 구독 서비스 환경에서 소비 기회는 늘지만, 소비 습관을 돌아보는 도구는 부족합니다.</span></li>
+          </ul>
+        </div>
+        <div class="panel stack">
+          <h3>누구를 위한 서비스인가</h3>
+          <p class="lead">소비를 관리하고 싶지만 기존 가계부를 오래 유지하지 못하는 사용자</p>
+          <p class="subcopy">특히 이미지와 짧은 글로 일상을 기록하는 방식에 익숙한 사용자가 자연스럽게 소비 데이터를 남기도록 설계했습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">02 Direction</span>
+      <h2>기록의 진입장벽을 낮추고, 기록 이후의 행동까지 연결합니다.</h2>
+      <div class="flow">
+        <article class="flow-step">
+          <b>STEP 01</b>
+          <strong>소비 발생</strong>
+          <span>사용자가 일상 속 소비를 경험합니다.</span>
+        </article>
+        <article class="flow-step">
+          <b>STEP 02</b>
+          <strong>로그 작성</strong>
+          <span>금액, 카테고리, 사진, 짧은 글로 기록합니다.</span>
+        </article>
+        <article class="flow-step">
+          <b>STEP 03</b>
+          <strong>친구 피드</strong>
+          <span>친구 관계 안에서 24시간 피드처럼 공유됩니다.</span>
+        </article>
+        <article class="flow-step">
+          <b>STEP 04</b>
+          <strong>AI 분석</strong>
+          <span>월별, 카테고리별 소비 패턴을 분석합니다.</span>
+        </article>
+        <article class="flow-step">
+          <b>STEP 05</b>
+          <strong>금융 추천</strong>
+          <span>분석 결과를 바탕으로 예적금 상품을 추천합니다.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">03 Core Features</span>
+      <h2>핵심 기능은 “기록 → 분석 → 추천” 흐름으로 구성했습니다.</h2>
+      <div class="three-col">
+        <article class="card stack">
+          <h3>소비 로그</h3>
+          <ul class="feature-list">
+            <li><span class="marker">A</span><span>이미지 기반 소비 기록 작성</span></li>
+            <li><span class="marker">B</span><span>금액, 카테고리, 메모 저장</span></li>
+            <li><span class="marker">C</span><span>작성, 조회, 수정, 삭제</span></li>
+          </ul>
+        </article>
+        <article class="card stack">
+          <h3>SNS 피드</h3>
+          <ul class="feature-list">
+            <li><span class="marker">A</span><span>친구 요청, 수락, 목록 관리</span></li>
+            <li><span class="marker">B</span><span>친구 소비 로그 피드 조회</span></li>
+            <li><span class="marker">C</span><span>24시간 노출 후 피드에서 숨김</span></li>
+          </ul>
+        </article>
+        <article class="card stack">
+          <h3>금융 인사이트</h3>
+          <ul class="feature-list">
+            <li><span class="marker">A</span><span>AI 소비 분석 및 위험도 표시</span></li>
+            <li><span class="marker">B</span><span>FinLife 기반 예적금 추천</span></li>
+            <li><span class="marker">C</span><span>금은 시세, 은행 지도, 영상 검색 확장</span></li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">04 Service Preview</span>
+      <h2>Flex-Log는 가계부가 아니라 소비 스토리 피드입니다.</h2>
+      <div class="two-col">
+        <div class="phone" aria-label="서비스 화면 미리보기">
+          <div class="phone-screen">
+            <div class="app-top">
+              <span>Flex-Log</span>
+              <span class="mini-logo"><img src="../frontend/src/assets/brand/logo-2.png" alt=""></span>
+            </div>
+            <article class="feed-mock">
+              <div class="mock-media">₩</div>
+              <div class="mock-line short"></div>
+              <div class="mock-line"></div>
+              <div class="mock-actions">
+                <span>식비</span>
+                <span>12,000원</span>
+                <span>친구 공개</span>
+              </div>
+            </article>
+            <article class="feed-mock">
+              <div class="mock-line short"></div>
+              <div class="mock-line"></div>
+              <div class="mock-actions">
+                <span>AI 분석</span>
+                <span>위험도 보통</span>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="stack">
+          <article class="flat-panel">
+            <h3>차별점 1. 기록 경험</h3>
+            <p class="subcopy">소비를 숫자만 입력하는 일이 아니라 사진과 문장으로 남기는 행동으로 바꿨습니다.</p>
+          </article>
+          <article class="flat-panel">
+            <h3>차별점 2. 데이터 활용</h3>
+            <p class="subcopy">기록된 소비 로그는 피드에서 사라져도 DB에는 남아 분석과 추천의 근거가 됩니다.</p>
+          </article>
+          <article class="flat-panel">
+            <h3>차별점 3. 금융 연결</h3>
+            <p class="subcopy">소비 분석에서 끝나지 않고 예적금 추천, 은행 지도, 금융 정보 탐색까지 확장했습니다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">05 Demo Scenario</span>
+      <h2>시연은 사용자가 처음 서비스를 쓰는 흐름으로 진행합니다.</h2>
+      <div class="two-col">
+        <div class="card demo-path">
+          <article class="demo-item">
+            <span class="marker">1</span>
+            <div><strong>회원가입 / 로그인</strong><span>계정 생성 후 인증이 필요한 주요 화면으로 이동합니다.</span></div>
+          </article>
+          <article class="demo-item">
+            <span class="marker">2</span>
+            <div><strong>소비 로그 작성</strong><span>이미지, 금액, 카테고리, 내용을 입력해 소비를 기록합니다.</span></div>
+          </article>
+          <article class="demo-item">
+            <span class="marker">3</span>
+            <div><strong>친구 피드 확인</strong><span>친구 관계인 사용자들의 소비 로그를 피드로 확인합니다.</span></div>
+          </article>
+          <article class="demo-item">
+            <span class="marker">4</span>
+            <div><strong>소비 AI 분석</strong><span>오늘, 이번 달, 올해 단위로 총액, 평균, 위험도, 개선 포인트를 확인합니다.</span></div>
+          </article>
+          <article class="demo-item">
+            <span class="marker">5</span>
+            <div><strong>AI 예적금 추천</strong><span>분석 결과와 금융상품 데이터를 바탕으로 추천 상품과 이유를 확인합니다.</span></div>
+          </article>
+        </div>
+        <div class="panel stack">
+          <h3>발표 중 강조할 지점</h3>
+          <p class="lead">“소비 로그 하나가 피드, 분석, 금융 추천으로 이어진다”는 연결 구조</p>
+          <p class="subcopy">전 기능을 길게 보여주기보다, 기록 데이터가 서비스 안에서 어떻게 재사용되는지를 중심으로 설명하면 15분 안에 흐름이 선명해집니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">06 Data Design</span>
+      <h2>데이터 구조는 ExpenseLog를 중심으로 설계했습니다.</h2>
+      <div class="two-col">
+        <div class="architecture">
+          <article class="arch-node">
+            <strong>User</strong>
+            <span>인증, 프로필, 친구 관계의 기준</span>
+          </article>
+          <span class="arrow">→</span>
+          <article class="arch-node">
+            <strong>ExpenseLog</strong>
+            <span>소비 금액, 카테고리, 이미지, 작성 시간 저장</span>
+          </article>
+          <span class="arrow">→</span>
+          <article class="arch-node">
+            <strong>Analysis</strong>
+            <span>월별 소비 분석과 AI 분석 결과 저장</span>
+          </article>
+        </div>
+        <figure class="card erd">
+          <img src="assests/a_clean_white_background_infographic_diagram_erd.png" alt="Flex-Log ERD">
+          <figcaption class="footer-note">소비 로그는 피드 노출이 끝나도 삭제하지 않고 분석 데이터로 유지합니다.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">07 Tech Stack</span>
+      <h2>기술 스택은 구현 속도와 API 연동 안정성을 기준으로 선택했습니다.</h2>
+      <div class="tech-grid">
+        <article class="tech">
+          <b>Backend</b>
+          <strong>Django + DRF</strong>
+          <span>인증, 소비 로그 CRUD, 분석 API, 금융상품 API를 REST 구조로 구현했습니다.</span>
+        </article>
+        <article class="tech">
+          <b>Frontend</b>
+          <strong>Vue 3 + Vite</strong>
+          <span>컴포넌트 기반 화면 구성과 빠른 개발 서버로 피드, 분석, 금융 화면을 구현했습니다.</span>
+        </article>
+        <article class="tech">
+          <b>State / API</b>
+          <strong>Pinia + Axios</strong>
+          <span>로그인 상태와 프로필, 알림, 분석 데이터를 관리하고 백엔드와 통신했습니다.</span>
+        </article>
+        <article class="tech">
+          <b>External API</b>
+          <strong>FinLife, Kakao, YouTube</strong>
+          <span>예적금 상품, 주변 은행, 금융 영상 검색으로 서비스 범위를 확장했습니다.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">08 Collaboration</span>
+      <h2>짧은 기간에 맞춰 브랜치와 작업 영역을 분리했습니다.</h2>
+      <div class="two-col">
+        <div class="card stack">
+          <h3>역할 분담</h3>
+          <ul class="role-list">
+            <li><span class="marker">B</span><span><strong>Backend 담당</strong><br>DB 모델, 인증, 소비 로그 API, 분석 및 외부 API 연동</span></li>
+            <li><span class="marker">F</span><span><strong>Frontend 담당</strong><br>Vue 화면, 피드 UI, 분석 화면, 금융 탭 및 사용자 흐름 구현</span></li>
+            <li><span class="marker">D</span><span><strong>공통</strong><br>요구사항 정리, ERD/API 문서, 시연 시나리오, 통합 테스트</span></li>
+          </ul>
+        </div>
+        <div class="panel stack">
+          <h3>Git 운영 방식</h3>
+          <div class="timeline">
+            <div class="timeline-row"><time>master</time><div><strong>최종 안정 버전</strong><span>직접 push하지 않고 검증된 코드만 반영</span></div></div>
+            <div class="timeline-row"><time>week</time><div><strong>주차별 통합 브랜치</strong><span>project/week1, project/week2 기준으로 통합 테스트</span></div></div>
+            <div class="timeline-row"><time>feature</time><div><strong>기능 단위 작업</strong><span>feature, fix, docs 브랜치에서 작업 후 PR 병합</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">09 Challenges</span>
+      <h2>어려웠던 지점은 외부 API와 데이터 유지 정책이었습니다.</h2>
+      <div class="three-col">
+        <article class="card stack">
+          <h3>24시간 피드</h3>
+          <p class="subcopy">처음에는 24시간 후 삭제를 생각했지만, 분석 데이터가 사라지는 문제가 있었습니다.</p>
+          <p class="lead">해결: DB에서는 유지하고 피드에서만 숨기는 방식으로 변경</p>
+        </article>
+        <article class="card stack">
+          <h3>AI / 외부 API 실패</h3>
+          <p class="subcopy">API 키, 호출 제한, 네트워크 오류로 시연 중 실패할 수 있는 위험이 있었습니다.</p>
+          <p class="lead">해결: DB 저장 데이터와 규칙 기반 fallback으로 최소 흐름 보장</p>
+        </article>
+        <article class="card stack">
+          <h3>기능 범위 조절</h3>
+          <p class="subcopy">소비 기록, SNS, 분석, 금융 기능이 모두 있어 우선순위 조절이 필요했습니다.</p>
+          <p class="lead">해결: 기록 → 분석 → 추천 흐름에 직접 연결되는 기능부터 구현</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">10 What We Learned</span>
+      <h2>배운 점은 “데이터 흐름을 먼저 설계해야 기능이 연결된다”는 점입니다.</h2>
+      <div class="two-col">
+        <div class="card stack">
+          <h3>개발 과정에서 얻은 것</h3>
+          <ul class="learn-list">
+            <li><span class="marker">1</span><span>요구사항을 ERD와 API 명세로 구체화하는 과정</span></li>
+            <li><span class="marker">2</span><span>Django REST Framework와 Vue를 연결하는 구조</span></li>
+            <li><span class="marker">3</span><span>외부 API 실패 가능성을 고려한 예외 처리</span></li>
+            <li><span class="marker">4</span><span>사용자 경험과 분석 데이터 보존 사이의 균형</span></li>
+          </ul>
+        </div>
+        <div class="panel stack">
+          <h3>개선 방향</h3>
+          <p class="lead">더 정확한 추천을 위해 소비 데이터 품질과 사용자 입력 정보를 함께 개선</p>
+          <p class="subcopy">예산 설정, 고정비/변동비 분리, OCR 영수증 인식, 추천 결과 피드백 반영, 실제 금융상품 비교 UX 고도화를 다음 단계로 생각할 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide">
+      <span class="eyebrow">Finish</span>
+      <p class="quote">Flex-Log는 소비를 과시하는 서비스가 아니라, 기록을 자산으로 바꾸는 서비스입니다.</p>
+      <div class="metric-grid">
+        <article class="metric"><span>CORE</span><strong>기록</strong></article>
+        <article class="metric"><span>SOCIAL</span><strong>공유</strong></article>
+        <article class="metric"><span>INSIGHT</span><strong>분석</strong></article>
+        <article class="metric"><span>FINANCE</span><strong>추천</strong></article>
+      </div>
+      <p class="footer-note">발표 시간 권장 배분: 문제 정의 2분, 기능 소개 4분, 시연 6분, 기술/협업/회고 3분</p>
+    </section>
+  </main>
+
+  <nav class="controls" aria-label="슬라이드 이동">
+    <button type="button" id="prev" aria-label="이전 슬라이드">‹</button>
+    <span class="counter" id="counter">1 / 12</span>
+    <button type="button" id="next" aria-label="다음 슬라이드">›</button>
+  </nav>
+  <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const counter = document.querySelector('#counter');
+    const progress = document.querySelector('#progress');
+    const prev = document.querySelector('#prev');
+    const next = document.querySelector('#next');
+    let index = 0;
+
+    function showSlide(nextIndex) {
+      index = Math.max(0, Math.min(slides.length - 1, nextIndex));
+      slides.forEach((slide, slideIndex) => {
+        slide.classList.toggle('active', slideIndex === index);
+      });
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+      prev.disabled = index === 0;
+      next.disabled = index === slides.length - 1;
+      const activeSlide = slides[index];
+      activeSlide.scrollTop = 0;
+      history.replaceState(null, '', `#${index + 1}`);
+    }
+
+    prev.addEventListener('click', () => showSlide(index - 1));
+    next.addEventListener('click', () => showSlide(index + 1));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        showSlide(index + 1);
+      }
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        event.preventDefault();
+        showSlide(index - 1);
+      }
+      if (event.key === 'Home') showSlide(0);
+      if (event.key === 'End') showSlide(slides.length - 1);
+    });
+
+    const initial = Number(window.location.hash.replace('#', '')) - 1;
+    showSlide(Number.isFinite(initial) ? initial : 0);
+  </script>
+</body>
+</html>

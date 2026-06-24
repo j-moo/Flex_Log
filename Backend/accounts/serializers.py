@@ -57,12 +57,17 @@ class SignUpSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     profile_image = serializers.SerializerMethodField()
+    nickname = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'name', 'profile_image')
+        fields = ('id', 'username', 'email', 'name', 'nickname', 'profile_image')
         read_only_fields = fields
 
     def get_profile_image(self, obj):
         profile = getattr(obj, 'profile', None)
         return get_profile_image_url(profile, self.context.get('request'))
+
+    def get_nickname(self, obj):
+        profile = getattr(obj, 'profile', None)
+        return getattr(profile, 'nickname', '') or obj.username

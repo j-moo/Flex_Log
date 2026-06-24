@@ -10,6 +10,7 @@ import {
   getStockHoldings,
   getStockQuote,
 } from '../api/financial'
+import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import { findStockCandidate, searchStockCandidates } from '../utils/stocks'
 
 const holdings = ref([])
@@ -26,10 +27,13 @@ const form = reactive({
   keyword: '',
   quantity: '',
   average_price: '',
-  memo: '',
 })
 const sellForm = reactive({
   quantity: '',
+})
+const stockErrorDialog = ref({
+  open: false,
+  message: '',
 })
 const emit = defineEmits(['holdings-changed'])
 
@@ -38,6 +42,8 @@ let chartHost = null
 let lineSeries = null
 let resizeObserver = null
 let pollingTimer = null
+const STOCK_QUANTITY_MAX = 99999999999999
+const STOCK_PRICE_MAX = 9999999999999999
 
 const suggestions = computed(() => searchStockCandidates(form.keyword).slice(0, 6))
 const selectedStock = computed(() =>
@@ -67,6 +73,18 @@ const formatCurrency = (value) => `${Math.round(Number(value || 0)).toLocaleStri
 const formatQuantity = (value) => Math.trunc(Number(value || 0)).toLocaleString('ko-KR')
 const formatRate = (value) => `${Number(value || 0).toFixed(2)}%`
 const toChartTime = (isoTime) => Math.floor(new Date(isoTime).getTime() / 1000)
+const openStockError = (message) => {
+  stockErrorDialog.value = {
+    open: true,
+    message,
+  }
+}
+const closeStockError = () => {
+  stockErrorDialog.value = {
+    open: false,
+    message: '',
+  }
+}
 const chartTheme = () => {
   const isDark = document.documentElement.dataset.theme === 'dark'
   return {
@@ -275,14 +293,31 @@ const chooseSuggestion = (item) => {
 const submitHolding = async () => {
   actionMessage.value = ''
   errorMessage.value = ''
+  if (!form.keyword.trim()) {
+    openStockError('종목명 또는 종목코드를 입력해 주세요.')
+    return
+  }
   const candidate = findStockCandidate(form.keyword)
   if (!candidate) {
-    errorMessage.value = '종목명 또는 종목코드를 후보 목록에서 선택해주세요.'
+    openStockError('종목명 또는 종목코드를 후보 목록에서 선택해주세요.')
     return
   }
   const requestedQuantity = Number(form.quantity)
   if (!Number.isInteger(requestedQuantity) || requestedQuantity <= 0) {
-    errorMessage.value = '수량은 1주 이상 정수로 입력해주세요.'
+    openStockError('수량은 1주 이상 정수로 입력해주세요.')
+    return
+  }
+  if (requestedQuantity > STOCK_QUANTITY_MAX) {
+    openStockError(`수량은 최대 ${STOCK_QUANTITY_MAX.toLocaleString('ko-KR')}주까지 입력할 수 있습니다.`)
+    return
+  }
+  const requestedAveragePrice = form.average_price === '' ? null : Number(form.average_price)
+  if (requestedAveragePrice !== null && (!Number.isFinite(requestedAveragePrice) || requestedAveragePrice < 0)) {
+    openStockError('평균 매수가는 0원 이상의 숫자로 입력해 주세요.')
+    return
+  }
+  if (requestedAveragePrice !== null && requestedAveragePrice > STOCK_PRICE_MAX) {
+    openStockError(`평균 매수가는 최대 ${STOCK_PRICE_MAX.toLocaleString('ko-KR')}원까지 입력할 수 있습니다.`)
     return
   }
 
@@ -301,13 +336,12 @@ const submitHolding = async () => {
       quantity: form.quantity,
       average_price: form.average_price || currentPrice,
       current_price: currentPrice,
-      memo: form.memo,
     })
     actionMessage.value = `${candidate.name}을 보유 주식에 추가했습니다.`
-    Object.assign(form, { keyword: '', quantity: '', average_price: '', memo: '' })
+    Object.assign(form, { keyword: '', quantity: '', average_price: '' })
     await loadHoldings(candidate.symbol)
   } catch (error) {
-    errorMessage.value = Object.values(error.response?.data || {}).flat().join(' ') || '보유 주식 추가에 실패했습니다.'
+    openStockError(Object.values(error.response?.data || {}).flat().join(' ') || '보유 주식 추가에 실패했습니다.')
   }
 }
 
@@ -405,22 +439,18 @@ onBeforeUnmount(() => {
     <p v-if="actionMessage" class="notice-card">{{ actionMessage }}</p>
     <p v-if="useMockData" class="notice-card">저장된 보유 주식이 없어 예시 데이터로 표시 중입니다.</p>
 
-    <form class="holding-form glass-panel" @submit.prevent="submitHolding">
+    <form class="holding-form glass-panel" novalidate @submit.prevent="submitHolding">
       <label>
         종목명 또는 코드
         <input v-model.trim="form.keyword" class="form-control" placeholder="예: 삼성전자">
       </label>
       <label>
         수량
-        <input v-model="form.quantity" class="form-control" type="number" min="1" step="1" required>
+        <input v-model="form.quantity" class="form-control" type="number" min="1" :max="STOCK_QUANTITY_MAX" step="1">
       </label>
       <label>
         평균 매수가
-        <input v-model="form.average_price" class="form-control" type="number" min="0" step="1" placeholder="자동 입력 가능">
-      </label>
-      <label>
-        메모
-        <input v-model.trim="form.memo" class="form-control" placeholder="선택 입력">
+        <input v-model="form.average_price" class="form-control" type="number" min="0" :max="STOCK_PRICE_MAX" step="1" placeholder="자동 입력 가능">
       </label>
       <button class="vintage-button" type="submit">추가</button>
 
@@ -566,6 +596,18 @@ onBeforeUnmount(() => {
         </form>
       </div>
     </Teleport>
+
+    <ConfirmDialog
+      :open="stockErrorDialog.open"
+      title="주식 입력 확인"
+      :message="stockErrorDialog.message"
+      detail="입력값을 확인한 뒤 다시 시도해 주세요."
+      confirm-text="확인"
+      cancel-text="닫기"
+      tone="notice"
+      @close="closeStockError"
+      @confirm="closeStockError"
+    />
   </section>
 </template>
 
@@ -586,7 +628,7 @@ onBeforeUnmount(() => {
 
 .holding-form {
   display: grid;
-  grid-template-columns: 1.1fr 0.6fr 0.8fr 1fr auto;
+  grid-template-columns: 1.1fr 0.6fr 0.8fr auto;
   gap: 12px;
   padding: 16px;
 }

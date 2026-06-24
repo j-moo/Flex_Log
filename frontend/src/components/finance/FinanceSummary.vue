@@ -27,7 +27,7 @@ defineProps({
 const emit = defineEmits(['edit-income'])
 
 const items = [
-  { key: 'asset', label: '주식 보유량', tone: 'gold' },
+  { key: 'asset', label: '주식 보유금액', tone: 'gold' },
   { key: 'spend', label: '이번 달 소비', tone: 'red' },
   { key: 'products', label: '가입상품', tone: 'green' },
   { key: 'income', label: '월 수입', tone: 'blue' },

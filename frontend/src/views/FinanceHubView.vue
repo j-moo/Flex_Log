@@ -81,6 +81,13 @@ const incomeErrorDialog = ref({
 })
 const joinedProductPage = ref(1)
 const JOINED_PRODUCT_PAGE_SIZE = 3
+const INCOME_INCREMENT_OPTIONS = [
+  { label: '100원', value: 100 },
+  { label: '500원', value: 500 },
+  { label: '1,000원', value: 1000 },
+  { label: '1만원', value: 10000 },
+  { label: '5만원', value: 50000 },
+]
 
 const today = new Date()
 const selectedYear = ref(today.getFullYear())
@@ -190,6 +197,11 @@ const openIncomeModal = () => {
 const closeIncomeModal = () => {
   incomeModalOpen.value = false
   incomeForm.value = ''
+}
+
+const addIncomeAmount = (amount) => {
+  const currentAmount = Math.round(Number(incomeForm.value || 0))
+  incomeForm.value = String(Math.max(0, currentAmount + amount))
 }
 
 const saveIncome = () => {
@@ -327,7 +339,7 @@ onMounted(async () => {
             <small v-if="!realProducts.length">예시 데이터</small>
           </div>
 
-          <div class="product-pager">
+          <div v-if="joinedProductPageCount > 1" class="product-pager">
             <button
               type="button"
               :disabled="joinedProductPage <= 1"
@@ -392,6 +404,16 @@ onMounted(async () => {
               autofocus
             >
           </label>
+          <div class="income-quick" aria-label="월 수입 빠른 입력">
+            <button
+              v-for="option in INCOME_INCREMENT_OPTIONS"
+              :key="option.value"
+              type="button"
+              @click="addIncomeAmount(option.value)"
+            >
+              +{{ option.label }}
+            </button>
+          </div>
           <div class="income-actions">
             <button type="button" class="ghost-button" @click="closeIncomeModal">취소</button>
             <button class="vintage-button">저장</button>
@@ -665,18 +687,18 @@ onMounted(async () => {
 }
 
 .product-scroll {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 12px;
-  overflow-x: auto;
-  padding: 2px 2px 8px;
+  padding: 2px;
 }
 
 .product-scroll article {
   display: grid;
-  grid-template-columns: 42px minmax(155px, 1fr) auto;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
-  min-width: 310px;
+  min-width: 0;
   border: 2px solid rgba(23, 19, 13, 0.16);
   border-radius: 18px;
   background: rgba(255, 248, 231, 0.68);
@@ -775,6 +797,22 @@ onMounted(async () => {
   font-weight: 900;
 }
 
+.income-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.income-quick button {
+  border: 2px solid var(--color-ink);
+  border-radius: 999px;
+  background: rgba(200, 210, 170, 0.48);
+  color: var(--color-ink);
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .income-modal header > button,
 .ghost-button {
   border: 2px solid var(--color-ink);
@@ -796,6 +834,12 @@ onMounted(async () => {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .product-scroll {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 760px) {

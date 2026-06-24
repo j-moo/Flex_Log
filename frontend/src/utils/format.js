@@ -1,6 +1,6 @@
 export const formatAmount = (amount) => {
   if (amount === null || amount === undefined || amount === '') return '금액 비공개'
-  return `${Number(amount || 0).toLocaleString('ko-KR')}원`
+  return `${Math.round(Number(amount || 0)).toLocaleString('ko-KR')}원`
 }
 
 export const formatNumber = (value, digits = 0) =>

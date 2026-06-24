@@ -66,7 +66,7 @@ const navItems = [
 ]
 
 const userName = computed(() =>
-  account.user?.name || account.user?.username || account.user?.email || 'Flexer',
+  account.user?.nickname || account.user?.username || account.user?.email || 'Flexer',
 )
 
 const profileImage = computed(() => (
