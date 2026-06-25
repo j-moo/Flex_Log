@@ -1,0 +1,24 @@
+[
+{
+  "model": "finance.commodity",
+  "pk": 1,
+  "fields": {
+    "code": "GOLD",
+    "name": "금",
+    "unit": "USD/troy oz",
+    "currency": "USD",
+    "created_at": "2026-06-22T06:20:26.210Z"
+  }
+},
+{
+  "model": "finance.commodity",
+  "pk": 2,
+  "fields": {
+    "code": "SILVER",
+    "name": "은",
+    "unit": "USD/troy oz",
+    "currency": "USD",
+    "created_at": "2026-06-22T06:20:26.266Z"
+  }
+}
+]

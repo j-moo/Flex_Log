@@ -1,0 +1,149 @@
+[
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 5,
+  "fields": {
+    "user": 5,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 0,
+    "category_summary": {},
+    "created_at": "2026-06-23T01:49:37.226Z",
+    "updated_at": "2026-06-23T02:06:04.271Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 6,
+  "fields": {
+    "user": 6,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 34700,
+    "category_summary": {
+      "쇼핑": 9000,
+      "식비": 25700
+    },
+    "created_at": "2026-06-23T02:52:22.585Z",
+    "updated_at": "2026-06-24T06:32:40.096Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 7,
+  "fields": {
+    "user": 11,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 1142900,
+    "category_summary": {
+      "교통비": 153300,
+      "구독": 168600,
+      "기타": 207800,
+      "문화생활": 163500,
+      "쇼핑": 158400,
+      "식비": 291300
+    },
+    "created_at": "2026-06-23T02:53:05.105Z",
+    "updated_at": "2026-06-25T04:43:10.566Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 8,
+  "fields": {
+    "user": 10,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 38100,
+    "category_summary": {
+      "구독": 19900,
+      "문화생활": 18200
+    },
+    "created_at": "2026-06-23T02:56:09.672Z",
+    "updated_at": "2026-06-24T06:32:27.352Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 9,
+  "fields": {
+    "user": 13,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 1000080399,
+    "category_summary": {
+      "교통비": 28500,
+      "구독": 999999999,
+      "식비": 51900
+    },
+    "created_at": "2026-06-23T06:58:38.917Z",
+    "updated_at": "2026-06-23T08:15:44.295Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 10,
+  "fields": {
+    "user": 7,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 39000,
+    "category_summary": {
+      "교통비": 13000,
+      "쇼핑": 14700,
+      "식비": 11300
+    },
+    "created_at": "2026-06-24T00:10:49.060Z",
+    "updated_at": "2026-06-25T03:40:27.899Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 11,
+  "fields": {
+    "user": 16,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 5000,
+    "category_summary": {
+      "공과금": 5000
+    },
+    "created_at": "2026-06-24T06:56:24.119Z",
+    "updated_at": "2026-06-25T05:31:53.042Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 12,
+  "fields": {
+    "user": 9,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 52800,
+    "category_summary": {
+      "구독": 19300,
+      "문화생활": 17600,
+      "쇼핑": 15900
+    },
+    "created_at": "2026-06-24T07:13:56.659Z",
+    "updated_at": "2026-06-24T07:13:56.659Z"
+  }
+},
+{
+  "model": "analysis.monthlyanalysis",
+  "pk": 13,
+  "fields": {
+    "user": 14,
+    "year": 2026,
+    "month": 6,
+    "total_amount": 56500,
+    "category_summary": {
+      "교통비": 29100,
+      "식비": 27400
+    },
+    "created_at": "2026-06-25T03:04:25.807Z",
+    "updated_at": "2026-06-25T03:36:58.075Z"
+  }
+}
+]

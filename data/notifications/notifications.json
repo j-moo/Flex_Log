@@ -1,0 +1,478 @@
+[
+{
+  "model": "notifications.notification",
+  "pk": 1,
+  "fields": {
+    "user": 6,
+    "actor": 11,
+    "notification_type": "like",
+    "title": "새 좋아요",
+    "message": "김수원님이 내 피드를 좋아합니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 67
+    },
+    "target_query": {},
+    "dedupe_key": "",
+    "is_read": true,
+    "read_at": "2026-06-24T03:08:01.577Z",
+    "created_at": "2026-06-24T03:06:52.398Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 2,
+  "fields": {
+    "user": 6,
+    "actor": 11,
+    "notification_type": "comment",
+    "title": "새 댓글",
+    "message": "김수원님이 내 피드에 댓글을 남겼습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 67
+    },
+    "target_query": {},
+    "dedupe_key": "",
+    "is_read": true,
+    "read_at": "2026-06-24T03:07:58.473Z",
+    "created_at": "2026-06-24T03:07:01.263Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 3,
+  "fields": {
+    "user": 6,
+    "actor": 11,
+    "notification_type": "like",
+    "title": "새 좋아요",
+    "message": "김수원님이 내 피드를 좋아합니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 16
+    },
+    "target_query": {},
+    "dedupe_key": "",
+    "is_read": true,
+    "read_at": "2026-06-24T03:07:54.899Z",
+    "created_at": "2026-06-24T03:07:05.411Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 4,
+  "fields": {
+    "user": 6,
+    "actor": 11,
+    "notification_type": "comment",
+    "title": "새 댓글",
+    "message": "김수원님이 내 피드에 댓글을 남겼습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 16
+    },
+    "target_query": {},
+    "dedupe_key": "",
+    "is_read": true,
+    "read_at": "2026-06-24T03:07:43.228Z",
+    "created_at": "2026-06-24T03:07:16.232Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 5,
+  "fields": {
+    "user": 6,
+    "actor": 7,
+    "notification_type": "like",
+    "title": "좋아요 3명",
+    "message": "@pjh님 외 2명이 내 피드에 좋아요를 눌렀습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 67
+    },
+    "target_query": {},
+    "dedupe_key": "like:67",
+    "is_read": true,
+    "read_at": "2026-06-24T06:30:24.485Z",
+    "created_at": "2026-06-24T03:28:54.252Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 6,
+  "fields": {
+    "user": 6,
+    "actor": 8,
+    "notification_type": "like",
+    "title": "좋아요 5명",
+    "message": "@kyb님 외 4명이 내 피드에 좋아요를 눌렀습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 16
+    },
+    "target_query": {},
+    "dedupe_key": "like:16",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T03:41:36.183Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 7,
+  "fields": {
+    "user": 6,
+    "actor": 7,
+    "notification_type": "like",
+    "title": "좋아요 4명",
+    "message": "@pjh님 외 3명이 내 피드에 좋아요를 눌렀습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 15
+    },
+    "target_query": {},
+    "dedupe_key": "like:15",
+    "is_read": true,
+    "read_at": "2026-06-24T06:30:24.485Z",
+    "created_at": "2026-06-24T03:28:59.897Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 8,
+  "fields": {
+    "user": 6,
+    "actor": 9,
+    "notification_type": "comment",
+    "title": "댓글 3명",
+    "message": "@pjh2님 외 2명이 내 피드에 댓글을 남겼습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 15
+    },
+    "target_query": {},
+    "dedupe_key": "comment:15",
+    "is_read": true,
+    "read_at": "2026-06-24T06:30:24.485Z",
+    "created_at": "2026-06-24T03:29:09.432Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 9,
+  "fields": {
+    "user": 6,
+    "actor": 7,
+    "notification_type": "comment",
+    "title": "댓글 4명",
+    "message": "@pjh님 외 3명이 내 피드에 댓글을 남겼습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 67
+    },
+    "target_query": {},
+    "dedupe_key": "comment:67",
+    "is_read": true,
+    "read_at": "2026-06-24T06:30:21.268Z",
+    "created_at": "2026-06-24T03:29:27.391Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 10,
+  "fields": {
+    "user": 10,
+    "actor": 16,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "lsh님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:32",
+    "is_read": true,
+    "read_at": "2026-06-24T07:12:33.096Z",
+    "created_at": "2026-06-24T06:56:35.783Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 11,
+  "fields": {
+    "user": 6,
+    "actor": 16,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "sonia님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:33",
+    "is_read": true,
+    "read_at": "2026-06-24T07:12:57.537Z",
+    "created_at": "2026-06-24T07:12:06.780Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 12,
+  "fields": {
+    "user": 9,
+    "actor": 16,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "sonia님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:34",
+    "is_read": true,
+    "read_at": "2026-06-24T07:13:50.019Z",
+    "created_at": "2026-06-24T07:12:11.211Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 13,
+  "fields": {
+    "user": 11,
+    "actor": 16,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "sonia님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:35",
+    "is_read": true,
+    "read_at": "2026-06-24T07:12:46.993Z",
+    "created_at": "2026-06-24T07:12:15.097Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 14,
+  "fields": {
+    "user": 16,
+    "actor": 11,
+    "notification_type": "comment",
+    "title": "댓글 1명",
+    "message": "@ksw님이 내 피드에 댓글을 남겼습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 76
+    },
+    "target_query": {},
+    "dedupe_key": "comment:76",
+    "is_read": true,
+    "read_at": "2026-06-24T07:52:27.901Z",
+    "created_at": "2026-06-24T07:15:20.429Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 15,
+  "fields": {
+    "user": 7,
+    "actor": 16,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "sonia님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:36",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-24T07:55:10.690Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 16,
+  "fields": {
+    "user": 12,
+    "actor": 16,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "sonia님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:37",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-24T07:55:15.290Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 17,
+  "fields": {
+    "user": 11,
+    "actor": 13,
+    "notification_type": "like",
+    "title": "좋아요 4명",
+    "message": "@ljj님 외 3명이 내 피드에 좋아요를 눌렀습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 55
+    },
+    "target_query": {},
+    "dedupe_key": "like:55",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-24T07:55:27.536Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 18,
+  "fields": {
+    "user": 16,
+    "actor": null,
+    "notification_type": "product_recommendation",
+    "title": "상품 추천 갱신",
+    "message": "소비 패턴 기반 예적금 추천이 갱신되었습니다.",
+    "target_route": "finance-recommend",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "product-recommendation:88",
+    "is_read": true,
+    "read_at": "2026-06-24T07:58:21.120Z",
+    "created_at": "2026-06-24T07:57:49.803Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 19,
+  "fields": {
+    "user": 16,
+    "actor": 11,
+    "notification_type": "like",
+    "title": "좋아요 1명",
+    "message": "@ksw님이 내 피드에 좋아요를 눌렀습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 77
+    },
+    "target_query": {},
+    "dedupe_key": "like:77",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T00:04:16.203Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 20,
+  "fields": {
+    "user": 16,
+    "actor": 11,
+    "notification_type": "comment",
+    "title": "댓글 1명",
+    "message": "@ksw님이 내 피드에 댓글을 남겼습니다.",
+    "target_route": "log-detail",
+    "target_params": {
+      "id": 77
+    },
+    "target_query": {},
+    "dedupe_key": "comment:77",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T00:04:51.123Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 21,
+  "fields": {
+    "user": 10,
+    "actor": 7,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "박준형님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:38",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T03:39:13.114Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 22,
+  "fields": {
+    "user": 15,
+    "actor": 7,
+    "notification_type": "friend_request",
+    "title": "친구 요청",
+    "message": "박준형님이 친구 요청을 보냈습니다.",
+    "target_route": "friends",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "friend-request:39",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T03:39:14.284Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 23,
+  "fields": {
+    "user": 7,
+    "actor": null,
+    "notification_type": "ai_analysis",
+    "title": "AI 분석 완료",
+    "message": "2026년 6월 소비 AI 분석 결과가 준비되었습니다.",
+    "target_route": "analysis",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "ai-analysis:10",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T03:39:33.740Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 24,
+  "fields": {
+    "user": 11,
+    "actor": null,
+    "notification_type": "product_recommendation",
+    "title": "상품 추천 갱신",
+    "message": "소비 패턴 기반 예적금 추천이 갱신되었습니다.",
+    "target_route": "finance-recommend",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "product-recommendation:98",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T04:35:36.650Z"
+  }
+},
+{
+  "model": "notifications.notification",
+  "pk": 25,
+  "fields": {
+    "user": 16,
+    "actor": null,
+    "notification_type": "product_recommendation",
+    "title": "상품 추천 갱신",
+    "message": "소비 패턴 기반 예적금 추천이 갱신되었습니다.",
+    "target_route": "finance-recommend",
+    "target_params": {},
+    "target_query": {},
+    "dedupe_key": "product-recommendation:105",
+    "is_read": false,
+    "read_at": null,
+    "created_at": "2026-06-25T05:35:01.138Z"
+  }
+}
+]

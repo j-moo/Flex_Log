@@ -14,16 +14,20 @@ const joiningOptionId = ref(null)
 const errorMessage = ref('')
 const actionMessage = ref('')
 
+const cautionText = '본 추천은 참고용이며, 실제 가입 전 금융회사 공식 정보를 확인해야 합니다.'
 const visibleHistory = computed(() => history.value.slice(0, 10))
+
 const productTypeLabel = (type) => {
   if (type === 'deposit') return '정기예금'
   if (type === 'saving') return '정기적금'
-  return '상품'
+  return '금융상품'
 }
 
 const displayTitle = (item) => item.product_name || item.title || '추천 상품'
 const displayDescription = (item) => {
-  if (item.product_name && item.description?.includes(item.product_name)) return item.description.replace(item.product_name, '').trim()
+  if (item.product_name && item.description?.includes(item.product_name)) {
+    return item.description.replace(item.product_name, '').trim()
+  }
   return item.description
 }
 
@@ -40,11 +44,12 @@ const fetchRecommendations = async () => {
 const requestRecommendation = async () => {
   isLoading.value = true
   errorMessage.value = ''
+  actionMessage.value = ''
   try {
     latest.value = (await api.post('/api/v1/finance/recommend/')).data
     await fetchRecommendations()
   } catch {
-    errorMessage.value = 'AI 예적금 추천을 생성하지 못했습니다.'
+    errorMessage.value = 'AI 추천을 불러오지 못했습니다. 소비 분석 데이터가 부족하거나 금융상품 데이터가 없을 수 있습니다.'
   } finally {
     isLoading.value = false
   }
@@ -83,10 +88,10 @@ onMounted(async () => {
     <div class="section-head">
       <div>
         <h1>AI 예적금 추천</h1>
-        <p>소비 분석 결과와 가입 상품 정보를 바탕으로 예적금 추천을 생성합니다.</p>
+        <p>소비 분석 결과와 금융상품 데이터를 바탕으로 예적금 추천을 생성합니다.</p>
       </div>
       <button class="vintage-button" type="button" :disabled="isLoading" @click="requestRecommendation">
-        {{ isLoading ? 'AI가 분석중이에요...' : 'AI 추천 다시 받기' }}
+        {{ isLoading ? 'AI가 분석 중입니다...' : 'AI 추천 다시 받기' }}
       </button>
     </div>
 
@@ -95,8 +100,8 @@ onMounted(async () => {
 
     <section v-if="isLoading" class="loading-card vintage-card">
       <span></span>
-      <strong>AI가 분석중이에요...</strong>
-      <p>자산과 소비 패턴을 함께 살펴보고 있습니다.</p>
+      <strong>AI가 소비 패턴과 금융상품을 분석 중입니다...</strong>
+      <p>최근 소비 분석과 예적금 상품 조건을 함께 확인하고 있습니다.</p>
     </section>
 
     <div v-if="!latest.length && !isLoading" class="state-card">
@@ -104,7 +109,12 @@ onMounted(async () => {
     </div>
 
     <TransitionGroup v-else name="recommend-list" tag="div" class="recommend-grid">
-      <article v-for="(item, index) in latest" :key="item.id" class="recommend-card vintage-card" :style="{ '--delay': `${index * 90}ms` }">
+      <article
+        v-for="(item, index) in latest"
+        :key="item.id"
+        class="recommend-card vintage-card"
+        :style="{ '--delay': `${index * 90}ms` }"
+      >
         <div class="recommend-top">
           <span class="vintage-badge">{{ productTypeLabel(item.product_type) }}</span>
           <strong>{{ formatRate(item.max_interest_rate || item.interest_rate) }}</strong>
@@ -115,7 +125,10 @@ onMounted(async () => {
 
         <div class="bank-box">
           <strong>{{ item.bank_name || '은행 정보 없음' }}</strong>
-          <small>{{ item.save_trm || '-' }}개월 · 기본 {{ formatRate(item.interest_rate) }} · 최고 {{ formatRate(item.max_interest_rate) }}</small>
+          <small>
+            {{ item.save_trm || '-' }}개월 · 기본 {{ formatRate(item.interest_rate) }} · 최고
+            {{ formatRate(item.max_interest_rate || item.interest_rate) }}
+          </small>
         </div>
 
         <div class="reason-box">
@@ -123,9 +136,9 @@ onMounted(async () => {
           <p>{{ item.reason }}</p>
         </div>
 
-        <div v-if="item.ai_comment" class="comment-box">
-          <strong>AI 멘트</strong>
-          <p>{{ item.ai_comment }}</p>
+        <div class="comment-box">
+          <strong>AI 코멘트</strong>
+          <p>{{ item.ai_comment || '가입 전 우대조건과 중도해지 조건을 확인하세요.' }}</p>
         </div>
 
         <button
@@ -134,10 +147,10 @@ onMounted(async () => {
           :disabled="!item.option_id || joiningOptionId === item.option_id"
           @click="subscribeRecommendation(item)"
         >
-          {{ item.option_id ? '상품가입' : '가입 옵션 없음' }}
+          {{ item.option_id ? (joiningOptionId === item.option_id ? '가입 처리 중' : '상품 가입') : '가입 옵션 없음' }}
         </button>
 
-        <p v-if="item.caution" class="caution">{{ item.caution }}</p>
+        <p class="caution">{{ item.caution || cautionText }}</p>
       </article>
     </TransitionGroup>
 

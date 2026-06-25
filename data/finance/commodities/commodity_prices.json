@@ -1,0 +1,2998 @@
+[
+{
+  "model": "finance.commodityprice",
+  "pk": 1,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-01-09",
+    "close_price": "1967.100000",
+    "open_price": "1966.400000",
+    "high_price": "1980.200000",
+    "low_price": "1960.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.212Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 2,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-01-11",
+    "close_price": "1987.500000",
+    "open_price": "1993.300000",
+    "high_price": "2005.900000",
+    "low_price": "1978.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.213Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 3,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-01-12",
+    "close_price": "2089.700000",
+    "open_price": "2056.500000",
+    "high_price": "2095.700000",
+    "low_price": "2052.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.214Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 4,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-02-10",
+    "close_price": "1847.200000",
+    "open_price": "1864.400000",
+    "high_price": "1864.700000",
+    "low_price": "1842.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.214Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 5,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-02-11",
+    "close_price": "1993.500000",
+    "open_price": "1992.000000",
+    "high_price": "1999.200000",
+    "low_price": "1986.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.215Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 6,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-03-10",
+    "close_price": "1841.500000",
+    "open_price": "1844.900000",
+    "high_price": "1849.300000",
+    "low_price": "1830.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.215Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 7,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-03-11",
+    "close_price": "1999.200000",
+    "open_price": "1993.500000",
+    "high_price": "2011.900000",
+    "low_price": "1989.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.216Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 8,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-04-10",
+    "close_price": "1834.800000",
+    "open_price": "1838.700000",
+    "high_price": "1846.800000",
+    "low_price": "1831.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.216Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 9,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-04-12",
+    "close_price": "2042.200000",
+    "open_price": "2094.400000",
+    "high_price": "2092.800000",
+    "low_price": "2038.400000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.217Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 10,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-05-09",
+    "close_price": "1952.600000",
+    "open_price": "1966.700000",
+    "high_price": "1972.600000",
+    "low_price": "1950.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.217Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 11,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-05-10",
+    "close_price": "1831.800000",
+    "open_price": "1837.600000",
+    "high_price": "1843.500000",
+    "low_price": "1826.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.217Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 12,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-05-12",
+    "close_price": "2036.300000",
+    "open_price": "2049.000000",
+    "high_price": "2059.600000",
+    "low_price": "2027.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.218Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 13,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-06-09",
+    "close_price": "1944.200000",
+    "open_price": "1951.500000",
+    "high_price": "1954.500000",
+    "low_price": "1940.000000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.218Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 14,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-06-10",
+    "close_price": "1845.200000",
+    "open_price": "1834.300000",
+    "high_price": "1849.000000",
+    "low_price": "1823.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.219Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 15,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-06-11",
+    "close_price": "1988.600000",
+    "open_price": "1999.400000",
+    "high_price": "1991.500000",
+    "low_price": "1984.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.219Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 16,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-06-12",
+    "close_price": "2047.900000",
+    "open_price": "2037.800000",
+    "high_price": "2053.400000",
+    "low_price": "2035.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.220Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 17,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-07-09",
+    "close_price": "1942.500000",
+    "open_price": "1942.200000",
+    "high_price": "1947.900000",
+    "low_price": "1940.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.221Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 18,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-07-11",
+    "close_price": "1973.500000",
+    "open_price": "1984.800000",
+    "high_price": "1985.200000",
+    "low_price": "1962.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.221Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 19,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-07-12",
+    "close_price": "2046.400000",
+    "open_price": "2043.400000",
+    "high_price": "2057.200000",
+    "low_price": "2036.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.221Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 20,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-09",
+    "close_price": "1942.700000",
+    "open_price": "1943.800000",
+    "high_price": "1954.000000",
+    "low_price": "1940.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.222Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 21,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-11",
+    "close_price": "1957.800000",
+    "open_price": "1975.300000",
+    "high_price": "1977.500000",
+    "low_price": "1953.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.222Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 22,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-12",
+    "close_price": "2014.500000",
+    "open_price": "2045.700000",
+    "high_price": "2050.400000",
+    "low_price": "2010.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.223Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 23,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-18",
+    "close_price": "1916.500000",
+    "open_price": "1919.200000",
+    "high_price": "1926.000000",
+    "low_price": "1915.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.223Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 24,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-21",
+    "close_price": "1923.000000",
+    "open_price": "1918.400000",
+    "high_price": "1927.900000",
+    "low_price": "1913.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.224Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 25,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-22",
+    "close_price": "1926.000000",
+    "open_price": "1924.000000",
+    "high_price": "1933.200000",
+    "low_price": "1917.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.224Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 26,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-23",
+    "close_price": "1948.100000",
+    "open_price": "1926.800000",
+    "high_price": "1949.700000",
+    "low_price": "1926.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.225Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 27,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-24",
+    "close_price": "1947.100000",
+    "open_price": "1944.900000",
+    "high_price": "1951.300000",
+    "low_price": "1939.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.225Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 28,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-25",
+    "close_price": "1939.900000",
+    "open_price": "1944.900000",
+    "high_price": "1950.400000",
+    "low_price": "1931.000000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.225Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 29,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-28",
+    "close_price": "1946.800000",
+    "open_price": "1944.000000",
+    "high_price": "1954.200000",
+    "low_price": "1940.100000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.226Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 30,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-29",
+    "close_price": "1965.100000",
+    "open_price": "1948.100000",
+    "high_price": "1966.500000",
+    "low_price": "1941.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.226Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 31,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-30",
+    "close_price": "1973.000000",
+    "open_price": "1966.000000",
+    "high_price": "1977.100000",
+    "low_price": "1962.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.226Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 32,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-08-31",
+    "close_price": "1965.900000",
+    "open_price": "1970.200000",
+    "high_price": "1974.900000",
+    "low_price": "1965.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.227Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 33,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-10",
+    "close_price": "1864.300000",
+    "open_price": "1861.000000",
+    "high_price": "1877.300000",
+    "low_price": "1857.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.227Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 34,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-11",
+    "close_price": "1969.800000",
+    "open_price": "1955.500000",
+    "high_price": "1971.500000",
+    "low_price": "1948.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.228Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 35,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-13",
+    "close_price": "1932.500000",
+    "open_price": "1935.200000",
+    "high_price": "1938.400000",
+    "low_price": "1927.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.228Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 36,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-14",
+    "close_price": "1932.800000",
+    "open_price": "1930.700000",
+    "high_price": "1934.500000",
+    "low_price": "1921.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.228Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 37,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-15",
+    "close_price": "1946.200000",
+    "open_price": "1932.500000",
+    "high_price": "1952.400000",
+    "low_price": "1931.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.229Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 38,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-18",
+    "close_price": "1953.400000",
+    "open_price": "1945.700000",
+    "high_price": "1955.700000",
+    "low_price": "1943.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.229Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 39,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-19",
+    "close_price": "1953.700000",
+    "open_price": "1955.300000",
+    "high_price": "1958.900000",
+    "low_price": "1950.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.230Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 40,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-20",
+    "close_price": "1967.100000",
+    "open_price": "1953.000000",
+    "high_price": "1968.900000",
+    "low_price": "1948.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.230Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 41,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-21",
+    "close_price": "1939.600000",
+    "open_price": "1952.000000",
+    "high_price": "1952.200000",
+    "low_price": "1933.100000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.231Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 42,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-22",
+    "close_price": "1945.600000",
+    "open_price": "1939.600000",
+    "high_price": "1949.100000",
+    "low_price": "1939.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.231Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 43,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-25",
+    "close_price": "1936.600000",
+    "open_price": "1944.700000",
+    "high_price": "1946.800000",
+    "low_price": "1933.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.231Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 44,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-26",
+    "close_price": "1919.800000",
+    "open_price": "1935.100000",
+    "high_price": "1935.500000",
+    "low_price": "1917.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.232Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 45,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-27",
+    "close_price": "1890.900000",
+    "open_price": "1918.800000",
+    "high_price": "1921.700000",
+    "low_price": "1890.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.232Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 46,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-28",
+    "close_price": "1878.600000",
+    "open_price": "1893.300000",
+    "high_price": "1896.800000",
+    "low_price": "1874.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.233Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 47,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-09-29",
+    "close_price": "1866.100000",
+    "open_price": "1882.300000",
+    "high_price": "1896.700000",
+    "low_price": "1862.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.233Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 48,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-10",
+    "close_price": "1875.300000",
+    "open_price": "1875.400000",
+    "high_price": "1879.100000",
+    "low_price": "1866.100000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.234Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 49,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-11",
+    "close_price": "1937.700000",
+    "open_price": "1964.100000",
+    "high_price": "1965.600000",
+    "low_price": "1936.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.234Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 50,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-13",
+    "close_price": "1941.500000",
+    "open_price": "1881.700000",
+    "high_price": "1946.200000",
+    "low_price": "1881.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.235Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 51,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-16",
+    "close_price": "1934.300000",
+    "open_price": "1941.300000",
+    "high_price": "1943.000000",
+    "low_price": "1921.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.235Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 52,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-17",
+    "close_price": "1935.700000",
+    "open_price": "1933.300000",
+    "high_price": "1944.500000",
+    "low_price": "1924.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.236Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 53,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-18",
+    "close_price": "1968.300000",
+    "open_price": "1936.700000",
+    "high_price": "1975.800000",
+    "low_price": "1935.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.236Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 54,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-19",
+    "close_price": "1980.500000",
+    "open_price": "1960.100000",
+    "high_price": "1990.200000",
+    "low_price": "1957.000000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.236Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 55,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-20",
+    "close_price": "1994.400000",
+    "open_price": "1988.000000",
+    "high_price": "2009.200000",
+    "low_price": "1983.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.237Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 56,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-23",
+    "close_price": "1987.800000",
+    "open_price": "1987.700000",
+    "high_price": "1990.900000",
+    "low_price": "1982.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.237Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 57,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-24",
+    "close_price": "1986.100000",
+    "open_price": "1984.100000",
+    "high_price": "1989.000000",
+    "low_price": "1970.000000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.238Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 58,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-25",
+    "close_price": "1994.900000",
+    "open_price": "1982.700000",
+    "high_price": "1998.600000",
+    "low_price": "1973.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.238Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 59,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-26",
+    "close_price": "1997.400000",
+    "open_price": "1991.200000",
+    "high_price": "2003.700000",
+    "low_price": "1981.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.239Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 60,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-27",
+    "close_price": "1998.500000",
+    "open_price": "1995.000000",
+    "high_price": "2019.700000",
+    "low_price": "1986.400000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.239Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 61,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-30",
+    "close_price": "2005.600000",
+    "open_price": "2013.500000",
+    "high_price": "2012.400000",
+    "low_price": "1999.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.240Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 62,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-10-31",
+    "close_price": "1994.300000",
+    "open_price": "2005.600000",
+    "high_price": "2017.700000",
+    "low_price": "1987.400000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.240Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 63,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-09",
+    "close_price": "1947.200000",
+    "open_price": "1943.300000",
+    "high_price": "1947.600000",
+    "low_price": "1944.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.241Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 64,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-10",
+    "close_price": "1887.300000",
+    "open_price": "1873.700000",
+    "high_price": "1890.900000",
+    "low_price": "1871.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.241Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 65,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-12",
+    "close_price": "1993.700000",
+    "open_price": "2020.000000",
+    "high_price": "2023.700000",
+    "low_price": "1991.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.241Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 66,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-13",
+    "close_price": "1950.200000",
+    "open_price": "1943.400000",
+    "high_price": "1953.500000",
+    "low_price": "1935.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.242Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 67,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-14",
+    "close_price": "1966.500000",
+    "open_price": "1950.300000",
+    "high_price": "1975.300000",
+    "low_price": "1938.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.242Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 68,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-15",
+    "close_price": "1964.300000",
+    "open_price": "1966.900000",
+    "high_price": "1979.200000",
+    "low_price": "1958.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.243Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 69,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-16",
+    "close_price": "1987.300000",
+    "open_price": "1963.000000",
+    "high_price": "1984.500000",
+    "low_price": "1983.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.243Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 70,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-17",
+    "close_price": "1984.700000",
+    "open_price": "1984.200000",
+    "high_price": "1983.600000",
+    "low_price": "1982.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.244Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 71,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-20",
+    "close_price": "1980.300000",
+    "open_price": "1980.900000",
+    "high_price": "1987.800000",
+    "low_price": "1967.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.244Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 72,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-21",
+    "close_price": "2001.600000",
+    "open_price": "1980.000000",
+    "high_price": "2009.800000",
+    "low_price": "1979.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.244Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 73,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-22",
+    "close_price": "1992.800000",
+    "open_price": "2000.300000",
+    "high_price": "2008.300000",
+    "low_price": "1988.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.244Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 74,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-24",
+    "close_price": "2003.000000",
+    "open_price": "1991.200000",
+    "high_price": "2004.500000",
+    "low_price": "1990.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.245Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 75,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-27",
+    "close_price": "2012.400000",
+    "open_price": "2002.500000",
+    "high_price": "2018.900000",
+    "low_price": "2001.400000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.246Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 76,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-28",
+    "close_price": "2040.000000",
+    "open_price": "2014.300000",
+    "high_price": "2044.100000",
+    "low_price": "2011.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.246Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 77,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-29",
+    "close_price": "2067.100000",
+    "open_price": "2062.000000",
+    "high_price": "2072.700000",
+    "low_price": "2055.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.246Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 78,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-11-30",
+    "close_price": "2057.200000",
+    "open_price": "2065.400000",
+    "high_price": "2067.400000",
+    "low_price": "2051.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.247Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 79,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-09",
+    "close_price": "1935.100000",
+    "open_price": "1945.600000",
+    "high_price": "1947.500000",
+    "low_price": "1929.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.247Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 80,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-10",
+    "close_price": "1883.000000",
+    "open_price": "1888.100000",
+    "high_price": "1898.300000",
+    "low_price": "1880.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.248Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 81,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-12",
+    "close_price": "1993.200000",
+    "open_price": "1997.800000",
+    "high_price": "2012.500000",
+    "low_price": "1992.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.248Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 82,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-13",
+    "close_price": "1997.300000",
+    "open_price": "1995.100000",
+    "high_price": "2043.300000",
+    "low_price": "1987.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.248Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 83,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-14",
+    "close_price": "2044.900000",
+    "open_price": "2043.200000",
+    "high_price": "2062.900000",
+    "low_price": "2039.100000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.249Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 84,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-15",
+    "close_price": "2035.700000",
+    "open_price": "2051.300000",
+    "high_price": "2059.600000",
+    "low_price": "2029.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.249Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 85,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-18",
+    "close_price": "2040.500000",
+    "open_price": "2033.300000",
+    "high_price": "2048.000000",
+    "low_price": "2029.500000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.250Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 86,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-19",
+    "close_price": "2052.100000",
+    "open_price": "2041.100000",
+    "high_price": "2061.000000",
+    "low_price": "2034.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.250Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 87,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-20",
+    "close_price": "2047.700000",
+    "open_price": "2053.800000",
+    "high_price": "2056.900000",
+    "low_price": "2040.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.251Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 88,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-21",
+    "close_price": "2051.300000",
+    "open_price": "2044.400000",
+    "high_price": "2058.000000",
+    "low_price": "2043.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.251Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 89,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-22",
+    "close_price": "2069.100000",
+    "open_price": "2061.200000",
+    "high_price": "2083.000000",
+    "low_price": "2058.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.251Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 90,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-26",
+    "close_price": "2069.800000",
+    "open_price": "2066.000000",
+    "high_price": "2080.500000",
+    "low_price": "2065.100000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.252Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 91,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-27",
+    "close_price": "2093.100000",
+    "open_price": "2079.300000",
+    "high_price": "2095.800000",
+    "low_price": "2072.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.252Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 92,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-28",
+    "close_price": "2083.500000",
+    "open_price": "2089.500000",
+    "high_price": "2098.200000",
+    "low_price": "2074.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.253Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 93,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2023-12-29",
+    "close_price": "2071.800000",
+    "open_price": "2076.100000",
+    "high_price": "2084.100000",
+    "low_price": "2067.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.253Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 94,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-01-16",
+    "close_price": "2030.200000",
+    "open_price": "2053.400000",
+    "high_price": "2062.800000",
+    "low_price": "2027.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.253Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 95,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-01-17",
+    "close_price": "2006.500000",
+    "open_price": "2031.700000",
+    "high_price": "2036.100000",
+    "low_price": "2004.600000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.254Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 96,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-01-18",
+    "close_price": "2021.600000",
+    "open_price": "2009.100000",
+    "high_price": "2025.600000",
+    "low_price": "2007.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.254Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 97,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-01-19",
+    "close_price": "2029.300000",
+    "open_price": "2027.400000",
+    "high_price": "2041.900000",
+    "low_price": "2022.200000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.255Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 98,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-01-22",
+    "close_price": "2022.200000",
+    "open_price": "2031.800000",
+    "high_price": "2034.100000",
+    "low_price": "2017.400000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.255Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 99,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-02-01",
+    "close_price": "2073.400000",
+    "open_price": "2072.700000",
+    "high_price": "2088.100000",
+    "low_price": "2064.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.255Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 100,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-03-01",
+    "close_price": "2042.800000",
+    "open_price": "2067.900000",
+    "high_price": "2074.300000",
+    "low_price": "2038.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.256Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 101,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-04-01",
+    "close_price": "2050.000000",
+    "open_price": "2049.300000",
+    "high_price": "2058.100000",
+    "low_price": "2043.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.257Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 102,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-05-01",
+    "close_price": "2049.800000",
+    "open_price": "2051.400000",
+    "high_price": "2071.100000",
+    "low_price": "2030.800000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.257Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 103,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-08-01",
+    "close_price": "2033.500000",
+    "open_price": "2052.600000",
+    "high_price": "2053.300000",
+    "low_price": "2022.700000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.258Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 104,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-09-01",
+    "close_price": "2033.000000",
+    "open_price": "2034.500000",
+    "high_price": "2048.600000",
+    "low_price": "2031.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.258Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 105,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-10-01",
+    "close_price": "2027.800000",
+    "open_price": "2036.000000",
+    "high_price": "2046.200000",
+    "low_price": "2025.900000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.258Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 106,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-11-01",
+    "close_price": "2019.200000",
+    "open_price": "2029.400000",
+    "high_price": "2056.100000",
+    "low_price": "2017.300000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.259Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 107,
+  "fields": {
+    "commodity": 1,
+    "price_date": "2024-12-01",
+    "close_price": "2051.600000",
+    "open_price": "2033.200000",
+    "high_price": "2067.300000",
+    "low_price": "2033.100000",
+    "source": "Gold_prices.json",
+    "created_at": "2026-06-22T06:20:26.259Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 108,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-01-09",
+    "close_price": "24.562000",
+    "open_price": "24.820000",
+    "high_price": "25.220000",
+    "low_price": "24.520000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.267Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 109,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-01-11",
+    "close_price": "22.790000",
+    "open_price": "22.955000",
+    "high_price": "23.130000",
+    "low_price": "22.645000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.268Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 110,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-01-12",
+    "close_price": "25.857000",
+    "open_price": "25.695000",
+    "high_price": "25.940000",
+    "low_price": "25.480000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.268Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 111,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-02-10",
+    "close_price": "21.421000",
+    "open_price": "22.410000",
+    "high_price": "22.410000",
+    "low_price": "21.215000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.269Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 112,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-02-11",
+    "close_price": "22.846000",
+    "open_price": null,
+    "high_price": "23.240000",
+    "low_price": "22.755000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.269Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 113,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-03-10",
+    "close_price": "21.377000",
+    "open_price": "21.310000",
+    "high_price": "21.595000",
+    "low_price": "20.870000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.270Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 114,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-03-11",
+    "close_price": "23.285000",
+    "open_price": "22.875000",
+    "high_price": "23.415000",
+    "low_price": "22.675000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.270Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 115,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-04-10",
+    "close_price": "21.146000",
+    "open_price": "21.375000",
+    "high_price": "21.570000",
+    "low_price": "20.850000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.271Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 116,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-04-12",
+    "close_price": "24.907000",
+    "open_price": "25.945000",
+    "high_price": "25.730000",
+    "low_price": "24.785000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.271Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 117,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-05-09",
+    "close_price": "23.873000",
+    "open_price": "24.565000",
+    "high_price": "24.655000",
+    "low_price": "23.815000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.271Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 118,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-05-10",
+    "close_price": "21.019000",
+    "open_price": "21.180000",
+    "high_price": "21.455000",
+    "low_price": "20.855000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.272Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 119,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-05-12",
+    "close_price": "24.546000",
+    "open_price": "24.915000",
+    "high_price": null,
+    "low_price": "24.320000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.273Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 120,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-06-09",
+    "close_price": "23.503000",
+    "open_price": "23.880000",
+    "high_price": "23.935000",
+    "low_price": "23.315000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.273Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 121,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-06-10",
+    "close_price": "21.723000",
+    "open_price": null,
+    "high_price": "21.780000",
+    "low_price": "20.940000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.274Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 122,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-06-11",
+    "close_price": "23.234000",
+    "open_price": "23.335000",
+    "high_price": "23.245000",
+    "low_price": "23.085000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.274Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 123,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-06-12",
+    "close_price": "24.228000",
+    "open_price": "24.530000",
+    "high_price": "24.715000",
+    "low_price": "24.210000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.274Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 124,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-07-09",
+    "close_price": "23.240000",
+    "open_price": "23.500000",
+    "high_price": "23.500000",
+    "low_price": "23.130000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.275Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 125,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-07-11",
+    "close_price": "22.589000",
+    "open_price": "23.125000",
+    "high_price": "23.170000",
+    "low_price": "22.505000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.275Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 126,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-07-12",
+    "close_price": "24.059000",
+    "open_price": "24.230000",
+    "high_price": "24.350000",
+    "low_price": "23.905000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.276Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 127,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-09",
+    "close_price": "23.174000",
+    "open_price": "23.260000",
+    "high_price": "23.455000",
+    "low_price": "23.130000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.276Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 128,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-11",
+    "close_price": "22.728000",
+    "open_price": "22.705000",
+    "high_price": "22.935000",
+    "low_price": "22.375000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.277Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 129,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-12",
+    "close_price": "23.276000",
+    "open_price": "24.140000",
+    "high_price": "24.225000",
+    "low_price": "23.245000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.277Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 130,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-18",
+    "close_price": "23.276000",
+    "open_price": null,
+    "high_price": "23.240000",
+    "low_price": "23.000000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.278Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 131,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-21",
+    "close_price": "23.659000",
+    "open_price": "23.130000",
+    "high_price": "23.700000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.278Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 132,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-22",
+    "close_price": "23.763000",
+    "open_price": "23.710000",
+    "high_price": "23.830000",
+    "low_price": "23.590000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.279Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 133,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-23",
+    "close_price": "24.710000",
+    "open_price": "23.795000",
+    "high_price": "24.750000",
+    "low_price": "23.790000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.279Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 134,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-24",
+    "close_price": "24.575000",
+    "open_price": "24.700000",
+    "high_price": "24.740000",
+    "low_price": "24.450000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.280Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 135,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-25",
+    "close_price": "24.583000",
+    "open_price": "24.530000",
+    "high_price": "24.785000",
+    "low_price": "24.310000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.280Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 136,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-28",
+    "close_price": "24.605000",
+    "open_price": "24.620000",
+    "high_price": "24.750000",
+    "low_price": "24.450000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.280Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 137,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-29",
+    "close_price": "25.139000",
+    "open_price": "24.620000",
+    "high_price": "25.195000",
+    "low_price": "24.555000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.281Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 138,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-30",
+    "close_price": "25.104000",
+    "open_price": "25.135000",
+    "high_price": "25.425000",
+    "low_price": "24.920000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.281Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 139,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-08-31",
+    "close_price": "24.812000",
+    "open_price": null,
+    "high_price": null,
+    "low_price": "24.745000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.282Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 140,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-10",
+    "close_price": "21.924000",
+    "open_price": "21.940000",
+    "high_price": "22.180000",
+    "low_price": "21.705000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.282Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 141,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-11",
+    "close_price": "22.905000",
+    "open_price": "22.625000",
+    "high_price": null,
+    "low_price": "22.415000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.283Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 142,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-13",
+    "close_price": "23.181000",
+    "open_price": "23.375000",
+    "high_price": "23.390000",
+    "low_price": "23.025000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.283Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 143,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-14",
+    "close_price": "22.994000",
+    "open_price": "23.140000",
+    "high_price": "23.265000",
+    "low_price": "22.555000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.284Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 144,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-15",
+    "close_price": "23.386000",
+    "open_price": "22.930000",
+    "high_price": "23.585000",
+    "low_price": "22.910000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.284Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 145,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-18",
+    "close_price": "23.498000",
+    "open_price": "23.320000",
+    "high_price": "23.540000",
+    "low_price": "23.235000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.284Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 146,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-19",
+    "close_price": "23.456000",
+    "open_price": "23.530000",
+    "high_price": "23.705000",
+    "low_price": "23.365000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.285Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 147,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-20",
+    "close_price": "23.836000",
+    "open_price": "23.480000",
+    "high_price": "23.880000",
+    "low_price": "23.325000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.285Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 148,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-21",
+    "close_price": "23.687000",
+    "open_price": "23.520000",
+    "high_price": "23.745000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.286Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 149,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-22",
+    "close_price": "23.844000",
+    "open_price": "23.675000",
+    "high_price": null,
+    "low_price": "23.665000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.286Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 150,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-25",
+    "close_price": "23.385000",
+    "open_price": "23.810000",
+    "high_price": "23.925000",
+    "low_price": "23.290000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.287Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 151,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-26",
+    "close_price": "23.196000",
+    "open_price": "23.390000",
+    "high_price": "23.390000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.287Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 152,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-27",
+    "close_price": "22.724000",
+    "open_price": null,
+    "high_price": null,
+    "low_price": "22.640000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.287Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 153,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-28",
+    "close_price": "22.741000",
+    "open_price": "22.800000",
+    "high_price": "22.955000",
+    "low_price": "22.610000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.288Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 154,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-09-29",
+    "close_price": "22.450000",
+    "open_price": "22.840000",
+    "high_price": "23.805000",
+    "low_price": "22.325000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.288Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 155,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-10",
+    "close_price": "21.953000",
+    "open_price": null,
+    "high_price": null,
+    "low_price": "21.775000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.289Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 156,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-11",
+    "close_price": "22.281000",
+    "open_price": "22.705000",
+    "high_price": "22.800000",
+    "low_price": "22.230000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.289Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 157,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-13",
+    "close_price": "22.895000",
+    "open_price": "21.985000",
+    "high_price": "22.990000",
+    "low_price": "21.960000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.290Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 158,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-16",
+    "close_price": "22.765000",
+    "open_price": "22.910000",
+    "high_price": "22.910000",
+    "low_price": "22.635000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.290Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 159,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-17",
+    "close_price": "23.024000",
+    "open_price": "22.780000",
+    "high_price": "23.180000",
+    "low_price": "22.535000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.290Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 160,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-18",
+    "close_price": "23.099000",
+    "open_price": "22.975000",
+    "high_price": "23.490000",
+    "low_price": "22.840000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.291Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 161,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-19",
+    "close_price": "23.031000",
+    "open_price": "23.015000",
+    "high_price": "23.230000",
+    "low_price": "22.785000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.291Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 162,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-20",
+    "close_price": "23.530000",
+    "open_price": "23.190000",
+    "high_price": "23.880000",
+    "low_price": "23.015000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.292Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 163,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-23",
+    "close_price": "23.210000",
+    "open_price": "23.235000",
+    "high_price": "23.300000",
+    "low_price": "23.065000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.292Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 164,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-24",
+    "close_price": "23.116000",
+    "open_price": "23.095000",
+    "high_price": "23.160000",
+    "low_price": "22.900000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.293Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 165,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-25",
+    "close_price": "23.007000",
+    "open_price": null,
+    "high_price": "23.160000",
+    "low_price": "22.690000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.293Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 166,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-26",
+    "close_price": "22.908000",
+    "open_price": "23.005000",
+    "high_price": "23.275000",
+    "low_price": "22.565000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.293Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 167,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-27",
+    "close_price": "22.887000",
+    "open_price": "22.935000",
+    "high_price": "23.255000",
+    "low_price": "22.775000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.294Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 168,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-30",
+    "close_price": "23.396000",
+    "open_price": "23.245000",
+    "high_price": "23.750000",
+    "low_price": "23.175000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.294Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 169,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-10-31",
+    "close_price": "22.952000",
+    "open_price": "23.455000",
+    "high_price": "23.465000",
+    "low_price": "22.840000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.295Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 170,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-09",
+    "close_price": "23.383000",
+    "open_price": "23.195000",
+    "high_price": "23.400000",
+    "low_price": "23.345000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.295Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 171,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-10",
+    "close_price": "22.133000",
+    "open_price": "22.015000",
+    "high_price": "22.275000",
+    "low_price": "21.955000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.296Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 172,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-12",
+    "close_price": "23.058000",
+    "open_price": "23.300000",
+    "high_price": "23.400000",
+    "low_price": "23.015000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.296Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 173,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-13",
+    "close_price": "22.358000",
+    "open_price": "22.310000",
+    "high_price": "22.405000",
+    "low_price": "21.925000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.297Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 174,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-14",
+    "close_price": "23.132000",
+    "open_price": "22.370000",
+    "high_price": "23.255000",
+    "low_price": "22.150000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.297Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 175,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-15",
+    "close_price": "23.538000",
+    "open_price": "23.160000",
+    "high_price": "23.710000",
+    "low_price": "23.095000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.298Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 176,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-16",
+    "close_price": "23.933000",
+    "open_price": "23.510000",
+    "high_price": "23.830000",
+    "low_price": "23.800000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.298Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 177,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-17",
+    "close_price": "23.775000",
+    "open_price": "23.825000",
+    "high_price": "23.805000",
+    "low_price": "23.760000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.299Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 178,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-20",
+    "close_price": "23.959000",
+    "open_price": null,
+    "high_price": "24.210000",
+    "low_price": "23.650000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.299Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 179,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-21",
+    "close_price": "24.221000",
+    "open_price": "23.825000",
+    "high_price": "24.430000",
+    "low_price": "23.820000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.300Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 180,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-22",
+    "close_price": "24.033000",
+    "open_price": "24.145000",
+    "high_price": "24.355000",
+    "low_price": "23.935000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.300Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 181,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-24",
+    "close_price": "24.692000",
+    "open_price": null,
+    "high_price": "24.750000",
+    "low_price": "23.960000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.301Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 182,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-27",
+    "close_price": "25.038000",
+    "open_price": "24.750000",
+    "high_price": "25.290000",
+    "low_price": "24.680000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.301Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 183,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-28",
+    "close_price": "25.302000",
+    "open_price": "25.065000",
+    "high_price": "25.445000",
+    "low_price": "24.940000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.302Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 184,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-29",
+    "close_price": "25.443000",
+    "open_price": "25.430000",
+    "high_price": "25.680000",
+    "low_price": "25.245000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.302Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 185,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-11-30",
+    "close_price": "25.660000",
+    "open_price": "25.410000",
+    "high_price": "25.700000",
+    "low_price": "25.325000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.303Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 186,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-09",
+    "close_price": "23.402000",
+    "open_price": "23.390000",
+    "high_price": "23.480000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.303Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 187,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-10",
+    "close_price": "21.959000",
+    "open_price": "22.205000",
+    "high_price": "22.390000",
+    "low_price": "21.880000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.304Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 188,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-12",
+    "close_price": "23.016000",
+    "open_price": "23.125000",
+    "high_price": "23.450000",
+    "low_price": "22.975000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.304Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 189,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-13",
+    "close_price": "22.921000",
+    "open_price": "23.075000",
+    "high_price": "24.125000",
+    "low_price": "22.785000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.304Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 190,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-14",
+    "close_price": "24.386000",
+    "open_price": "24.095000",
+    "high_price": "24.525000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.305Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 191,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-15",
+    "close_price": "24.154000",
+    "open_price": "24.475000",
+    "high_price": "24.590000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.305Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 192,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-18",
+    "close_price": "24.107000",
+    "open_price": "24.125000",
+    "high_price": "24.355000",
+    "low_price": "23.955000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.306Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 193,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-19",
+    "close_price": "24.321000",
+    "open_price": null,
+    "high_price": "24.475000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.306Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 194,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-20",
+    "close_price": "24.631000",
+    "open_price": "24.360000",
+    "high_price": "24.750000",
+    "low_price": "24.245000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.307Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 195,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-21",
+    "close_price": "24.585000",
+    "open_price": "24.460000",
+    "high_price": "24.790000",
+    "low_price": "24.430000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.307Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 196,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-22",
+    "close_price": "24.565000",
+    "open_price": "24.705000",
+    "high_price": "24.895000",
+    "low_price": "24.370000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.308Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 197,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-26",
+    "close_price": "24.396000",
+    "open_price": "24.495000",
+    "high_price": "24.700000",
+    "low_price": "24.340000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.308Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 198,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-27",
+    "close_price": "24.641000",
+    "open_price": "24.505000",
+    "high_price": "24.730000",
+    "low_price": "24.220000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.309Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 199,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-28",
+    "close_price": "24.372000",
+    "open_price": "24.550000",
+    "high_price": "24.740000",
+    "low_price": "24.185000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.309Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 200,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2023-12-29",
+    "close_price": "24.086000",
+    "open_price": "24.225000",
+    "high_price": "24.235000",
+    "low_price": "23.760000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.310Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 201,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-01-16",
+    "close_price": "23.093000",
+    "open_price": "23.350000",
+    "high_price": "23.500000",
+    "low_price": "23.015000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.310Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 202,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-01-17",
+    "close_price": "22.669000",
+    "open_price": "23.095000",
+    "high_price": null,
+    "low_price": "22.660000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.310Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 203,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-01-18",
+    "close_price": "22.807000",
+    "open_price": "22.715000",
+    "high_price": "22.900000",
+    "low_price": "22.520000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.310Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 204,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-01-19",
+    "close_price": "22.711000",
+    "open_price": "22.885000",
+    "high_price": "22.980000",
+    "low_price": "22.595000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.311Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 205,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-01-22",
+    "close_price": "22.296000",
+    "open_price": "22.745000",
+    "high_price": "22.780000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.311Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 206,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-02-01",
+    "close_price": "23.953000",
+    "open_price": "24.045000",
+    "high_price": "24.335000",
+    "low_price": "23.875000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.312Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 207,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-03-01",
+    "close_price": "23.157000",
+    "open_price": "23.885000",
+    "high_price": "23.950000",
+    "low_price": "23.045000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.312Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 208,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-04-01",
+    "close_price": "23.187000",
+    "open_price": "23.190000",
+    "high_price": "23.260000",
+    "low_price": "22.880000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.312Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 209,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-05-01",
+    "close_price": "23.315000",
+    "open_price": "23.205000",
+    "high_price": "23.715000",
+    "low_price": "22.970000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.313Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 210,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-08-01",
+    "close_price": "23.310000",
+    "open_price": "23.380000",
+    "high_price": "23.410000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.313Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 211,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-09-01",
+    "close_price": "23.091000",
+    "open_price": "23.315000",
+    "high_price": "23.565000",
+    "low_price": null,
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.314Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 212,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-10-01",
+    "close_price": "23.066000",
+    "open_price": "23.160000",
+    "high_price": "23.290000",
+    "low_price": "22.935000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.314Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 213,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-11-01",
+    "close_price": "22.705000",
+    "open_price": "23.085000",
+    "high_price": "23.400000",
+    "low_price": "22.630000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.315Z"
+  }
+},
+{
+  "model": "finance.commodityprice",
+  "pk": 214,
+  "fields": {
+    "commodity": 2,
+    "price_date": "2024-12-01",
+    "close_price": "23.329000",
+    "open_price": "22.920000",
+    "high_price": "23.720000",
+    "low_price": "22.915000",
+    "source": "Silver_prices.json",
+    "created_at": "2026-06-22T06:20:26.315Z"
+  }
+}
+]

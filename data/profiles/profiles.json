@@ -1,0 +1,146 @@
+[
+{
+  "model": "profiles.profile",
+  "pk": 5,
+  "fields": {
+    "user": 5,
+    "nickname": "superuser",
+    "image": "",
+    "bio": "관리자입니다.",
+    "created_at": "2026-06-23T01:49:35.769Z",
+    "updated_at": "2026-06-23T01:50:56.752Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 6,
+  "fields": {
+    "user": 6,
+    "nickname": "kerocha",
+    "image": "profiles/2b79e78f921e810cb71cc9efd1bcf48d_leiNgMK.jpg",
+    "bio": "케로챠!",
+    "created_at": "2026-06-23T02:44:22.319Z",
+    "updated_at": "2026-06-25T03:01:40.220Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 7,
+  "fields": {
+    "user": 7,
+    "nickname": "luke_park",
+    "image": "profiles/demo/pjh.png",
+    "bio": "세계최강의 샤도우뽁사입니다.",
+    "created_at": "2026-06-23T02:44:22.599Z",
+    "updated_at": "2026-06-25T03:42:39.653Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 8,
+  "fields": {
+    "user": 8,
+    "nickname": "김영빈",
+    "image": "profiles/demo/kyb.png",
+    "bio": "러버호스 스타일의 Flex-Log 데모 프로필입니다.",
+    "created_at": "2026-06-23T02:44:22.887Z",
+    "updated_at": "2026-06-23T02:44:22.887Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 9,
+  "fields": {
+    "user": 9,
+    "nickname": "박진혁",
+    "image": "profiles/demo/pjh2.png",
+    "bio": "러버호스 스타일의 Flex-Log 데모 프로필입니다.",
+    "created_at": "2026-06-23T02:44:23.176Z",
+    "updated_at": "2026-06-23T02:44:23.177Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 10,
+  "fields": {
+    "user": 10,
+    "nickname": "이봉민",
+    "image": "profiles/demo/lbm.png",
+    "bio": "러버호스 스타일의 Flex-Log 데모 프로필입니다.",
+    "created_at": "2026-06-23T02:44:23.465Z",
+    "updated_at": "2026-06-23T02:44:23.465Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 11,
+  "fields": {
+    "user": 11,
+    "nickname": "수킹짱",
+    "image": "profiles/demo/ksw.png",
+    "bio": "Only 병린",
+    "created_at": "2026-06-23T02:44:23.751Z",
+    "updated_at": "2026-06-25T05:26:28.553Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 12,
+  "fields": {
+    "user": 12,
+    "nickname": "구윤지",
+    "image": "profiles/demo/kyj.png",
+    "bio": "러버호스 스타일의 Flex-Log 데모 프로필입니다.",
+    "created_at": "2026-06-23T02:44:24.037Z",
+    "updated_at": "2026-06-23T02:44:24.037Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 13,
+  "fields": {
+    "user": 13,
+    "nickname": "이재준",
+    "image": "profiles/demo/ljj.png",
+    "bio": "러버호스 스타일의 Flex-Log 데모 프로필입니다.",
+    "created_at": "2026-06-23T02:44:24.327Z",
+    "updated_at": "2026-06-23T02:44:24.327Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 14,
+  "fields": {
+    "user": 14,
+    "nickname": "soap",
+    "image": "profiles/demo/kwb.png",
+    "bio": "비누임",
+    "created_at": "2026-06-23T02:44:24.615Z",
+    "updated_at": "2026-06-25T03:04:07.187Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 15,
+  "fields": {
+    "user": 15,
+    "nickname": "서유정",
+    "image": "profiles/demo/syj.png",
+    "bio": "러버호스 스타일의 Flex-Log 데모 프로필입니다.",
+    "created_at": "2026-06-23T02:44:24.901Z",
+    "updated_at": "2026-06-23T02:44:24.902Z"
+  }
+},
+{
+  "model": "profiles.profile",
+  "pk": 16,
+  "fields": {
+    "user": 16,
+    "nickname": "sonia",
+    "image": "",
+    "bio": "",
+    "created_at": "2026-06-24T06:56:10.803Z",
+    "updated_at": "2026-06-25T03:02:16.150Z"
+  }
+}
+]
