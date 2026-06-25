@@ -227,7 +227,7 @@ const remove = async () => {
 .comment-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  align-items: flex-start;
+  align-items: baseline;
   gap: 10px;
 }
 
@@ -249,8 +249,8 @@ const remove = async () => {
 .comment-menu {
   display: flex;
   align-items: center;
+  align-self: baseline;
   gap: 6px;
-  margin-top: 2px;
   white-space: nowrap;
 }
 
@@ -261,6 +261,7 @@ const remove = async () => {
   padding: 0;
   font-size: 11px;
   font-weight: 900;
+  line-height: 1.55;
 }
 
 .comment-menu button:last-child {
