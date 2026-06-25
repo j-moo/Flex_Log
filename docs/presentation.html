@@ -48,6 +48,11 @@
       font: inherit;
     }
 
+    .export-mode .controls,
+    .export-mode .progress {
+      display: none;
+    }
+
     .deck {
       position: relative;
       height: 100vh;
@@ -419,7 +424,7 @@
 
     .problem-map {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
     }
 
@@ -626,6 +631,7 @@
     .data-flow article {
       display: grid;
       gap: 8px;
+      min-width: 0;
       border: 2px solid var(--ink);
       border-radius: 20px;
       background: var(--paper);
@@ -643,6 +649,7 @@
       font-size: clamp(16px, 1.17vw, 19px);
       font-weight: 790;
       line-height: 1.58;
+      overflow-wrap: anywhere;
     }
 
     .prompt-layout {
@@ -701,6 +708,14 @@
       grid-auto-rows: 132px;
       gap: 12px;
       align-content: start;
+    }
+
+    .prompt-gallery.focused {
+      grid-auto-rows: 178px;
+    }
+
+    .prompt-gallery.two-up {
+      grid-auto-rows: 360px;
     }
 
     .prompt-slide {
@@ -1040,6 +1055,11 @@
       }
     }
 
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+
     @media print {
       html,
       body {
@@ -1159,11 +1179,6 @@
             <b>ROOT 02</b>
             <strong>기록은 부족함</strong>
             <span>금액과 카테고리만 입력하는 가계부는 재미가 적어 지속하기 어렵습니다.</span>
-          </article>
-          <article class="problem-card">
-            <b>ROOT 03</b>
-            <strong>SNS가 자극함</strong>
-            <span>타인의 소비 생활을 쉽게 접하면서 충동구매와 상대적 박탈감이 커집니다.</span>
           </article>
           <article class="problem-card">
             <b>ROOT 04</b>
@@ -1304,9 +1319,9 @@
       <div class="two-col wide-right">
         <div class="stack">
           <div class="data-flow">
-            <article><strong>소비 기록</strong><span>User, Category, ExpenseLog가 소비 데이터의 기준이 됩니다.</span></article>
-            <article><strong>분석</strong><span>MonthlyAnalysis와 MonthlyAIAnalysis가 월별 패턴을 저장합니다.</span></article>
-            <article><strong>추천</strong><span>FinancialProductRecommendation이 분석과 상품 후보를 연결합니다.</span></article>
+            <article><strong>소비 기록</strong><span>사용자, 카테고리, 소비 로그가 소비 데이터의 기준이 됩니다.</span></article>
+            <article><strong>분석</strong><span>월별 분석과 AI 분석이 소비 패턴을 저장합니다.</span></article>
+            <article><strong>추천</strong><span>추천 결과가 분석과 상품 후보를 연결합니다.</span></article>
           </div>
           <p class="lead">핵심은 ExpenseLog를 삭제하지 않고 분석 가능한 데이터로 유지하는 것입니다.</p>
           <p class="subcopy">피드 노출은 `is_visible`, `visibility`, `expires_at` 조건으로 제어하고, DB에는 소비 분석과 추천에 필요한 원천 로그를 보존합니다.</p>
@@ -1319,7 +1334,7 @@
 
     <section class="slide prompt-slide">
       <span class="eyebrow">07 AI Prompt Design</span>
-      <h2>AI 응답은 JSON으로 받아 카드 UI에 표시합니다</h2>
+      <h2>소비 분석 프롬프트는 월별 데이터를 구조화합니다</h2>
       <div class="prompt-layout">
         <div class="prompt-notes">
           <article class="flat-panel prompt-box">
@@ -1333,6 +1348,21 @@
               <span>JSON 응답 형식 강제</span>
             </div>
           </article>
+          <p class="prompt-note">월별 지표를 AI에 전달해 JSON 응답을 받습니다.</p>
+        </div>
+        <div class="prompt-gallery focused" aria-label="소비 분석 프롬프트 코드 스크린샷">
+          <figure class="prompt-shot wide"><img src="../assets/소비분석_프롬프트.png" alt="build_ai_prompt 코드"></figure>
+          <figure class="prompt-shot"><img src="../assets/소비분석_프롬프트2.png" alt="request_gms_analysis 코드"></figure>
+          <figure class="prompt-shot"><img src="../assets/소비분석_fallback.png" alt="소비 분석 fallback 코드"></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide prompt-slide">
+      <span class="eyebrow">07 Recommendation Prompt</span>
+      <h2>추천 프롬프트는 분석과 상품 후보를 연결합니다</h2>
+      <div class="prompt-layout">
+        <div class="prompt-notes">
           <article class="flat-panel prompt-box">
             <h3>금융상품 추천 프롬프트</h3>
             <div class="prompt-chip-grid">
@@ -1344,14 +1374,11 @@
               <span>가입 강요 금지</span>
             </div>
           </article>
-          <p class="prompt-note">AI 응답은 JSON으로 파싱해 분석 카드와 추천 카드 UI에 바로 표시합니다.</p>
+          <p class="prompt-note">분석 결과와 금융상품 후보를 함께 검토해 추천 이유, 주의 문구, 우선순위를 카드 UI에 맞춰 반환합니다.</p>
         </div>
-        <div class="prompt-gallery" aria-label="AI 프롬프트 코드 스크린샷">
-          <figure class="prompt-shot wide"><img src="../assets/소비분석_프롬프트.png" alt="build_ai_prompt 코드"></figure>
-          <figure class="prompt-shot"><img src="../assets/소비분석_프롬프트2.png" alt="request_gms_analysis 코드"></figure>
+        <div class="prompt-gallery two-up" aria-label="금융상품 추천 프롬프트 코드 스크린샷">
           <figure class="prompt-shot"><img src="../assets/상품추천_프롬프트.png" alt="금융상품 추천 prompt 코드"></figure>
-          <figure class="prompt-shot"><img src="../assets/상품추천_fallback.png" alt="fallback_analysis 코드"></figure>
-          <figure class="prompt-shot"><img src="../assets/소비분석_fallback.png" alt="fallback_recommendations 코드"></figure>
+          <figure class="prompt-shot"><img src="../assets/상품추천_fallback.png" alt="금융상품 추천 fallback 코드"></figure>
         </div>
       </div>
     </section>
@@ -1469,12 +1496,16 @@
 
   <nav class="controls" aria-label="슬라이드 이동">
     <button type="button" id="prev" aria-label="이전 슬라이드">&lt;</button>
-    <span class="counter" id="counter">1 / 16</span>
+    <span class="counter" id="counter">1 / 17</span>
     <button type="button" id="next" aria-label="다음 슬라이드">&gt;</button>
   </nav>
   <div class="progress" aria-hidden="true"><span id="progress"></span></div>
 
   <script>
+    if (new URLSearchParams(window.location.search).has('export')) {
+      document.documentElement.classList.add('export-mode');
+    }
+
     const slides = Array.from(document.querySelectorAll('.slide'));
     const counter = document.querySelector('#counter');
     const progress = document.querySelector('#progress');
