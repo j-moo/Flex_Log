@@ -1,7 +1,8 @@
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import DecimalField, F, Max, Min, Q
+from django.db.models.functions import Coalesce
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.dateparse import parse_date
@@ -42,6 +43,13 @@ from .services.youtube_api import YouTubeAPIError, get_video_detail, search_vide
 
 
 MONEY_QUANT = Decimal('0.01')
+RATE_OUTPUT_FIELD = DecimalField(max_digits=7, decimal_places=4)
+PRODUCT_SORT_OPTIONS = {
+    'base_rate_desc',
+    'base_rate_asc',
+    'max_rate_desc',
+    'max_rate_asc',
+}
 
 
 def quantize_money(value):
@@ -63,6 +71,35 @@ def kiwoom_error_status(exc):
     if message.startswith('symbol must') or message.startswith('Unsupported period'):
         return status.HTTP_400_BAD_REQUEST
     return status.HTTP_503_SERVICE_UNAVAILABLE
+
+
+def apply_product_sort(queryset, sort_value):
+    if not sort_value:
+        return queryset.order_by('product_type', 'kor_co_nm', 'fin_prdt_nm', 'id'), None
+
+    if sort_value not in PRODUCT_SORT_OPTIONS:
+        return None, Response(
+            {'detail': f'sort must be one of: {", ".join(sorted(PRODUCT_SORT_OPTIONS))}'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    aggregate = Max if sort_value.endswith('_desc') else Min
+    if sort_value.startswith('base_rate'):
+        rate_expression = 'options__intr_rate'
+    else:
+        rate_expression = Coalesce(
+            'options__intr_rate2',
+            'options__intr_rate',
+            output_field=RATE_OUTPUT_FIELD,
+        )
+
+    queryset = queryset.annotate(sort_rate=aggregate(rate_expression))
+    order_expression = (
+        F('sort_rate').desc(nulls_last=True)
+        if sort_value.endswith('_desc')
+        else F('sort_rate').asc(nulls_last=True)
+    )
+    return queryset.order_by(order_expression, 'kor_co_nm', 'fin_prdt_nm', 'id'), None
 
 
 def apply_product_filters(request, product_type=None):
@@ -97,6 +134,10 @@ def apply_product_filters(request, product_type=None):
             )
         queryset = queryset.filter(options__save_trm=term_value)
 
+    join_way = request.query_params.get('join_way')
+    if join_way:
+        queryset = queryset.filter(join_way__icontains=join_way.strip())
+
     min_rate = request.query_params.get('min_rate')
     if min_rate:
         try:
@@ -111,7 +152,16 @@ def apply_product_filters(request, product_type=None):
             | Q(options__intr_rate2__gte=min_rate_value)
         )
 
-    return queryset.distinct(), None
+    queryset = queryset.distinct()
+    sort_value = request.query_params.get('sort')
+    if sort_value:
+        queryset, error_response = apply_product_sort(queryset, sort_value.strip())
+        if error_response:
+            return None, error_response
+    else:
+        queryset = queryset.order_by('product_type', 'kor_co_nm', 'fin_prdt_nm', 'id')
+
+    return queryset, None
 
 
 @api_view(['GET'])

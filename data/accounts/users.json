@@ -1,0 +1,254 @@
+[
+{
+  "model": "accounts.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$GHdYselSSTxFJrcisTqXVa$bhIuCeYIOaAe6IsfoCpOXsv0mKTqJWqnOBnPzvOHSoo=",
+    "last_login": "2026-06-23T01:47:07.863Z",
+    "is_superuser": true,
+    "username": "superuser",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-06-23T01:44:09.449Z",
+    "name": "관리자",
+    "email": "superuser@email.com",
+    "created_at": "2026-06-23T01:44:09.722Z",
+    "updated_at": "2026-06-23T01:50:56.750Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$CeMyCyX0CogejJafXdV38r$6Xhn25kldQN/QNiVN4l2Ot+VqsFYvTPCj+n3dx1Ggbs=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "kjm",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:21.998Z",
+    "name": "김종무",
+    "email": "kjm@example.com",
+    "created_at": "2026-06-23T02:44:21.998Z",
+    "updated_at": "2026-06-25T03:01:40.218Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$93DTZdoxeBqjZKBM5erDVL$/CdQPbivmigynxadsXU2ZpyoFZA7RbXGvAJa4qA3gj4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pjh",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:22.319Z",
+    "name": "박준형",
+    "email": "pjh@example.com",
+    "created_at": "2026-06-23T02:44:22.320Z",
+    "updated_at": "2026-06-25T03:42:39.650Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 8,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$RHkp7WkOXbhwSkazRuGnwz$0YTpuG+7wb+bTDODyK739vtqb46sXBsMVG05U8YwN2w=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "kyb",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:22.599Z",
+    "name": "김영빈",
+    "email": "kyb@example.com",
+    "created_at": "2026-06-23T02:44:22.599Z",
+    "updated_at": "2026-06-23T02:44:22.883Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 9,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$uOPqKuAuagSHUNkMwmcbjo$7y2olFMzzvefgP1CGnmiV2NDWclVvO5f3iy3OwRO7iM=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pjh2",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:22.888Z",
+    "name": "박진혁",
+    "email": "pjh2@example.com",
+    "created_at": "2026-06-23T02:44:22.888Z",
+    "updated_at": "2026-06-23T02:44:23.173Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 10,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$6gGYmtK5tapFOLKd8KvWSs$mYw49AZZf58BcCEEzUBtKWT2bUE6hTjCAJDjfaU1cpQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lbm",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:23.177Z",
+    "name": "이봉민",
+    "email": "lbm@example.com",
+    "created_at": "2026-06-23T02:44:23.177Z",
+    "updated_at": "2026-06-23T02:44:23.461Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 11,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$RJPHjcI5vgmowSbeSAEfvU$7nzKnvf4GZ//Jhcvlc+TCtovnfY5jBYAQe6y96TkGO4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "ksw",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:23.465Z",
+    "name": "김수원",
+    "email": "ksw@example.com",
+    "created_at": "2026-06-23T02:44:23.465Z",
+    "updated_at": "2026-06-25T05:26:28.549Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 12,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$hoVKdCDXuSaX6UIJNoKzYf$xasP7zj3wYE2PjW5h0VUTGKo3sAaeBWOVEfCMkLyT9g=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "kyj",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:23.752Z",
+    "name": "구윤지",
+    "email": "kyj@example.com",
+    "created_at": "2026-06-23T02:44:23.752Z",
+    "updated_at": "2026-06-23T02:44:24.034Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 13,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$7I1zSBWOdxK4hz7VSQd0xe$2aGpSJxeguWG1igOyRllmTZ45Y1JZg3e1Ox8s+bhuT0=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "ljj",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:24.038Z",
+    "name": "이재준",
+    "email": "ljj@example.com",
+    "created_at": "2026-06-23T02:44:24.038Z",
+    "updated_at": "2026-06-23T02:44:24.323Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 14,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$7NQdufqlk4Ygv2FKIJih0P$uxSS1TpQ8leZd6ZpSpYtydWYvuYDGZ9lGYpu75+2J/k=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "kwb",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:24.327Z",
+    "name": "곽우빈",
+    "email": "kwb@example.com",
+    "created_at": "2026-06-23T02:44:24.327Z",
+    "updated_at": "2026-06-25T03:04:07.185Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 15,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$UExWaCaJOh33zpicrMuHfo$ewZD0T3IHSHk0+wSpJPlNykj+EYlz64TfRRaaXICGfA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "syj",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-23T02:44:24.616Z",
+    "name": "서유정",
+    "email": "syj@example.com",
+    "created_at": "2026-06-23T02:44:24.616Z",
+    "updated_at": "2026-06-23T02:44:24.898Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 16,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$mlZ9ZUZtIc1sG3sWpdg4Lf$sqoQhWDKBouaD/Mw3vI5wnpLNXYQpNWHYLsEH3Wl+cc=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lsh",
+    "first_name": "",
+    "last_name": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-06-24T06:42:20.795Z",
+    "name": "이서현",
+    "email": "lsh@lsh.com",
+    "created_at": "2026-06-24T06:42:21.293Z",
+    "updated_at": "2026-06-25T03:02:16.148Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

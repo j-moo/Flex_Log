@@ -33,6 +33,10 @@ class FinancialProductOptionSerializer(serializers.ModelSerializer):
 
 class FinancialProductSerializer(serializers.ModelSerializer):
     options = FinancialProductOptionSerializer(many=True, read_only=True)
+    product_type_label = serializers.SerializerMethodField()
+    base_rate = serializers.SerializerMethodField()
+    max_rate = serializers.SerializerMethodField()
+    terms = serializers.SerializerMethodField()
     best_rate = serializers.SerializerMethodField()
     best_option = serializers.SerializerMethodField()
 
@@ -41,6 +45,7 @@ class FinancialProductSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'product_type',
+            'product_type_label',
             'fin_prdt_cd',
             'dcls_month',
             'kor_co_nm',
@@ -55,11 +60,45 @@ class FinancialProductSerializer(serializers.ModelSerializer):
             'is_active',
             'fetched_at',
             'created_at',
+            'base_rate',
+            'max_rate',
+            'terms',
             'best_rate',
             'best_option',
             'options',
         )
         read_only_fields = fields
+
+    def get_product_type_label(self, obj):
+        labels = {
+            'deposit': '\uc815\uae30\uc608\uae08',
+            'saving': '\uc815\uae30\uc801\uae08',
+        }
+        return labels.get(obj.product_type, obj.product_type)
+
+    def get_base_rate(self, obj):
+        rates = [
+            option.intr_rate
+            for option in self._get_options(obj)
+            if option.intr_rate is not None
+        ]
+        return max(rates) if rates else None
+
+    def get_max_rate(self, obj):
+        rates = []
+        for option in self._get_options(obj):
+            rate = option.intr_rate2 if option.intr_rate2 is not None else option.intr_rate
+            if rate is not None:
+                rates.append(rate)
+        return max(rates) if rates else None
+
+    def get_terms(self, obj):
+        terms = {
+            option.save_trm
+            for option in self._get_options(obj)
+            if option.save_trm
+        }
+        return [str(term) for term in sorted(terms)]
 
     def get_best_rate(self, obj):
         option = self._get_best_option(obj)
@@ -73,8 +112,14 @@ class FinancialProductSerializer(serializers.ModelSerializer):
             return None
         return FinancialProductOptionSerializer(option).data
 
+    def _get_options(self, obj):
+        prefetched = getattr(obj, '_prefetched_objects_cache', {}).get('options')
+        if prefetched is not None:
+            return list(prefetched)
+        return list(getattr(obj, 'options').all())
+
     def _get_best_option(self, obj):
-        options = list(getattr(obj, 'options').all())
+        options = self._get_options(obj)
         if not options:
             return None
         return max(

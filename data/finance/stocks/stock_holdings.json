@@ -1,0 +1,437 @@
+[
+{
+  "model": "finance.stockholding",
+  "pk": 4,
+  "fields": {
+    "user": 6,
+    "symbol": "AAPL",
+    "name": "Apple",
+    "quantity": "4.0000",
+    "average_price": "182.30",
+    "current_price": "196.50",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.925Z",
+    "updated_at": "2026-06-23T02:44:24.925Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 5,
+  "fields": {
+    "user": 6,
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "quantity": "5.0000",
+    "average_price": "178.60",
+    "current_price": "205.15",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.925Z",
+    "updated_at": "2026-06-23T02:44:24.925Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 6,
+  "fields": {
+    "user": 7,
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "quantity": "2.0000",
+    "average_price": "118.40",
+    "current_price": "142.10",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.925Z",
+    "updated_at": "2026-06-23T02:44:24.925Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 7,
+  "fields": {
+    "user": 7,
+    "symbol": "GOOGL",
+    "name": "Alphabet",
+    "quantity": "2.0000",
+    "average_price": "162.20",
+    "current_price": "181.35",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.925Z",
+    "updated_at": "2026-06-23T02:44:24.925Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 9,
+  "fields": {
+    "user": 8,
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "quantity": "3.0000",
+    "average_price": "408.25",
+    "current_price": "451.70",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 10,
+  "fields": {
+    "user": 8,
+    "symbol": "AMZN",
+    "name": "Amazon",
+    "quantity": "3.0000",
+    "average_price": "183.10",
+    "current_price": "201.45",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 11,
+  "fields": {
+    "user": 9,
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "quantity": "5.0000",
+    "average_price": "178.60",
+    "current_price": "205.15",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 12,
+  "fields": {
+    "user": 9,
+    "symbol": "005930",
+    "name": "Samsung Electronics",
+    "quantity": "12.0000",
+    "average_price": "73400.00",
+    "current_price": "81200.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 13,
+  "fields": {
+    "user": 9,
+    "symbol": "051910",
+    "name": "LG Chem",
+    "quantity": "2.0000",
+    "average_price": "342000.00",
+    "current_price": "371500.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 14,
+  "fields": {
+    "user": 10,
+    "symbol": "GOOGL",
+    "name": "Alphabet",
+    "quantity": "2.0000",
+    "average_price": "162.20",
+    "current_price": "181.35",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 15,
+  "fields": {
+    "user": 10,
+    "symbol": "000660",
+    "name": "SK hynix",
+    "quantity": "5.0000",
+    "average_price": "182000.00",
+    "current_price": "221500.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 18,
+  "fields": {
+    "user": 11,
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "quantity": "2.0000",
+    "average_price": "118.40",
+    "current_price": "142.10",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.926Z",
+    "updated_at": "2026-06-23T02:44:24.926Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 19,
+  "fields": {
+    "user": 12,
+    "symbol": "005930",
+    "name": "Samsung Electronics",
+    "quantity": "12.0000",
+    "average_price": "73400.00",
+    "current_price": "81200.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.927Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 20,
+  "fields": {
+    "user": 12,
+    "symbol": "051910",
+    "name": "LG Chem",
+    "quantity": "2.0000",
+    "average_price": "342000.00",
+    "current_price": "371500.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.927Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 21,
+  "fields": {
+    "user": 13,
+    "symbol": "000660",
+    "name": "SK hynix",
+    "quantity": "5.0000",
+    "average_price": "182000.00",
+    "current_price": "221500.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.927Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 22,
+  "fields": {
+    "user": 13,
+    "symbol": "AAPL",
+    "name": "Apple",
+    "quantity": "4.0000",
+    "average_price": "182.30",
+    "current_price": "196.50",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.927Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 23,
+  "fields": {
+    "user": 13,
+    "symbol": "TSLA",
+    "name": "Tesla",
+    "quantity": "5.0000",
+    "average_price": "178.60",
+    "current_price": "205.15",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.927Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 24,
+  "fields": {
+    "user": 14,
+    "symbol": "035420",
+    "name": "NAVER",
+    "quantity": "6.0000",
+    "average_price": "189000.00",
+    "current_price": "206000.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.927Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 25,
+  "fields": {
+    "user": 14,
+    "symbol": "NVDA",
+    "name": "NVIDIA",
+    "quantity": "2.0000",
+    "average_price": "118.40",
+    "current_price": "142.10",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.927Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 26,
+  "fields": {
+    "user": 15,
+    "symbol": "051910",
+    "name": "LG Chem",
+    "quantity": "2.0000",
+    "average_price": "342000.00",
+    "current_price": "371500.00",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.927Z",
+    "updated_at": "2026-06-23T02:44:24.928Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 27,
+  "fields": {
+    "user": 15,
+    "symbol": "MSFT",
+    "name": "Microsoft",
+    "quantity": "3.0000",
+    "average_price": "408.25",
+    "current_price": "451.70",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.928Z",
+    "updated_at": "2026-06-23T02:44:24.928Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 28,
+  "fields": {
+    "user": 15,
+    "symbol": "AMZN",
+    "name": "Amazon",
+    "quantity": "3.0000",
+    "average_price": "183.10",
+    "current_price": "201.45",
+    "memo": "demo holding",
+    "created_at": "2026-06-23T02:44:24.928Z",
+    "updated_at": "2026-06-23T02:44:24.928Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 29,
+  "fields": {
+    "user": 10,
+    "symbol": "005930",
+    "name": "삼성전자",
+    "quantity": "153.0000",
+    "average_price": "63617.65",
+    "current_price": "61200.00",
+    "memo": "",
+    "created_at": "2026-06-23T02:57:38.157Z",
+    "updated_at": "2026-06-23T08:22:06.455Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 30,
+  "fields": {
+    "user": 10,
+    "symbol": "035720",
+    "name": "카카오",
+    "quantity": "1000.0000",
+    "average_price": "54200.00",
+    "current_price": "54200.00",
+    "memo": "",
+    "created_at": "2026-06-23T02:58:22.248Z",
+    "updated_at": "2026-06-23T02:58:22.248Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 33,
+  "fields": {
+    "user": 13,
+    "symbol": "005930",
+    "name": "삼성전자",
+    "quantity": "1065.0000",
+    "average_price": "61200.00",
+    "current_price": "61200.00",
+    "memo": "",
+    "created_at": "2026-06-23T06:59:25.625Z",
+    "updated_at": "2026-06-23T08:05:49.768Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 37,
+  "fields": {
+    "user": 16,
+    "symbol": "005380",
+    "name": "현대차",
+    "quantity": "1.0000",
+    "average_price": "244000.00",
+    "current_price": "244000.00",
+    "memo": "",
+    "created_at": "2026-06-24T07:07:36.278Z",
+    "updated_at": "2026-06-24T07:07:36.278Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 39,
+  "fields": {
+    "user": 11,
+    "symbol": "005930",
+    "name": "삼성전자",
+    "quantity": "1.0000",
+    "average_price": "61200.00",
+    "current_price": "61200.00",
+    "memo": "",
+    "created_at": "2026-06-24T07:14:39.596Z",
+    "updated_at": "2026-06-24T07:14:39.596Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 40,
+  "fields": {
+    "user": 11,
+    "symbol": "000660",
+    "name": "SK하이닉스",
+    "quantity": "1.0000",
+    "average_price": "184500.00",
+    "current_price": "184500.00",
+    "memo": "",
+    "created_at": "2026-06-24T07:14:42.911Z",
+    "updated_at": "2026-06-24T07:14:42.911Z"
+  }
+},
+{
+  "model": "finance.stockholding",
+  "pk": 41,
+  "fields": {
+    "user": 16,
+    "symbol": "005930",
+    "name": "삼성전자",
+    "quantity": "2.0000",
+    "average_price": "61200.00",
+    "current_price": "61200.00",
+    "memo": "",
+    "created_at": "2026-06-25T05:29:50.468Z",
+    "updated_at": "2026-06-25T05:29:50.468Z"
+  }
+}
+]

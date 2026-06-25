@@ -82,11 +82,9 @@ const incomeErrorDialog = ref({
 const joinedProductPage = ref(1)
 const JOINED_PRODUCT_PAGE_SIZE = 3
 const INCOME_INCREMENT_OPTIONS = [
-  { label: '100원', value: 100 },
-  { label: '500원', value: 500 },
-  { label: '1,000원', value: 1000 },
-  { label: '1만원', value: 10000 },
-  { label: '5만원', value: 50000 },
+  { label: '10만원', value: 100000 },
+  { label: '50만원', value: 500000 },
+  { label: '100만원', value: 1000000 },
 ]
 
 const today = new Date()

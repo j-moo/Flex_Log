@@ -1,9 +1,14 @@
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 
 const message = '케로챠~~~'
+const LOCK_DURATION_MS = 4000
+
 const typedText = ref('')
+const isInteractionLocked = ref(true)
 let timer = null
+let lockTimer = null
 
 onMounted(() => {
   let cursor = 0
@@ -12,15 +17,28 @@ onMounted(() => {
     cursor += 1
     if (cursor >= message.length) window.clearInterval(timer)
   }, 260)
+
+  isInteractionLocked.value = true
+  lockTimer = window.setTimeout(() => {
+    isInteractionLocked.value = false
+    lockTimer = null
+  }, LOCK_DURATION_MS)
 })
 
 onBeforeUnmount(() => {
   if (timer) window.clearInterval(timer)
+  if (lockTimer) window.clearTimeout(lockTimer)
+})
+
+onBeforeRouteLeave(() => {
+  if (isInteractionLocked.value) return false
+  return true
 })
 </script>
 
 <template>
   <section class="easter-page page-shell">
+    <div v-if="isInteractionLocked" class="easter-click-lock" aria-hidden="true"></div>
     <div class="easter-panel glass-panel">
       <span>EASTER EGG</span>
       <h1>{{ typedText }}<i v-if="typedText.length < message.length">|</i></h1>
@@ -34,6 +52,13 @@ onBeforeUnmount(() => {
   min-height: calc(100vh - 180px);
   display: grid;
   place-items: center;
+}
+
+.easter-click-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  cursor: default;
 }
 
 .easter-panel {

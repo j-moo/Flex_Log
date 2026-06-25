@@ -1,0 +1,327 @@
+[
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 5,
+  "fields": {
+    "user": 6,
+    "option": 1,
+    "status": "cancelled",
+    "joined_at": "2026-06-24T03:08:38.774Z",
+    "cancelled_at": "2026-06-24T03:09:05.633Z",
+    "created_at": "2026-06-23T02:44:24.923Z",
+    "updated_at": "2026-06-24T03:09:05.633Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 6,
+  "fields": {
+    "user": 7,
+    "option": 3,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.923Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.923Z",
+    "updated_at": "2026-06-23T02:44:24.923Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 7,
+  "fields": {
+    "user": 7,
+    "option": 4,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 8,
+  "fields": {
+    "user": 8,
+    "option": 5,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 9,
+  "fields": {
+    "user": 9,
+    "option": 7,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 10,
+  "fields": {
+    "user": 9,
+    "option": 8,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 11,
+  "fields": {
+    "user": 10,
+    "option": 9,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 12,
+  "fields": {
+    "user": 11,
+    "option": 11,
+    "status": "cancelled",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": "2026-06-24T02:01:43.829Z",
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-24T02:01:43.829Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 13,
+  "fields": {
+    "user": 11,
+    "option": 12,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 14,
+  "fields": {
+    "user": 12,
+    "option": 13,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 15,
+  "fields": {
+    "user": 13,
+    "option": 15,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 16,
+  "fields": {
+    "user": 13,
+    "option": 16,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 17,
+  "fields": {
+    "user": 14,
+    "option": 17,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.924Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.924Z",
+    "updated_at": "2026-06-23T02:44:24.924Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 18,
+  "fields": {
+    "user": 15,
+    "option": 19,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.925Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.925Z",
+    "updated_at": "2026-06-23T02:44:24.925Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 19,
+  "fields": {
+    "user": 15,
+    "option": 20,
+    "status": "active",
+    "joined_at": "2026-06-23T02:44:24.925Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T02:44:24.925Z",
+    "updated_at": "2026-06-23T02:44:24.925Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 20,
+  "fields": {
+    "user": 10,
+    "option": 1,
+    "status": "active",
+    "joined_at": "2026-06-23T08:24:37.330Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-23T08:24:37.331Z",
+    "updated_at": "2026-06-23T08:24:37.331Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 21,
+  "fields": {
+    "user": 11,
+    "option": 1,
+    "status": "active",
+    "joined_at": "2026-06-24T02:01:56.515Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-24T01:56:50.461Z",
+    "updated_at": "2026-06-24T02:01:56.515Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 22,
+  "fields": {
+    "user": 6,
+    "option": 2,
+    "status": "cancelled",
+    "joined_at": "2026-06-24T03:08:55.371Z",
+    "cancelled_at": "2026-06-24T03:09:03.427Z",
+    "created_at": "2026-06-24T03:08:55.371Z",
+    "updated_at": "2026-06-24T03:09:03.427Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 23,
+  "fields": {
+    "user": 6,
+    "option": 4,
+    "status": "active",
+    "joined_at": "2026-06-24T03:09:10.618Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-24T03:09:10.618Z",
+    "updated_at": "2026-06-24T03:09:10.618Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 24,
+  "fields": {
+    "user": 6,
+    "option": 7,
+    "status": "active",
+    "joined_at": "2026-06-24T03:09:14.286Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-24T03:09:14.286Z",
+    "updated_at": "2026-06-24T03:09:14.286Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 25,
+  "fields": {
+    "user": 16,
+    "option": 1,
+    "status": "active",
+    "joined_at": "2026-06-24T07:09:56.291Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-24T07:09:56.291Z",
+    "updated_at": "2026-06-24T07:09:56.291Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 26,
+  "fields": {
+    "user": 16,
+    "option": 2,
+    "status": "cancelled",
+    "joined_at": "2026-06-24T07:10:43.022Z",
+    "cancelled_at": "2026-06-25T05:31:18.919Z",
+    "created_at": "2026-06-24T07:10:43.022Z",
+    "updated_at": "2026-06-25T05:31:18.919Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 42,
+  "fields": {
+    "user": 16,
+    "option": 3,
+    "status": "cancelled",
+    "joined_at": "2026-06-24T07:57:23.640Z",
+    "cancelled_at": "2026-06-25T05:31:17.184Z",
+    "created_at": "2026-06-24T07:57:23.640Z",
+    "updated_at": "2026-06-25T05:31:17.184Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 43,
+  "fields": {
+    "user": 11,
+    "option": 292,
+    "status": "active",
+    "joined_at": "2026-06-25T04:32:26.270Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-25T04:32:26.270Z",
+    "updated_at": "2026-06-25T04:32:26.270Z"
+  }
+},
+{
+  "model": "finance.userfinancialproduct",
+  "pk": 44,
+  "fields": {
+    "user": 11,
+    "option": 269,
+    "status": "active",
+    "joined_at": "2026-06-25T05:23:05.703Z",
+    "cancelled_at": null,
+    "created_at": "2026-06-25T05:23:05.703Z",
+    "updated_at": "2026-06-25T05:23:05.703Z"
+  }
+}
+]

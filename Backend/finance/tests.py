@@ -134,6 +134,103 @@ class UserFinancialProductAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
+class FinancialProductListAPITests(APITestCase):
+    url = '/api/v1/finance/products/'
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username='product-user',
+            email='product@example.com',
+            password='StrongPass123!',
+        )
+        self.client.force_authenticate(self.user)
+        self.deposit = FinancialProduct.objects.create(
+            product_type='deposit',
+            fin_prdt_cd='DEP001',
+            kor_co_nm='\uad6d\ubbfc\uc740\ud589',
+            fin_prdt_nm='\uad6d\ubbfc \uc815\uae30\uc608\uae08',
+            join_way='\uc601\uc5c5\uc810, \uc2a4\ub9c8\ud2b8\ud3f0',
+            spcl_cnd='\uae09\uc5ec \uc774\uccb4 \uc6b0\ub300',
+        )
+        FinancialProductOption.objects.create(
+            product=self.deposit,
+            save_trm=6,
+            intr_rate='2.0000',
+            intr_rate2='2.5000',
+        )
+        FinancialProductOption.objects.create(
+            product=self.deposit,
+            save_trm=12,
+            intr_rate='3.0000',
+            intr_rate2='3.5000',
+        )
+        self.saving = FinancialProduct.objects.create(
+            product_type='saving',
+            fin_prdt_cd='SAV001',
+            kor_co_nm='\uc2e0\ud55c\uc740\ud589',
+            fin_prdt_nm='\uc2e0\ud55c \uc815\uae30\uc801\uae08',
+            join_way='\uc778\ud130\ub137',
+        )
+        FinancialProductOption.objects.create(
+            product=self.saving,
+            save_trm=12,
+            intr_rate='2.8000',
+            intr_rate2=None,
+        )
+        self.mobile_saving = FinancialProduct.objects.create(
+            product_type='saving',
+            fin_prdt_cd='SAV002',
+            kor_co_nm='\uce74\uce74\uc624\ubc45\ud06c',
+            fin_prdt_nm='\uce74\uce74\uc624 \uc790\uc720\uc801\uae08',
+            join_way='\uc2a4\ub9c8\ud2b8\ud3f0',
+        )
+        FinancialProductOption.objects.create(
+            product=self.mobile_saving,
+            save_trm=24,
+            intr_rate='4.0000',
+            intr_rate2='4.2000',
+        )
+
+    def test_product_response_includes_card_fields(self):
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        item = next(product for product in response.data if product['id'] == self.deposit.id)
+        self.assertEqual(item['product_type_label'], '\uc815\uae30\uc608\uae08')
+        self.assertEqual(item['terms'], ['6', '12'])
+        self.assertEqual(str(item['base_rate']), '3.0000')
+        self.assertEqual(str(item['max_rate']), '3.5000')
+        self.assertEqual(len(item['options']), 2)
+
+    def test_product_filters_by_type_bank_term_and_join_way(self):
+        response = self.client.get(
+            self.url,
+            {'type': 'saving', 'bank': '\uce74\uce74\uc624', 'term': '24', 'join_way': '\uc2a4\ub9c8\ud2b8\ud3f0'},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([item['id'] for item in response.data], [self.mobile_saving.id])
+
+    def test_product_sort_uses_option_rates(self):
+        response = self.client.get(self.url, {'sort': 'max_rate_desc'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['id'], self.mobile_saving.id)
+        self.assertEqual(response.data[1]['id'], self.deposit.id)
+        self.assertEqual(response.data[2]['id'], self.saving.id)
+
+    def test_product_sort_can_use_filtered_term_rate(self):
+        response = self.client.get(self.url, {'term': '12', 'sort': 'max_rate_desc'})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual([item['id'] for item in response.data], [self.deposit.id, self.saving.id])
+
+    def test_product_sort_rejects_unknown_value(self):
+        response = self.client.get(self.url, {'sort': 'unknown'})
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
 class CommodityPriceAPITests(APITestCase):
     import_url = '/api/v1/finance/commodities/prices/import/'
 

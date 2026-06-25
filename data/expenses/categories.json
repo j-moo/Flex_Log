@@ -1,0 +1,58 @@
+[
+{
+  "model": "expenses.category",
+  "pk": 1,
+  "fields": {
+    "name": "식비",
+    "created_at": "2026-06-15T09:14:49.162Z"
+  }
+},
+{
+  "model": "expenses.category",
+  "pk": 2,
+  "fields": {
+    "name": "교통비",
+    "created_at": "2026-06-15T09:14:49.164Z"
+  }
+},
+{
+  "model": "expenses.category",
+  "pk": 3,
+  "fields": {
+    "name": "문화생활",
+    "created_at": "2026-06-15T09:14:49.164Z"
+  }
+},
+{
+  "model": "expenses.category",
+  "pk": 4,
+  "fields": {
+    "name": "쇼핑",
+    "created_at": "2026-06-15T09:14:49.165Z"
+  }
+},
+{
+  "model": "expenses.category",
+  "pk": 5,
+  "fields": {
+    "name": "공과금",
+    "created_at": "2026-06-15T09:14:49.165Z"
+  }
+},
+{
+  "model": "expenses.category",
+  "pk": 7,
+  "fields": {
+    "name": "구독",
+    "created_at": "2026-06-15T09:14:49.166Z"
+  }
+},
+{
+  "model": "expenses.category",
+  "pk": 8,
+  "fields": {
+    "name": "기타",
+    "created_at": "2026-06-15T09:14:49.167Z"
+  }
+}
+]

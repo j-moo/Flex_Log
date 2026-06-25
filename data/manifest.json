@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-06-25T05:41:57.724240+00:00",
+  "format": "django-fixture-json",
+  "description": "Flex-log project-owned app data exported from backend/db.sqlite3 and organized by feature.",
+  "excluded": [
+    "django.contrib metadata tables",
+    "sessions",
+    "simplejwt token blacklist data",
+    "media binary files",
+    "environment variables and secrets"
+  ],
+  "load_order": [
+    "data/accounts/users.json",
+    "data/profiles/profiles.json",
+    "data/friends/friends.json",
+    "data/expenses/categories.json",
+    "data/expenses/expense_logs.json",
+    "data/expenses/likes.json",
+    "data/expenses/comments.json",
+    "data/analysis/monthly_analysis.json",
+    "data/analysis/monthly_ai_analysis.json",
+    "data/finance/products/financial_products.json",
+    "data/finance/products/financial_product_options.json",
+    "data/finance/recommendations/financial_product_recommendations.json",
+    "data/finance/subscriptions/user_financial_products.json",
+    "data/finance/commodities/commodities.json",
+    "data/finance/commodities/commodity_prices.json",
+    "data/finance/stocks/stock_holdings.json",
+    "data/notifications/notifications.json"
+  ],
+  "files": [
+    {
+      "path": "data/accounts/users.json",
+      "count": 12
+    },
+    {
+      "path": "data/analysis/monthly_ai_analysis.json",
+      "count": 6
+    },
+    {
+      "path": "data/analysis/monthly_analysis.json",
+      "count": 9
+    },
+    {
+      "path": "data/expenses/categories.json",
+      "count": 7
+    },
+    {
+      "path": "data/expenses/comments.json",
+      "count": 85
+    },
+    {
+      "path": "data/expenses/expense_logs.json",
+      "count": 54
+    },
+    {
+      "path": "data/expenses/likes.json",
+      "count": 160
+    },
+    {
+      "path": "data/finance/commodities/commodities.json",
+      "count": 2
+    },
+    {
+      "path": "data/finance/commodities/commodity_prices.json",
+      "count": 214
+    },
+    {
+      "path": "data/finance/products/financial_product_options.json",
+      "count": 328
+    },
+    {
+      "path": "data/finance/products/financial_products.json",
+      "count": 96
+    },
+    {
+      "path": "data/finance/recommendations/financial_product_recommendations.json",
+      "count": 57
+    },
+    {
+      "path": "data/finance/stocks/stock_holdings.json",
+      "count": 29
+    },
+    {
+      "path": "data/finance/subscriptions/user_financial_products.json",
+      "count": 25
+    },
+    {
+      "path": "data/friends/friends.json",
+      "count": 26
+    },
+    {
+      "path": "data/notifications/notifications.json",
+      "count": 25
+    },
+    {
+      "path": "data/profiles/profiles.json",
+      "count": 12
+    }
+  ]
+}

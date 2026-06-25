@@ -1,0 +1,2028 @@
+[
+{
+  "model": "expenses.expenselog",
+  "pk": 15,
+  "fields": {
+    "user": 6,
+    "category": 4,
+    "title": "케로로는 최강이다",
+    "media": "expenses/2026/06/p1065603894876599_793_thum.png",
+    "media_data": null,
+    "media_content_type": "image/png",
+    "media_name": "p1065603894876599_793_thum.png",
+    "amount": 9000,
+    "product_name": "케로로 인형",
+    "merchant": "어딘가",
+    "content": "케로로는 최강이다",
+    "overlay_text": "케로챠",
+    "overlay_style": {
+      "id": "demo-title",
+      "text": "케로챠",
+      "x": 50,
+      "y": 17,
+      "fontSize": 41,
+      "color": "#79f910",
+      "rotate": -2,
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "케로챠",
+          "x": 50,
+          "y": 17,
+          "fontSize": 41,
+          "color": "#79f910",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-21T02:44:24.928Z",
+    "updated_at": "2026-06-23T03:22:51.466Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 16,
+  "fields": {
+    "user": 6,
+    "category": 1,
+    "title": "그냥 커피임 예 뭐 그렇습니다.",
+    "media": "expenses/2026/06/images.jpg",
+    "media_data": null,
+    "media_content_type": "image/jpeg",
+    "media_name": "images.jpg",
+    "amount": 10700,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "그냥 커피임 예 뭐 그렇습니다.",
+    "overlay_text": "케로챠!",
+    "overlay_style": {
+      "id": "demo-title",
+      "text": "케로챠!",
+      "x": 81,
+      "y": 35,
+      "fontSize": 22,
+      "color": "#bb8b1b",
+      "rotate": 12,
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "케로챠!",
+          "x": 81,
+          "y": 35,
+          "fontSize": 22,
+          "color": "#bb8b1b",
+          "rotate": 12
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-22T02:44:24.928Z",
+    "updated_at": "2026-06-23T03:20:50.960Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 17,
+  "fields": {
+    "user": 7,
+    "category": 1,
+    "title": "PJH flex #1",
+    "media": "expenses/demo/pjh-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 11300,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "Demo feed by pjh #1",
+    "overlay_text": "PJH #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "PJH #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-20T01:44:24.928Z",
+    "updated_at": "2026-06-20T01:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 18,
+  "fields": {
+    "user": 7,
+    "category": 2,
+    "title": "PJH flex #2",
+    "media": "expenses/demo/pjh-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 13000,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by pjh #2",
+    "overlay_text": "PJH #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "PJH #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T01:44:24.928Z",
+    "updated_at": "2026-06-21T01:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 19,
+  "fields": {
+    "user": 7,
+    "category": 4,
+    "title": "PJH flex #3",
+    "media": "expenses/demo/pjh-03.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 14700,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by pjh #3",
+    "overlay_text": "PJH #3",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "PJH #3",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-22T01:44:24.928Z",
+    "updated_at": "2026-06-22T01:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 20,
+  "fields": {
+    "user": 8,
+    "category": 2,
+    "title": "KYB flex #1",
+    "media": "expenses/demo/kyb-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 13600,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by kyb #1",
+    "overlay_text": "KYB #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KYB #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-21T00:44:24.928Z",
+    "updated_at": "2026-06-21T00:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 21,
+  "fields": {
+    "user": 8,
+    "category": 4,
+    "title": "KYB flex #2",
+    "media": "expenses/demo/kyb-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 15300,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by kyb #2",
+    "overlay_text": "KYB #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KYB #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-22T00:44:24.928Z",
+    "updated_at": "2026-06-22T00:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 22,
+  "fields": {
+    "user": 9,
+    "category": 4,
+    "title": "PJH2 flex #1",
+    "media": "expenses/demo/pjh2-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 15900,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by pjh2 #1",
+    "overlay_text": "PJH2 #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "PJH2 #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-19T23:44:24.928Z",
+    "updated_at": "2026-06-19T23:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 23,
+  "fields": {
+    "user": 9,
+    "category": 3,
+    "title": "PJH2 flex #2",
+    "media": "expenses/demo/pjh2-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 17600,
+    "product_name": "Movie",
+    "merchant": "Cinema Club",
+    "content": "Demo feed by pjh2 #2",
+    "overlay_text": "PJH2 #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "PJH2 #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-20T23:44:24.928Z",
+    "updated_at": "2026-06-20T23:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 24,
+  "fields": {
+    "user": 9,
+    "category": 7,
+    "title": "PJH2 flex #3",
+    "media": "expenses/demo/pjh2-03.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 19300,
+    "product_name": "Subscription",
+    "merchant": "Cloud Pay",
+    "content": "Demo feed by pjh2 #3",
+    "overlay_text": "PJH2 #3",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "PJH2 #3",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T23:44:24.928Z",
+    "updated_at": "2026-06-21T23:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 25,
+  "fields": {
+    "user": 10,
+    "category": 3,
+    "title": "LBM flex #1",
+    "media": "expenses/demo/lbm-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 18200,
+    "product_name": "Movie",
+    "merchant": "Cinema Club",
+    "content": "Demo feed by lbm #1",
+    "overlay_text": "LBM #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "LBM #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-20T22:44:24.928Z",
+    "updated_at": "2026-06-20T22:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 26,
+  "fields": {
+    "user": 10,
+    "category": 7,
+    "title": "LBM flex #2",
+    "media": "expenses/demo/lbm-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 19900,
+    "product_name": "Subscription",
+    "merchant": "Cloud Pay",
+    "content": "Demo feed by lbm #2",
+    "overlay_text": "LBM #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "LBM #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T22:44:24.928Z",
+    "updated_at": "2026-06-21T22:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 27,
+  "fields": {
+    "user": 11,
+    "category": 7,
+    "title": "KSW flex #1",
+    "media": "expenses/demo/ksw-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 20500,
+    "product_name": "Subscription",
+    "merchant": "Cloud Pay",
+    "content": "Demo feed by ksw #1",
+    "overlay_text": "KSW #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-05-23T21:44:24.928Z",
+    "updated_at": "2026-05-23T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 28,
+  "fields": {
+    "user": 11,
+    "category": 8,
+    "title": "KSW flex #2",
+    "media": "expenses/demo/ksw-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 22200,
+    "product_name": "Notebook",
+    "merchant": "Daily Store",
+    "content": "Demo feed by ksw #2",
+    "overlay_text": "KSW #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-05-24T21:44:24.928Z",
+    "updated_at": "2026-05-24T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 29,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #3",
+    "media": "expenses/demo/ksw-03.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 23900,
+    "product_name": "Lunch",
+    "merchant": "Flex Diner",
+    "content": "Demo feed by ksw #3",
+    "overlay_text": "KSW #3",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #3",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-05-25T21:44:24.928Z",
+    "updated_at": "2026-05-25T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 30,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #4",
+    "media": "expenses/demo/ksw-04.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 25600,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "Demo feed by ksw #4",
+    "overlay_text": "KSW #4",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #4",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 1
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-05-26T21:44:24.928Z",
+    "updated_at": "2026-05-26T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 31,
+  "fields": {
+    "user": 11,
+    "category": 2,
+    "title": "KSW flex #5",
+    "media": "expenses/demo/ksw-05.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 27300,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by ksw #5",
+    "overlay_text": "KSW #5",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #5",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-05-27T21:44:24.928Z",
+    "updated_at": "2026-05-27T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 32,
+  "fields": {
+    "user": 11,
+    "category": 4,
+    "title": "KSW flex #6",
+    "media": "expenses/demo/ksw-06.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 29000,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by ksw #6",
+    "overlay_text": "KSW #6",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #6",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-05-28T21:44:24.928Z",
+    "updated_at": "2026-05-28T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 33,
+  "fields": {
+    "user": 11,
+    "category": 3,
+    "title": "KSW flex #7",
+    "media": "expenses/demo/ksw-07.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 30700,
+    "product_name": "Movie",
+    "merchant": "Cinema Club",
+    "content": "Demo feed by ksw #7",
+    "overlay_text": "KSW #7",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #7",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-05-29T21:44:24.928Z",
+    "updated_at": "2026-05-29T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 34,
+  "fields": {
+    "user": 11,
+    "category": 7,
+    "title": "KSW flex #8",
+    "media": "expenses/demo/ksw-08.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 32400,
+    "product_name": "Subscription",
+    "merchant": "Cloud Pay",
+    "content": "Demo feed by ksw #8",
+    "overlay_text": "KSW #8",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #8",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-05-30T21:44:24.928Z",
+    "updated_at": "2026-05-30T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 35,
+  "fields": {
+    "user": 11,
+    "category": 8,
+    "title": "KSW flex #9",
+    "media": "expenses/demo/ksw-09.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 34100,
+    "product_name": "Notebook",
+    "merchant": "Daily Store",
+    "content": "Demo feed by ksw #9",
+    "overlay_text": "KSW #9",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #9",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-05-31T21:44:24.928Z",
+    "updated_at": "2026-05-31T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 36,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #10",
+    "media": "expenses/demo/ksw-10.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 35800,
+    "product_name": "Lunch",
+    "merchant": "Flex Diner",
+    "content": "Demo feed by ksw #10",
+    "overlay_text": "KSW #10",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #10",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-01T21:44:24.928Z",
+    "updated_at": "2026-06-01T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 37,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #11",
+    "media": "expenses/demo/ksw-11.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 37500,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "Demo feed by ksw #11",
+    "overlay_text": "KSW #11",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #11",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-02T21:44:24.928Z",
+    "updated_at": "2026-06-02T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 38,
+  "fields": {
+    "user": 11,
+    "category": 2,
+    "title": "KSW flex #12",
+    "media": "expenses/demo/ksw-12.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 39200,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by ksw #12",
+    "overlay_text": "KSW #12",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #12",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-03T21:44:24.928Z",
+    "updated_at": "2026-06-03T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 39,
+  "fields": {
+    "user": 11,
+    "category": 4,
+    "title": "KSW flex #13",
+    "media": "expenses/demo/ksw-13.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 40900,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by ksw #13",
+    "overlay_text": "KSW #13",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #13",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-04T21:44:24.928Z",
+    "updated_at": "2026-06-04T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 40,
+  "fields": {
+    "user": 11,
+    "category": 3,
+    "title": "KSW flex #14",
+    "media": "expenses/demo/ksw-14.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 42600,
+    "product_name": "Movie",
+    "merchant": "Cinema Club",
+    "content": "Demo feed by ksw #14",
+    "overlay_text": "KSW #14",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #14",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-05T21:44:24.928Z",
+    "updated_at": "2026-06-05T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 41,
+  "fields": {
+    "user": 11,
+    "category": 7,
+    "title": "KSW flex #15",
+    "media": "expenses/demo/ksw-15.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 44300,
+    "product_name": "Subscription",
+    "merchant": "Cloud Pay",
+    "content": "Demo feed by ksw #15",
+    "overlay_text": "KSW #15",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #15",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-06T21:44:24.928Z",
+    "updated_at": "2026-06-06T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 42,
+  "fields": {
+    "user": 11,
+    "category": 8,
+    "title": "KSW flex #16",
+    "media": "expenses/demo/ksw-16.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 46000,
+    "product_name": "Notebook",
+    "merchant": "Daily Store",
+    "content": "Demo feed by ksw #16",
+    "overlay_text": "KSW #16",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #16",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-07T21:44:24.928Z",
+    "updated_at": "2026-06-07T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 43,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #17",
+    "media": "expenses/demo/ksw-17.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 47700,
+    "product_name": "Lunch",
+    "merchant": "Flex Diner",
+    "content": "Demo feed by ksw #17",
+    "overlay_text": "KSW #17",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #17",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-08T21:44:24.928Z",
+    "updated_at": "2026-06-08T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 44,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #18",
+    "media": "expenses/demo/ksw-18.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 49400,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "Demo feed by ksw #18",
+    "overlay_text": "KSW #18",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #18",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-09T21:44:24.928Z",
+    "updated_at": "2026-06-09T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 45,
+  "fields": {
+    "user": 11,
+    "category": 2,
+    "title": "KSW flex #19",
+    "media": "expenses/demo/ksw-19.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 51100,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by ksw #19",
+    "overlay_text": "KSW #19",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #19",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 1
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-10T21:44:24.928Z",
+    "updated_at": "2026-06-10T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 46,
+  "fields": {
+    "user": 11,
+    "category": 4,
+    "title": "KSW flex #20",
+    "media": "expenses/demo/ksw-20.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 52800,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by ksw #20",
+    "overlay_text": "KSW #20",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #20",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-11T21:44:24.928Z",
+    "updated_at": "2026-06-11T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 47,
+  "fields": {
+    "user": 11,
+    "category": 3,
+    "title": "KSW flex #21",
+    "media": "expenses/demo/ksw-21.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 54500,
+    "product_name": "Movie",
+    "merchant": "Cinema Club",
+    "content": "Demo feed by ksw #21",
+    "overlay_text": "KSW #21",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #21",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-12T21:44:24.928Z",
+    "updated_at": "2026-06-12T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 48,
+  "fields": {
+    "user": 11,
+    "category": 7,
+    "title": "KSW flex #22",
+    "media": "expenses/demo/ksw-22.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 56200,
+    "product_name": "Subscription",
+    "merchant": "Cloud Pay",
+    "content": "Demo feed by ksw #22",
+    "overlay_text": "KSW #22",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #22",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-13T21:44:24.928Z",
+    "updated_at": "2026-06-13T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 49,
+  "fields": {
+    "user": 11,
+    "category": 8,
+    "title": "KSW flex #23",
+    "media": "expenses/demo/ksw-23.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 57900,
+    "product_name": "Notebook",
+    "merchant": "Daily Store",
+    "content": "Demo feed by ksw #23",
+    "overlay_text": "KSW #23",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #23",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-14T21:44:24.928Z",
+    "updated_at": "2026-06-14T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 50,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #24",
+    "media": "expenses/demo/ksw-24.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 59600,
+    "product_name": "Lunch",
+    "merchant": "Flex Diner",
+    "content": "Demo feed by ksw #24",
+    "overlay_text": "KSW #24",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #24",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-15T21:44:24.928Z",
+    "updated_at": "2026-06-15T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 51,
+  "fields": {
+    "user": 11,
+    "category": 1,
+    "title": "KSW flex #25",
+    "media": "expenses/demo/ksw-25.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 61300,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "Demo feed by ksw #25",
+    "overlay_text": "KSW #25",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #25",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-16T21:44:24.928Z",
+    "updated_at": "2026-06-16T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 52,
+  "fields": {
+    "user": 11,
+    "category": 2,
+    "title": "KSW flex #26",
+    "media": "expenses/demo/ksw-26.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 63000,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by ksw #26",
+    "overlay_text": "KSW #26",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #26",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-17T21:44:24.928Z",
+    "updated_at": "2026-06-17T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 53,
+  "fields": {
+    "user": 11,
+    "category": 4,
+    "title": "KSW flex #27",
+    "media": "expenses/demo/ksw-27.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 64700,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by ksw #27",
+    "overlay_text": "KSW #27",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #27",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-18T21:44:24.928Z",
+    "updated_at": "2026-06-18T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 54,
+  "fields": {
+    "user": 11,
+    "category": 3,
+    "title": "KSW flex #28",
+    "media": "expenses/demo/ksw-28.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 66400,
+    "product_name": "Movie",
+    "merchant": "Cinema Club",
+    "content": "Demo feed by ksw #28",
+    "overlay_text": "KSW #28",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #28",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-19T21:44:24.928Z",
+    "updated_at": "2026-06-19T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 55,
+  "fields": {
+    "user": 11,
+    "category": 7,
+    "title": "KSW flex #29",
+    "media": "expenses/demo/ksw-29.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 68100,
+    "product_name": "Subscription",
+    "merchant": "Cloud Pay",
+    "content": "Demo feed by ksw #29",
+    "overlay_text": "KSW #29",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #29",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-20T21:44:24.928Z",
+    "updated_at": "2026-06-20T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 56,
+  "fields": {
+    "user": 11,
+    "category": 8,
+    "title": "KSW flex #30",
+    "media": "expenses/demo/ksw-30.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 69800,
+    "product_name": "Notebook",
+    "merchant": "Daily Store",
+    "content": "Demo feed by ksw #30",
+    "overlay_text": "KSW #30",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KSW #30",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 2
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T21:44:24.928Z",
+    "updated_at": "2026-06-21T21:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 57,
+  "fields": {
+    "user": 12,
+    "category": 8,
+    "title": "KYJ flex #1",
+    "media": "expenses/demo/kyj-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 22800,
+    "product_name": "Notebook",
+    "merchant": "Daily Store",
+    "content": "Demo feed by kyj #1",
+    "overlay_text": "KYJ #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KYJ #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-20T20:44:24.928Z",
+    "updated_at": "2026-06-20T20:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 58,
+  "fields": {
+    "user": 12,
+    "category": 1,
+    "title": "KYJ flex #2",
+    "media": "expenses/demo/kyj-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 24500,
+    "product_name": "Lunch",
+    "merchant": "Flex Diner",
+    "content": "Demo feed by kyj #2",
+    "overlay_text": "KYJ #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KYJ #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T20:44:24.928Z",
+    "updated_at": "2026-06-21T20:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 59,
+  "fields": {
+    "user": 13,
+    "category": 1,
+    "title": "LJJ flex #1",
+    "media": "expenses/demo/ljj-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 25100,
+    "product_name": "Lunch",
+    "merchant": "Flex Diner",
+    "content": "Demo feed by ljj #1",
+    "overlay_text": "LJJ #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "LJJ #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-19T19:44:24.928Z",
+    "updated_at": "2026-06-19T19:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 60,
+  "fields": {
+    "user": 13,
+    "category": 1,
+    "title": "LJJ flex #2",
+    "media": "expenses/demo/ljj-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 26800,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "Demo feed by ljj #2",
+    "overlay_text": "LJJ #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "LJJ #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-20T19:44:24.928Z",
+    "updated_at": "2026-06-20T19:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 61,
+  "fields": {
+    "user": 13,
+    "category": 2,
+    "title": "LJJ flex #3",
+    "media": "expenses/demo/ljj-03.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 28500,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by ljj #3",
+    "overlay_text": "LJJ #3",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "LJJ #3",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T19:44:24.928Z",
+    "updated_at": "2026-06-21T19:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 62,
+  "fields": {
+    "user": 14,
+    "category": 1,
+    "title": "KWB flex #1",
+    "media": "expenses/demo/kwb-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 27400,
+    "product_name": "Coffee",
+    "merchant": "Bean Studio",
+    "content": "Demo feed by kwb #1",
+    "overlay_text": "KWB #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KWB #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-20T18:44:24.928Z",
+    "updated_at": "2026-06-20T18:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 63,
+  "fields": {
+    "user": 14,
+    "category": 2,
+    "title": "KWB flex #2",
+    "media": "expenses/demo/kwb-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 29100,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by kwb #2",
+    "overlay_text": "KWB #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "KWB #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T18:44:24.928Z",
+    "updated_at": "2026-06-21T18:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 64,
+  "fields": {
+    "user": 15,
+    "category": 2,
+    "title": "SYJ flex #1",
+    "media": "expenses/demo/syj-01.mp4",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 29700,
+    "product_name": "Transit",
+    "merchant": "Metro Pass",
+    "content": "Demo feed by syj #1",
+    "overlay_text": "SYJ #1",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "SYJ #1",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -2
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-19T17:44:24.928Z",
+    "updated_at": "2026-06-19T17:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 65,
+  "fields": {
+    "user": 15,
+    "category": 4,
+    "title": "SYJ flex #2",
+    "media": "expenses/demo/syj-02.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 31400,
+    "product_name": "Sneakers",
+    "merchant": "Market Hall",
+    "content": "Demo feed by syj #2",
+    "overlay_text": "SYJ #2",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "SYJ #2",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": -1
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-20T17:44:24.928Z",
+    "updated_at": "2026-06-20T17:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 66,
+  "fields": {
+    "user": 15,
+    "category": 3,
+    "title": "SYJ flex #3",
+    "media": "expenses/demo/syj-03.png",
+    "media_data": null,
+    "media_content_type": "",
+    "media_name": "",
+    "amount": 33100,
+    "product_name": "Movie",
+    "merchant": "Cinema Club",
+    "content": "Demo feed by syj #3",
+    "overlay_text": "SYJ #3",
+    "overlay_style": {
+      "boxes": [
+        {
+          "id": "demo-title",
+          "text": "SYJ #3",
+          "x": 50,
+          "y": 44,
+          "fontSize": 30,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "public",
+    "hide_amount": false,
+    "created_at": "2026-06-21T17:44:24.928Z",
+    "updated_at": "2026-06-21T17:44:24.928Z",
+    "expires_at": "2027-06-23T02:44:24.928Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 67,
+  "fields": {
+    "user": 6,
+    "category": 1,
+    "title": "분식 케로챠~!!",
+    "media": "expenses/2026/06/15262344-hd_1920_1080_30fps.mp4",
+    "media_data": null,
+    "media_content_type": "video/mp4",
+    "media_name": "15262344-hd_1920_1080_30fps.mp4",
+    "amount": 15000,
+    "product_name": "떡볶이, 순대",
+    "merchant": "#남포 #백분식집",
+    "content": "분식 케로챠~!!",
+    "overlay_text": "아 케로챠~!!",
+    "overlay_style": {
+      "id": 1782184403873,
+      "text": "아 케로챠~!!",
+      "x": 47,
+      "y": 48,
+      "fontSize": 35,
+      "color": "#ff0000",
+      "rotate": 15,
+      "boxes": [
+        {
+          "id": 1782184403873,
+          "text": "아 케로챠~!!",
+          "x": 47,
+          "y": 48,
+          "fontSize": 35,
+          "color": "#ff0000",
+          "rotate": 15
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-23T03:13:52.794Z",
+    "updated_at": "2026-06-23T03:13:52.794Z",
+    "expires_at": "2026-06-24T03:13:52.787Z",
+    "is_visible": true
+  }
+},
+{
+  "model": "expenses.expenselog",
+  "pk": 77,
+  "fields": {
+    "user": 16,
+    "category": 5,
+    "title": "오늘의 기록📈💰",
+    "media": "expenses/2026/06/라이카.jpeg",
+    "media_data": null,
+    "media_content_type": "image/jpeg",
+    "media_name": "라이카.jpeg",
+    "amount": 5000,
+    "product_name": "456",
+    "merchant": "456",
+    "content": "",
+    "overlay_text": "오늘의 기록📈💰",
+    "overlay_style": {
+      "id": 1782287540995,
+      "text": "오늘의 기록📈💰",
+      "x": 50,
+      "y": 50,
+      "fontSize": 28,
+      "color": "#fff8e7",
+      "rotate": 0,
+      "boxes": [
+        {
+          "id": 1782287540995,
+          "text": "오늘의 기록📈💰",
+          "x": 50,
+          "y": 50,
+          "fontSize": 28,
+          "color": "#fff8e7",
+          "rotate": 0
+        }
+      ]
+    },
+    "visibility": "friends",
+    "hide_amount": false,
+    "created_at": "2026-06-24T07:52:26.277Z",
+    "updated_at": "2026-06-24T07:52:26.277Z",
+    "expires_at": "2026-06-25T07:52:26.273Z",
+    "is_visible": true
+  }
+}
+]
